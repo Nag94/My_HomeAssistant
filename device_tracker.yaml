@@ -1,0 +1,24 @@
+- platform: google_maps
+  username: !secret hass_maps_user
+  consider_home: 300
+  new_device_defaults:
+    track_new_devices: true
+
+#- platform: netgear
+#  host: !secret router_url
+#  port: "80"
+#  password: !secret short_password
+#  new_device_defaults:
+#    track_new_devices: false
+
+#- platform: huesensor
+
+- platform: ping
+  hosts:
+    erik: !secret erik_phone
+    nathalie: !secret nathalie_phone
+    oprit_cam_ip: !secret cam_oprit_ip
+
+- platform: bluetooth_le_tracker
+  new_device_defaults:
+    track_new_devices: false

@@ -1,0 +1,17 @@
+db_url: !secret mariadb
+purge_keep_days: 7
+include:
+  domains:
+    - sensor
+    - switch
+    - light
+exclude:
+  domains:
+    - calendar
+    - group
+    - media_player
+    - remote
+    - script
+    - sun
+    - switch
+    - zone

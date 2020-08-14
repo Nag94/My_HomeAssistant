@@ -1,0 +1,48 @@
+- alias: Deurbel
+  trigger:
+    - platform: event
+      event_type: deconz_event
+      event_data:
+        id: deurbel_knop
+        event: 1002
+  condition: []
+  action:
+    - service: script.turn_on
+      entity_id: script.deurbel_aan
+
+- alias: deurbel_snapshot
+  trigger:
+    - platform: state  
+      entity_id: binary_sensor.pir_deur
+      to: 'on'
+#  condition:
+#    - condition: state
+#      entity_id: group.all_devices
+#      state: not_home
+  action:
+    - service: camera.snapshot
+      data:
+        entity_id: camera.oprit
+        filename: 'www/deurbel/deurbel.jpg'
+    - service: notify.html5
+      data:
+        message: 'Er staat iemand aan de deur'
+        title: 'Ding Dong!'
+    - service: notify.mobile_app_phone_erik
+      data:
+        message: 'Er staat iemand aan de deur'
+        title: 'Ding Dong!'
+        data:
+          clickAction: 'www/deurbel/deurbel.jpg'
+          push:
+            category: camera
+            entity_id: camera.oprit
+    - service: notify.mobile_app_sm_g973f
+      data:
+        message: 'Er staat iemand aan de deur'
+        title: 'Ding Dong!'
+        data:
+          clickAction: 'www/deurbel/deurbel.jpg'
+          push:
+            category: camera
+            entity_id: camera.oprit

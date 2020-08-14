@@ -1,0 +1,31 @@
+oprit_movie:
+  alias: Film van oprit na motion trigger
+  icon: mdi:cctv
+  sequence:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.record_oprit
+    - service: camera.record
+      data_template:
+        entity_id: camera.oprit
+        filename: 'www/video/oprit_{{ now().strftime("%Y%m%d-%H%M%S") }}.mp4'
+        lookback: 8
+        duration: 40
+    - delay:
+        seconds: 60
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.record_oprit
+woonkamer_movie:
+  alias: Film van woonkamer na motion trigger
+  icon: mdi:cctv
+  sequence:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.record_woonkamer
+    - service: camera.record
+      data_template:
+        entity_id: camera.woonkamer
+        lookback: 8
+        filename: 'www/video/woonkamer_{{ now().strftime("%Y%m%d-%H%M%S") }}.mp4'
+    - delay:
+        seconds: 50
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.record_woonkamer

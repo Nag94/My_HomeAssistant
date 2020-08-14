@@ -1,0 +1,271 @@
+##############################################
+############## Energie #######################
+##############################################
+# Bereken aantal dagen
+- platform: template
+  sensors:
+    aantal_verbruiksdagen:
+      friendly_name: "Aantal verbruiksdagen"
+      value_template: '{{ (((as_timestamp(now())-states.input_datetime.datum_eindafrekening.attributes.timestamp)) | int /60/1440) | round(0) }}'
+      unit_of_measurement: 'dagen'
+      entity_id: input_datetime.datum_eindafrekening,sensor.time
+# Elektra verbruik
+- platform: template
+  sensors:
+    elektra_verbruik_jaar:
+      friendly_name: "Elektra verbruik tot nu"
+      unit_of_measurement: 'kWh'
+      value_template: "{{ (((float(states('sensor.energy_consumption_tarif_1')) + float(states('sensor.energy_consumption_tarif_2'))) - float(states('input_number.meterstand_elektra')))) | round(2)}}"
+# Elektra totale meterstand hoog+laag
+- platform: template
+  sensors:
+    meterstand_hoog_laag:
+      friendly_name: "Totale meterstand hoog+laag"
+      unit_of_measurement: 'kWh'
+      value_template: "{{ (((float(states('sensor.energy_consumption_tarif_1')) + float(states('sensor.energy_consumption_tarif_2')))) | round(2)) }}"
+# Elektra cumulatief
+- platform: template
+  sensors:
+    elektra_verbruik_cumulatief:
+      friendly_name: "Elektra verbruik cumulatief"
+      unit_of_measurement: 'kWh'
+      value_template: "{{ (((float(states('sensor.elektra_verbruik_jaar')| round(1)) / float(states('sensor.aantal_verbruiksdagen'))) * float(365))  | round(2)) }}"
+# Elektra verbruik prognose per dag
+- platform: template
+  sensors:
+    elektra_verbruik_dagprognose:
+      friendly_name: "Elektra verbruik dag prognose"
+      unit_of_measurement: 'kWh'
+      value_template: "{{ ((float(states('sensor.elektra_verbruik_jaar')) / float(states('sensor.aantal_verbruiksdagen'))) | round(2)) }}"
+#
+# Gas verbruik
+- platform: template
+  sensors:
+    gas_verbruik_jaar:
+      friendly_name: "Gas verbruik tot nu"
+      unit_of_measurement: 'm3'
+      value_template: "{{ ((float(states('input_number.meterstand_gas')))|round(2))}}"
+# op plek value_template: "{{ (((float(states('sensor.gas_consumption')))-float(states('input_number.meterstand_gas')))|round(2))}}"
+# Gas verbruik cumulatief
+- platform: template
+  sensors:
+    gas_verbruik_cumulatief:
+      friendly_name: "Gas verbruik cumulatief 365d"
+      unit_of_measurement: 'm3'
+# 1e half jaar
+#        value_template: "{{ (((float(states('sensor.gas_verbruik_jaar')) / float(states('sensor.aantal_verbruiksdagen'))) * float(212))  | round(0)) }}"
+# 2e half jaar
+      value_template: "{{ (((float(states('sensor.gas_verbruik_jaar')) / float(states('sensor.aantal_verbruiksdagen'))) * float(365))  | round(0)) }}"
+# Gas verbruik prognose per dag
+- platform: template
+  sensors:
+    gas_verbruik_dagprognose:
+      friendly_name: "Gas verbruik dag prognose"
+      unit_of_measurement: 'm3'
+      value_template: "{{ ((float(states('sensor.gas_verbruik_jaar')) / float(states('sensor.aantal_verbruiksdagen'))) | round(2)) }}"
+# Kosten Variabele Leveringskosten Elektra
+- platform: template
+  sensors:
+    kosten_variabele_leveringskosten_elektra:
+      friendly_name: "Variabele Leveringskosten Elektra (kWh x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.variabele_leveringskosten_enkeltarief_elektra'))) * float(states('sensor.elektra_verbruik_jaar'))) | round(2)) }}"
+# Kosten Variabele Leveringskosten Elektra Cumulatief
+- platform: template
+  sensors:
+    kosten_variabele_leveringskosten_elektra_cumulatief:
+      friendly_name: "Variabele Leveringskosten Elektra (kWh x tarief) cumulatief"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.variabele_leveringskosten_enkeltarief_elektra'))) * float(states('sensor.elektra_verbruik_cumulatief'))) | round(2)) }}"
+# Kosten Vaste Leveringskosten Elektra
+- platform: template
+  sensors:
+    kosten_vaste_leveringskosten_elektra:
+      friendly_name: "Vaste Leveringskosten Elektra (d x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.vaste_leveringskosten_elektra'))) * float(states('sensor.aantal_verbruiksdagen'))) | round(2)) }}"
+# Kosten Vaste Leveringskosten Elektra 365 dagen
+- platform: template
+  sensors:
+    kosten_vaste_leveringskosten_elektra_365:
+      friendly_name: "Vaste Leveringskosten Elektra (365d x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.vaste_leveringskosten_elektra'))) * float(365)) | round(2)) }}"
+# Kosten Netbeheerkosten Elektra
+- platform: template
+  sensors:
+    kosten_netbeheerkosten_elektra:
+      friendly_name: "Netbeheerkosten Elektra (d x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.netbeheerkosten_elektra'))) * float(states('sensor.aantal_verbruiksdagen'))) | round(2)) }}"
+# Kosten Netbeheerkosten Elektra 365
+- platform: template
+  sensors:
+    kosten_netbeheerkosten_elektra_365:
+      friendly_name: "Netbeheerkosten Elektra (365d x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.netbeheerkosten_elektra'))) * float(365)) | round(2)) }}"
+# Kosten Energiebelasting Elektra
+- platform: template
+  sensors:
+    kosten_energiebelasting_elektra:
+      friendly_name: "Energiebelasting Elektra (kWh x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.energiebelasting_elektra'))) * float(states('sensor.elektra_verbruik_jaar'))) | round(2)) }}"
+# Kosten Energiebelasting Elektra Cumulatief
+- platform: template
+  sensors:
+    kosten_energiebelasting_elektra_cumulatief:
+      friendly_name: "Energiebelasting Elektra (kWh x tarief) cumulatief"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.energiebelasting_elektra'))) * float(states('sensor.elektra_verbruik_cumulatief'))) | round(2)) }}"
+# Kosten Opslag Duurzame Energie Elektra
+- platform: template
+  sensors:
+    kosten_opslag_duurzame_energie_elektra:
+      friendly_name: "Opslag Duurzame Energie Elektra (kWh x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.opslag_duurzame_energie_elektra'))) * float(states('sensor.elektra_verbruik_jaar'))) | round(2)) }}"
+# Kosten Opslag Duurzame Energie Elektra Cumulatief
+- platform: template
+  sensors:
+    kosten_opslag_duurzame_energie_elektra_cumulatief:
+      friendly_name: "Opslag Duurzame Energie Elektra (kWh x tarief) cumulatief"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.opslag_duurzame_energie_elektra'))) * float(states('sensor.elektra_verbruik_cumulatief'))) | round(2)) }}"
+# Kosten Vermindering Energiebelasting Elektra
+- platform: template
+  sensors:
+    kosten_vermindering_energiebelasting_elektra:
+      friendly_name: "af: Vermindering Energiebelasting Elektra (d x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.vermindering_energiebelasting_elektra'))) * float(states('sensor.aantal_verbruiksdagen'))) | round(2)) }}"
+# Kosten Vermindering Energiebelasting Elektra 365
+- platform: template
+  sensors:
+    kosten_vermindering_energiebelasting_elektra_365:
+      friendly_name: "af: Vermindering Energiebelasting Elektra (365d x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.vermindering_energiebelasting_elektra'))) * float(365)) | round(2)) }}"
+# Totale kosten Electra tot nu
+- platform: template
+  sensors:
+    totale_kosten_elektra_tot_nu:
+      friendly_name: "Totale kosten Elektra tot nu:"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('sensor.kosten_variabele_leveringskosten_elektra')) + float(states('sensor.kosten_vaste_leveringskosten_elektra')) + float(states('sensor.kosten_netbeheerkosten_elektra')) + float(states('sensor.kosten_energiebelasting_elektra')) + float(states('sensor.kosten_opslag_duurzame_energie_elektra'))) - float(states('sensor.kosten_vermindering_energiebelasting_elektra'))) | round(2)) }}"
+# Totale kosten Electra 365
+- platform: template
+  sensors:
+    totale_kosten_elektra_365:
+      friendly_name: "Totale kosten Elektra Cumulatief 365d:"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('sensor.kosten_variabele_leveringskosten_elektra_cumulatief')) + float(states('sensor.kosten_vaste_leveringskosten_elektra_365')) + float(states('sensor.kosten_netbeheerkosten_elektra_365')) + float(states('sensor.kosten_energiebelasting_elektra_cumulatief')) + float(states('sensor.kosten_opslag_duurzame_energie_elektra_cumulatief'))) - float(states('sensor.kosten_vermindering_energiebelasting_elektra_365'))) | round(2)) }}"
+## GAS
+# Kosten Variabele Leveringskosten Gas
+- platform: template
+  sensors:
+    kosten_variabele_leveringskosten_gas:
+      friendly_name: "Variabele Leveringskosten Gas (m3 x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.variabele_leveringskosten_gas'))) * float(states('sensor.gas_verbruik_jaar'))) | round(2)) }}"
+# Kosten Variabele Leveringskosten Gas Cumulatief
+- platform: template
+  sensors:
+    kosten_variabele_leveringskosten_gas_cumulatief:
+      friendly_name: "Variabele Leveringskosten Gas (m3 x tarief) cumulatief"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.variabele_leveringskosten_gas'))) * float(states('sensor.gas_verbruik_cumulatief'))) | round(2)) }}"
+# Kosten Vaste Leveringskosten Gas
+- platform: template
+  sensors:
+    kosten_vaste_leveringskosten_gas:
+      friendly_name: "Vaste Leveringskosten Gas (d x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.vaste_leveringskosten_gas'))) * float(states('sensor.aantal_verbruiksdagen'))) | round(2)) }}"
+# Kosten Vaste Leveringskosten Gas 365 dagen
+- platform: template
+  sensors:
+    kosten_vaste_leveringskosten_gas_365:
+      friendly_name: "Vaste Leveringskosten Gas (365d x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.vaste_leveringskosten_gas'))) * float(365)) | round(2)) }}"
+# Kosten Netbeheerkosten Gas
+- platform: template
+  sensors:
+    kosten_netbeheerkosten_gas:
+      friendly_name: "Netbeheerkosten Gas (d x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.netbeheerkosten_gas'))) * float(states('sensor.aantal_verbruiksdagen'))) | round(2)) }}"
+# Kosten Netbeheerkosten Gas 365
+- platform: template
+  sensors:
+    kosten_netbeheerkosten_gas_365:
+      friendly_name: "Netbeheerkosten Gas (365d x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.netbeheerkosten_gas'))) * float(365)) | round(2)) }}"
+# Kosten Energiebelasting Gas
+- platform: template
+  sensors:
+    kosten_energiebelasting_gas:
+      friendly_name: "Energiebelasting Gas (m3 x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ ((float(states('input_number.energiebelasting_gas'))) * float(states('sensor.gas_verbruik_jaar'))) | round(2) }}"
+# Kosten Energiebelasting Gas Cumulatief
+- platform: template
+  sensors:
+    kosten_energiebelasting_gas_cumulatief:
+      friendly_name: "Energiebelasting Gas (m3 x tarief) cumulatief"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.energiebelasting_gas'))) * float(states('sensor.gas_verbruik_cumulatief'))) | round(2)) }}"
+# Kosten Opslag Duurzame Energie Gas
+- platform: template
+  sensors:
+    kosten_opslag_duurzame_energie_gas:
+      friendly_name: "Opslag Duurzame Energie Gas (m3 x tarief)"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.opslag_duurzame_energie_gas'))) * float(states('sensor.gas_verbruik_jaar'))) | round(2)) }}"
+# Kosten Opslag Duurzame Energie Gas Cumulatief
+- platform: template
+  sensors:
+    kosten_opslag_duurzame_energie_gas_cumulatief:
+      friendly_name: "Opslag Duurzame Energie Gas (kWh x tarief) cumulatief"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('input_number.opslag_duurzame_energie_gas'))) * float(states('sensor.gas_verbruik_cumulatief'))) | round(2)) }}"
+# Totale kosten Gas tot nu
+- platform: template
+  sensors:
+    totale_kosten_gas_tot_nu:
+      friendly_name: "Totale kosten Gas tot nu"
+      unit_of_measurement: '€'
+      value_template: "{{ ((float(states('sensor.kosten_variabele_leveringskosten_gas')) + float(states('sensor.kosten_vaste_leveringskosten_gas')) + float(states('sensor.kosten_netbeheerkosten_gas')) + float(states('sensor.kosten_energiebelasting_gas')) + float(states('sensor.kosten_opslag_duurzame_energie_gas'))) | round(2)) }}"
+# Totale kosten Gas 365
+- platform: template
+  sensors:
+    totale_kosten_gas_365:
+      friendly_name: "Totale kosten Gas Cumulatief 365d"
+      unit_of_measurement: '€'
+      value_template: "{{ ((float(states('sensor.kosten_variabele_leveringskosten_gas_cumulatief')) + float(states('sensor.kosten_vaste_leveringskosten_gas_365')) + float(states('sensor.kosten_netbeheerkosten_gas_365')) + float(states('sensor.kosten_energiebelasting_gas_cumulatief')) + float(states('sensor.kosten_opslag_duurzame_energie_gas_cumulatief'))) | round(2)) }}"
+# Totaal kosten gas en elektra
+- platform: template
+  sensors:
+    energie_totaal_gas_elektra:
+      friendly_name: "Totale kosten gas + elektra"
+      unit_of_measurement: '€'
+      value_template: "{{ ((float(states('sensor.totale_kosten_gas_tot_nu')) + float(states('sensor.totale_kosten_elektra_tot_nu'))) | round(2)) }}"
+# Totaal kosten gas en elektra cumulatief
+- platform: template
+  sensors:
+    energie_totaal_cumulatief:
+      friendly_name: "Totale kosten gas + elektra Cumulatief 365d"
+      unit_of_measurement: '€'
+      value_template: "{{ ((float(states('sensor.totale_kosten_gas_365')) + float(states('sensor.totale_kosten_elektra_365'))) | round(2)) }}"
+
+#sensor.energie_totaal_cumulatief
+# Voorschot bedrag berekenen
+- platform: template
+  sensors:
+    voorschot_bedrag:
+      friendly_name: "Berekend voorschot bedrag per maand"
+      unit_of_measurement: '€'
+      value_template: "{{ (((float(states('sensor.energie_totaal_cumulatief'))) / float(12)) | round(2)) }}"

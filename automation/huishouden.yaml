@@ -1,0 +1,323 @@
+############ Wasmachine / droger ###########3
+- alias: "Notify when the washing machine cycle is complete"
+  trigger:
+    - platform: state
+      entity_id: sensor.wasmachine_current
+      from: 'Draait'
+      to: 'Klaar'
+      for:
+        seconds: 90
+  condition:
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: "off"
+    - condition: state
+      entity_id: input_boolean.notify_home
+      state: "off"
+  action:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.home_mini_woonkamer
+        volume_level: 0.6
+    - service: tts.google_translate_say
+      entity_id: media_player.home_mini_woonkamer
+      data_template:
+        message: >-
+          De was is schoon! Haal de was maar uit de wasmachine.
+        language: 'nl'
+        cache: false
+    - service: notify.html5
+      data:
+        message: De was is schoon!
+        title: Wasmachine
+- alias: "Notify when the tumbledryer cycle is complete"
+  trigger:
+    platform: state
+    entity_id: sensor.droger_current
+    from: 'Draait'
+    to: 'Klaar'
+    for:
+      seconds: 120
+  condition:
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: "off"
+    - condition: state
+      entity_id: input_boolean.notify_home
+      state: "off"
+  action:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.home_mini_woonkamer
+        volume_level: 0.6
+    - service: tts.google_translate_say
+      entity_id: media_player.home_mini_woonkamer
+      data_template:
+        message: >-
+          De was is droog! Haal de was maar uit de droger.
+        language: 'nl'
+        cache: false
+    - service: notify.html5
+      data:
+        message: De was is droog!
+        title: Droger
+### Vaatwasser ##########
+- alias: Notify when the dishwasher cycle is complete
+  trigger:
+    - platform: state
+      entity_id: sensor.vaatwasser_program_progress
+      to: '100'
+      for:
+        seconds: 5
+  condition:
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: "off"
+    - condition: state
+      entity_id: input_boolean.notify_home
+      state: "off"
+  action:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.home_mini_woonkamer
+        volume_level: 0.6
+    - service: tts.google_translate_say
+      entity_id: media_player.home_mini_woonkamer
+      data_template:
+        message: >-
+          De vaat is schoon! Ruim de vaatwasser maar uit.
+        language: 'nl'
+        cache: false
+    - service: notify.html5
+      data:
+        message: De vaat is schoon!
+        title: Vaatwasser
+### Koffie!!!
+- alias: Espressomachine aan
+  trigger:
+    - platform: state
+      entity_id: input_boolean.nachtstand
+      to: 'off'
+    - platform: time
+      at: '06:45:00'
+    - platform: time
+      at: '19:00:00'
+  condition:
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: 'off'
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: group.all_persons
+        state: home
+      - condition: state
+        entity_id: person.erik
+        state: home
+      - condition: state
+        entity_id: person.nathalie
+        state: home
+  action:
+    - service: switch.turn_on
+      entity_id: switch.koffie
+- alias: Espressomachine uit
+  trigger:
+    - platform: template
+      value_template: '{{ states.person.erik.state != "home" and states.person.nathalie.state != "home" and states.group.all_persons.state == "not_home" }}'
+    - platform: state
+      entity_id: input_boolean.nachtstand
+      to: 'on'
+    - platform: state
+      entity_id: input_boolean.vakantiestand
+      to: 'on'
+  action:
+    - delay:
+        minutes: 60
+    - service: switch.turn_off
+      entity_id: switch.koffie
+####################################
+############ Muziek ################
+####################################
+- alias: Radio volume
+  trigger:
+    platform: state
+    entity_id: input_number.volume_radio
+  action:
+    service: media_player.volume_set
+    data_template:
+      entity_id: >
+        {% if is_state("input_select.afspeelmedium", "Woonkamer (Chromecast)") %} media_player.woonkamer_ultra
+        {% elif is_state("input_select.afspeelmedium", "Woonkamer (Home Mini)") %} media_player.home_mini_woonkamer
+        {% elif is_state("input_select.afspeelmedium", "Eetkamer") %} media_player.eetkamer
+        {% elif is_state("input_select.afspeelmedium", "Keukenspeaker") %} media_player.keuken_speaker_2
+        {% elif is_state("input_select.afspeelmedium", "Nest Hub Keuken") %} media_player.keuken_hub
+        {% endif %}
+      volume_level: '{{  states.input_number.volume_radio.state  }}'
+- alias: Weekendmuziek
+  trigger:
+    - entity_id: binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor
+      platform: state
+      to: 'on'
+    - platform: state
+      entity_id: input_boolean.ochtendmuziek
+      from: 'off'
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.nachtstand
+      state: 'off'
+    - condition: template
+      value_template: >-
+        {% if trigger.entity_id == 'binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor' %}
+          {{ is_state('binary_sensor.workday_sensor', 'off') and is_state('input_boolean.ochtendmuziek', 'off') }}
+        {% else %}
+          {{ is_state('binary_sensor.workday_sensor', 'off') or is_state('binary_sensor.workday_sensor', 'on') }}
+        {% endif %}
+#    - condition: state
+#      entity_id: input_boolean.ochtendmuziek
+#      state: 'off'
+#    - condition: state
+#      entity_id: binary_sensor.workday_sensor
+#      state: 'off'
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: group.all_persons
+        state: home
+      - condition: state
+        entity_id: person.erik
+        state: home
+      - condition: state
+        entity_id: person.nathalie
+        state: home
+  action:
+    - service: bluesound.unjoin
+      entity_id: media_player.keuken_speaker_2
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.ochtendmuziek
+    - service: script.turn_on
+      entity_id: script.play_spotify_morning
+- alias: ochtendmuziek_uit
+  trigger:
+    - platform: state
+      entity_id: input_boolean.ochtendmuziek
+      from: 'on'
+      to: 'off'
+  condition: []
+  action:
+    - service: media_player.media_pause
+      entity_id: media_player.eetkamer_speakers
+######################################
+######### Brievenbus #################
+######################################
+- alias: brief in de bus
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.vibration_4
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.vibration_2
+      to: 'on'
+  condition: []
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.brievenbus
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.home_mini_woonkamer
+        volume_level: 0.6
+    - service: tts.google_translate_say
+      entity_id: media_player.home_mini_woonkamer
+      data_template:
+        message: 'Er zit iets in de brievenbus!'
+        language: 'nl'
+        cache: false
+    - service: notify.html5
+      data:
+        message: 'Er zit iets in de brievenbus!'
+        title: 'Brievenalert'
+    - service: notify.html5
+      data:
+        message: 'Er zit iets in de brievenbus!'
+        title: 'Brievenalert'
+    - service: notify.mobile_app_phone_erik
+      data:
+        message: 'Er zit iets in de brievenbus!'
+        title: 'Brievenalert'
+        data:
+          sticky: 'true'
+    - service: notify.mobile_app_sm_g973f
+      data:
+        message: 'Er zit iets in de brievenbus!'
+        title: 'Brievenalert'
+        data:
+          sticky: 'true'
+- alias: reset brievenbus
+  trigger:
+    - platform: time
+      at: "00:00:00"
+  condition:
+    - condition: state
+      entity_id: input_boolean.brievenbus
+      state: 'on'
+  action:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.brievenbus
+###################################
+####### Perfume Genie #############
+###################################
+- alias: genie uit als de schuifpui open is
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.openclose_6
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: switch.genie
+      state: 'on'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.genie
+- alias: Genie aan als schuifpui dicht gaat
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.openclose_6
+      to: 'off'
+  condition:
+    condition: or
+    conditions:
+      - condition: time
+        after: '20:00:00'
+        before: '21:00:00'
+      - condition: time
+        after: '06:30:00'
+        before: '07:00:00'
+  action:
+    - service: switch.turn_on
+      entity_id: switch.genie
+- alias: genie aan
+  trigger:
+    - platform: time
+      at: '20:00:00'
+    - platform: time
+      at: '06:30:00'
+  condition:
+    - condition: state
+      entity_id: binary_sensor.openclose_6
+      state: 'off'
+  action:
+    - service: switch.turn_on
+      entity_id: switch.genie
+- alias: genie uit
+  trigger:
+    - platform: time
+      at: '21:00:00'
+    - platform: time
+      at: '07:00:00'      
+  condition: []
+  action:
+    - service: switch.turn_off
+      entity_id: switch.genie

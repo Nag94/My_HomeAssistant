@@ -1,0 +1,280 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Thuis
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret lattitude
+  longitude: !secret longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: !secret elevation
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Amsterdam
+  # Customization file
+  customize: !include customize.yaml
+  allowlist_external_dirs:
+    - /config/tmp/
+    - /config/www/deurbel/
+    - /config/www/video/
+  internal_url: !secret internal_url
+  external_url: !secret external_url
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+http:
+#  base_url: !secret base_url
+#  ssl_certificate: /ssl/fullchain.pem
+#  ssl_key: /ssl/privkey.pem
+
+# Discover some devices automatically
+discovery:
+
+panel_iframe:
+  tasmoadmin:
+    title: TasmoAdmin
+    icon: mdi:lightbulb-on
+    url: !secret base_url_tasmo
+
+logger:
+  default: error
+
+influxdb:
+  host: a0d7b954-influxdb
+  port: 8086
+  database: !secret influx_db
+  username: !secret influx_un
+  password: !secret influx_pw
+  max_retries: 3
+  default_measurement: state
+
+# Set up themes
+frontend:
+  themes: !include_dir_merge_named themes
+  javascript_version: latest
+
+breaking_changes:
+
+python_script:
+
+browser_mod:
+  devices:
+    b11267be-c6f95287:
+      name: Erikmobiel
+    b2fdad50-2e27c84a:
+      name: werklaptop
+    492405d1-efc10bc8:
+      name: Nathmobiel
+    7c41798c-f582fe21:
+      name: thuislaptop
+
+google_assistant:
+  project_id: amazing-limiter-212613
+  service_account: !include My_Project-7788489780df.json
+ # report_state: true
+
+#twilio:
+#  account_sid: !secret twillio_sid
+#  auth_token: !secret twillio_token
+
+# notifier via google
+notify:
+  - platform: html5
+    vapid_pub_key: !secret html_pub_key
+    vapid_prv_key: !secret html_prv_key
+    vapid_email: !secret html_email
+    name: html5
+
+# Text to speech
+tts:
+  - platform: google_translate
+    cache: true
+    cache_dir: /tmp/tts
+    time_memory: 300
+    base_url: !secret tts_base_url
+    language: 'nl'
+    service_name: google_translate_say
+
+# RFXtrx
+rfxtrx:
+  device: '/dev/serial/by-id/usb-RFXCOM_RFXtrx433_A12IPPXJ-if00-port0'
+  debug: true
+  automatic_add: true
+
+ifttt:
+  key: !secret ifttt_key
+
+tplink:
+  discovery: false
+  switch:
+    - host: !secret switch_1
+    - host: !secret switch_2
+    - host: !secret switch_3
+
+rest_command:
+  genie_on:
+    method: post
+    url: !secret genie_on
+    content_type: application/json
+  genie_off:
+    method: post
+    url: !secret genie_off
+    content_type: application/json
+
+media_player:
+  - platform: yamaha
+    host: !secret yamaha
+  - platform: bluesound
+    hosts:
+      - host: !secret mp_eetkamer
+      - host: !secret mp_keuken
+  - platform: philips_android_tv
+    name: "TV Woonkamer"
+    host: !secret tv_woonkamer
+    mac: !secret tv_mac
+    username: !secret tv_username
+    password: !secret tv_password
+
+spotify:
+  client_id: !secret spotify_id
+  client_secret: !secret spotify_secret
+
+spotcast:
+  sp_dc: !secret sp_dc
+  sp_key: !secret sp_key
+
+camera:
+  - platform: ffmpeg
+    name: "Oprit"
+    input: !secret cam_oprit
+  - platform: ffmpeg
+    name: "Woonkamer"
+    input: !secret cam_woonkamer
+  - platform: ezviz
+    username: !secret ezviz_un
+    password: !secret ezviz_pw
+    cameras:
+      178211475:
+        username: !secret ezviz_gen_un
+        password: !secret ezviz_gen_oprit
+      C35158510:
+        username: !secret ezviz_gen_un
+        password: !secret ezviz_gen_woonkamer
+  - platform: buienradar
+
+stream:
+
+panel_custom:
+  - name: gallery
+    sidebar_title: CCTV
+    sidebar_icon: mdi:cctv
+    config:
+      title: Beveiligingscamera's
+      tabs:
+        - name: Oprit
+          entity_id: sensor.oprit
+          file_name_format: "oprit_%YYY%m%d-%H%M%S"
+          caption_format: "%m/%d %H:%M"
+          maximum_files: 10
+        - name: Woonkamer
+          entity_id: sensor.woonkamer
+          file_name_format: "woonkamer_%YYY%m%d-%H%M%S"
+          caption_format: "%m/%d %H:%M"
+          maximum_files: 10
+
+shell_command:
+  remove_video: find /config/www/video/* -mtime +3 -exec rm {} \;
+        
+zwave:
+  usb_path: '/dev/serial/by-id/usb-0658_0200-if00'
+
+utility_meter:
+  daily_energy_offpeak:
+    source: sensor.energy_consumption_tarif_1
+    cycle: daily
+  daily_energy_peak:
+    source: sensor.energy_consumption_tarif_2
+    cycle: daily
+#  daily_gas:
+#    source: sensor.gas_consumption
+#    cycle: daily
+  monthly_energy_offpeak:
+    source: sensor.energy_consumption_tarif_1
+    cycle: monthly
+  monthly_energy_peak:
+    source: sensor.energy_consumption_tarif_2
+    cycle: monthly
+#  monthly_gas:
+#    source: sensor.gas_consumption
+#    cycle: monthly
+
+google:
+  client_id: !secret google_client_id
+  client_secret: !secret google_client_secret
+  track_new_calendar: true
+
+#tuya:
+#  username: !secret some_user
+#  password: !secret some_password
+#  country_code: 31
+
+home_connect:
+  client_id: !secret homeconnect_client_id
+  client_secret: !secret homeconnect_client_secret
+
+fan:
+  - platform: xiaomi_miio_fan
+    name: Ventilator 1
+    host: 192.168.1.45
+    token: !secret fan1_token
+  - platform: mqtt
+    name: "Ventilator mqtt"
+    state_topic: "mifanpower/state"
+    command_topic: "mifanpower"
+    oscillation_state_topic: "mifanrotate/state"
+    oscillation_command_topic: "mifanrotate"
+    speed_state_topic: "mifanfanspeed/state"
+    speed_command_topic: "mifanfanspeed"
+    qos: 0
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_oscillation_on: "ON"
+    payload_oscillation_off: "OFF"
+    payload_low_speed: "LOW"
+    payload_medium_speed: "MEDIUM"
+    payload_high_speed: "HIGH"
+    speeds:
+      - low
+      - medium
+      - high
+
+weather:
+  - platform: darksky
+    api_key: !secret darksky_api
+    mode: daily
+  - platform: buienradar
+    name: 'Eindhoven'
+    # Force 'Meetstation Eindhoven' to be used:
+    latitude: 51.45
+    longitude: 5.42
+    forecast: true
+
+airvisual:
+  api_key: !secret airvisual_key
+
+group: !include includes/groups.yaml
+automation: !include_dir_merge_list automation
+recorder: !include includes/recorder.yaml
+script: !include_dir_merge_named scripts
+sensor: !include includes/sensor.yaml
+switch: !include includes/switch.yaml
+light: !include includes/light.yaml
+device_tracker: !include device_tracker.yaml
+alarm_control_panel: !include resources/bwalarm/bwalarm.yaml
+binary_sensor: !include includes/binary_sensor.yaml
+input_boolean: !include includes/input_boolean.yaml
+input_number: !include includes/input_number.yaml
+input_select: !include includes/input_select.yaml
+input_datetime: !include includes/input_date_time.yaml
+timer: !include includes/timer.yaml

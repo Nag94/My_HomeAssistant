@@ -1,0 +1,1554 @@
+{
+    "data": {
+        "devices": [
+            {
+                "area_id": null,
+                "config_entries": [
+                    "fe7d1c0731c04563a25cd90e72a5ac17"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "68:ff:7b:df:5c:ad"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "fd89daa3278b44a98f00e46ca221629d",
+                "identifiers": [],
+                "manufacturer": "TP-Link",
+                "model": "HS110(EU)",
+                "name": "Wasmachine",
+                "name_by_user": null,
+                "sw_version": "1.5.6 Build 191125 Rel.083657",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "fe7d1c0731c04563a25cd90e72a5ac17"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "68:ff:7b:df:59:9e"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "aef16096521b4ab9ace1f03f4253825f",
+                "identifiers": [],
+                "manufacturer": "TP-Link",
+                "model": "HS110(EU)",
+                "name": "Droger",
+                "name_by_user": null,
+                "sw_version": "1.5.6 Build 191125 Rel.083657",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "dd43ed6368ec444b8c1b61b2a1e6683e"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "4c:11:ae:61:1a:f4"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "81713efe40af425eaaadd836265df70d",
+                "identifiers": [],
+                "manufacturer": "espressif",
+                "model": "Espressif ESP-WROVER-KIT",
+                "name": "camera",
+                "name_by_user": "camera_extra",
+                "sw_version": "1.13.6 (Dec  4 2019, 14:54:33)",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "fe7d1c0731c04563a25cd90e72a5ac17"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "68:ff:7b:df:53:da"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "e6bfac66a26d4f95a7c763512f3089ea",
+                "identifiers": [],
+                "manufacturer": "TP-Link",
+                "model": "HS110(EU)",
+                "name": "Raspberry pi",
+                "name_by_user": null,
+                "sw_version": "1.5.6 Build 191125 Rel.083657",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "3a34a37502dd4f2c93367203d86dd934"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "bc7253e96dd34e268074e3720f98a30c",
+                "identifiers": [
+                    [
+                        "mobile_app",
+                        "ad5d43ed3332a711"
+                    ]
+                ],
+                "manufacturer": "OnePlus",
+                "model": "IN2023",
+                "name": "phone_erik",
+                "name_by_user": null,
+                "sw_version": "29",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "58f3d03fc4834fe49c9fe6b7d427fd1e"
+                ],
+                "connections": [],
+                "entry_type": "service",
+                "id": "b9ef592c8c7d4004b170e4031f29bd88",
+                "identifiers": [
+                    [
+                        "adguard",
+                        "127.0.0.1",
+                        45158,
+                        "/control/"
+                    ]
+                ],
+                "manufacturer": "AdGuard Team",
+                "model": null,
+                "name": "AdGuard Home",
+                "name_by_user": null,
+                "sw_version": "v0.102.0",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "478f5337c42245a8b544c7d9764eb4c2",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:03:97:13:52-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color spot",
+                "name": "Eettafel 1",
+                "name_by_user": null,
+                "sw_version": "5.130.1.30000",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "f42e965d05f8425f9c7bec87a75ed4e7",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:54:0a:e8-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color spot",
+                "name": "TV 2",
+                "name_by_user": null,
+                "sw_version": "5.130.1.30000",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "0c4eca0b5fee4d9dacbe45418ab10e6e",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:54:02:2b-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color spot",
+                "name": "TV 1",
+                "name_by_user": null,
+                "sw_version": "5.130.1.30000",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "fb618b59467c424f92fc29f509d046f6",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:03:97:01:c0-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color spot",
+                "name": "Schilderij",
+                "name_by_user": null,
+                "sw_version": "5.130.1.30000",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "520cf0f367b94091bad61ebcff821d90",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:02:71:39:3b-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color lamp",
+                "name": "hal",
+                "name_by_user": null,
+                "sw_version": "1.50.2_r30933",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "1750ac9196e24175a7bd6dd32e91c66a",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:79:92:1e-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue go",
+                "name": "Hue go Evie",
+                "name_by_user": null,
+                "sw_version": "5.130.1.30000",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "7aa11c64d8e94575b8bef4ed2d9014bc",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:03:97:04:b5-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color spot",
+                "name": "Eettafel 2",
+                "name_by_user": null,
+                "sw_version": "5.130.1.30000",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "eb0dbec4b1f74cb6bb365dbf2196c06b",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:02:71:39:5f-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color lamp",
+                "name": "Bank",
+                "name_by_user": null,
+                "sw_version": "1.50.2_r30933",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "b2f35f36183f4a6e82911e44f08174fb",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:aa:08:fa-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color candle",
+                "name": "Ouderslaapkamer 1",
+                "name_by_user": null,
+                "sw_version": "1.50.2_r30933",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "37c12266e5a74f8d9a622a4ecb4747c4",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:eb:f5:00-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color candle",
+                "name": "Ouderslaapkamer 2",
+                "name_by_user": null,
+                "sw_version": "1.50.2_r30933",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "94102f77bbc64babb614a50f43ee28ba",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:06:fb:a6:26-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue outdoor wall",
+                "name": "Garage floodlight",
+                "name_by_user": null,
+                "sw_version": "1.65.9_hB3217DF",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "0b19b27084a448309635ef3e33ed95c3",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:00:0a:d8:e8-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "LivingColors",
+                "name": "schuifpui",
+                "name_by_user": null,
+                "sw_version": "2.0.0.5206",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "3d16d2c75a5446b0a4c78bd3908a11a6",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:02:73:40:c2-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color lamp",
+                "name": "keuken",
+                "name_by_user": null,
+                "sw_version": "1.50.2_r30933",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "b5d2b5268a974d76856a3a5678ab9e89",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:79:36:e3-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue go",
+                "name": "Hue go Woonkamer",
+                "name_by_user": null,
+                "sw_version": "5.130.1.30000",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "b8a9a033729c4800ac72887c46a313fa",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:7a:21:ea-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue go",
+                "name": "Hue go Jules",
+                "name_by_user": null,
+                "sw_version": "5.130.1.30000",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "072a9a74e88349e6b8eee92b1b129306",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:54:0a:28-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue color spot",
+                "name": "Borden",
+                "name_by_user": null,
+                "sw_version": "5.130.1.30000",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "9c97e27dbee744a6a2b39155616c4672",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:03:29:f6:68"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue motion sensor",
+                "name": "Hal sensor beneden",
+                "name_by_user": null,
+                "sw_version": "6.1.1.27575",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "35db7866d54b4b019727b4cae9d7ea2b",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:06:47:13:ee"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue outdoor motion sensor",
+                "name": "motion sensor buiten",
+                "name_by_user": null,
+                "sw_version": "6.1.1.27575",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "70bbc6aa060e4c37a77ca78506cb211c",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:03:29:d4:bd"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue motion sensor",
+                "name": "Hal sensor boven",
+                "name_by_user": null,
+                "sw_version": "6.1.1.27575",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": "2debcd0a9f8748928b8d917c05b1aeae",
+                "config_entries": [
+                    "ffbfafc40120404e8982d0c4e820aa59"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "2577435d211547ce8d19b6b59d3a2e1f",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:79:91:b3-0b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue go",
+                "name": "Hue go Yoga",
+                "name_by_user": null,
+                "sw_version": "5.130.1.30000",
+                "via_device_id": "0ef9ddef342d4dafae6b1b0e6a40dd12"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "9d90bf3454e941319ec74099e20821f0"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "d8:f1:5b:b2:79:16"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "cac8766635cf4a1598faa371dcfed144",
+                "identifiers": [
+                    [
+                        "mqtt",
+                        "B27916"
+                    ]
+                ],
+                "manufacturer": "Tasmota",
+                "model": "Sonoff Basic",
+                "name": "Keukenspot_1",
+                "name_by_user": null,
+                "sw_version": "8.1.0(tasmota)",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "9d90bf3454e941319ec74099e20821f0"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "d8:f1:5b:b2:4f:2b"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "ddac1319b026427ca728ee5c80e7dca5",
+                "identifiers": [
+                    [
+                        "mqtt",
+                        "B24F2B"
+                    ]
+                ],
+                "manufacturer": "Tasmota",
+                "model": "Sonoff Basic",
+                "name": "Voordeurlamp",
+                "name_by_user": null,
+                "sw_version": "8.1.0(tasmota)",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "9d90bf3454e941319ec74099e20821f0"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "d8:f1:5b:b2:4f:6d"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "864f054ec858406586ba6fa66683d608",
+                "identifiers": [
+                    [
+                        "mqtt",
+                        "B24F6D"
+                    ]
+                ],
+                "manufacturer": "Tasmota",
+                "model": "Sonoff Basic",
+                "name": "Opritlampen",
+                "name_by_user": null,
+                "sw_version": "8.1.0(tasmota)",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "9d90bf3454e941319ec74099e20821f0"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "d8:f1:5b:c3:1a:0c"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "02473ba7af104b83b579b843d1a11263",
+                "identifiers": [
+                    [
+                        "mqtt",
+                        "C31A0C"
+                    ]
+                ],
+                "manufacturer": "Tasmota",
+                "model": "Sonoff Basic",
+                "name": "Keukenspots_2",
+                "name_by_user": null,
+                "sw_version": "8.1.0(tasmota)",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "daeb0256f560497489f9c1ac42a5f730",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:03:e7:6a:86"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue dimmer switch",
+                "name": "Woonkamer schakelaar",
+                "name_by_user": null,
+                "sw_version": "6.1.1.28573",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "a3787b71d7ce48ca84117bd63c108afe",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:f6:a6:d8"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue dimmer switch",
+                "name": "Kamer Evie",
+                "name_by_user": null,
+                "sw_version": "6.1.1.28573",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "4e9d13179dea4599b0d980db61db7f0a",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:08:f2:1b"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue dimmer switch",
+                "name": "Ouderslaapkamer schakelaar",
+                "name_by_user": null,
+                "sw_version": "6.1.1.28573",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "f35411adcc104983921b8746d1381de1",
+                "identifiers": [
+                    [
+                        "hue",
+                        "00:17:88:01:04:af:6a:a4"
+                    ]
+                ],
+                "manufacturer": "Signify Netherlands B.V.",
+                "model": "Hue dimmer switch",
+                "name": "Kamer Jules schakelaar",
+                "name_by_user": null,
+                "sw_version": "5.45.1.17846",
+                "via_device_id": "7b7f005e49ff48799ac554f8785975e3"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "9d90bf3454e941319ec74099e20821f0"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "2c:f4:32:a5:1d:ca"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "298306a67dec471ca63ec6fad8f89c81",
+                "identifiers": [
+                    [
+                        "mqtt",
+                        "A51DCA"
+                    ]
+                ],
+                "manufacturer": "Tasmota",
+                "model": "Sonoff Basic",
+                "name": "Garagelamp",
+                "name_by_user": null,
+                "sw_version": "8.1.0(tasmota)",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "4df25481852b483f87f68a4badbb2711"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "924bc54ac184479eb577f57b8cd213bc",
+                "identifiers": [
+                    [
+                        "mobile_app",
+                        "a6055818db8bf529"
+                    ]
+                ],
+                "manufacturer": "samsung",
+                "model": "SM-G973F",
+                "name": "SM-G973F",
+                "name_by_user": null,
+                "sw_version": "29",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "00:21:2e:ff:ff:05:93:f5"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "8ff91eb459be49308351727054e67721",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "00:21:2e:ff:ff:05:93:f5"
+                    ]
+                ],
+                "manufacturer": "Philips",
+                "model": "PHDL00",
+                "name": "Daylight",
+                "name_by_user": null,
+                "sw_version": "1.0",
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "00:15:8d:00:03:9e:08:a3"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "1fc5cd8219044f81952d2e4fb3eeee18",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "00:15:8d:00:03:9e:08:a3"
+                    ]
+                ],
+                "manufacturer": "LUMI",
+                "model": "lumi.vibration.aq1",
+                "name": "Vibration brievenbus",
+                "name_by_user": null,
+                "sw_version": "20180130",
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "00:15:8d:00:04:78:dc:41"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "6a94cb9e54f94179af451795f24c4d48",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "00:15:8d:00:04:78:dc:41"
+                    ]
+                ],
+                "manufacturer": "LUMI",
+                "model": "lumi.sensor_magnet.aq2",
+                "name": "Voordeur",
+                "name_by_user": null,
+                "sw_version": "20161128",
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "00:15:8d:00:03:9d:c5:b1"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "8549074376be4422bfc0758d29fbc4c2",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "00:15:8d:00:03:9d:c5:b1"
+                    ]
+                ],
+                "manufacturer": "LUMI",
+                "model": "lumi.vibration.aq1",
+                "name": "Vibration brievenbus 2",
+                "name_by_user": null,
+                "sw_version": "20180130",
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "00:15:8d:00:04:a0:84:60"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "640a3290099845f3a419c71afb415b46",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "00:15:8d:00:04:a0:84:60"
+                    ]
+                ],
+                "manufacturer": "LUMI",
+                "model": "lumi.sensor_magnet.aq2",
+                "name": "Achterdeur",
+                "name_by_user": null,
+                "sw_version": "20161128",
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "00:15:8d:00:04:9f:f9:28"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "21f2dfc0bae64c258337e615f3fdf2c0",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "00:15:8d:00:04:9f:f9:28"
+                    ]
+                ],
+                "manufacturer": "LUMI",
+                "model": "lumi.sensor_magnet.aq2",
+                "name": "schuifpui",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "00caa7b4211842a3b3e73327e665bec9"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "713994530db94404857a1089c82c857d",
+                "identifiers": [
+                    [
+                        "spotify",
+                        "rikkie80"
+                    ]
+                ],
+                "manufacturer": "Spotify AB",
+                "model": "Spotify premium",
+                "name": "Spotify Erik Silverentand",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": null
+            },
+            {
+                "area_id": "506a9b488c6541148b4d37595f71af19",
+                "config_entries": [
+                    "a1c72a80f26e4bd29d0fca1eca1db662"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "c7afc908290b4fae9369a76db045ec64",
+                "identifiers": [
+                    [
+                        "home_connect",
+                        "SIEMENS-SN678X36TE-68A40E1A8970"
+                    ]
+                ],
+                "manufacturer": "Siemens",
+                "model": "SN678X36TE",
+                "name": "Vaatwasser",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "9f42605d4d1746bda0a1ce796b68d4c5"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "50c1f094f09e481991eb82a947e7e9ee",
+                "identifiers": [
+                    [
+                        "cast",
+                        "24444ca8db230f04f696f60ba9948760"
+                    ]
+                ],
+                "manufacturer": "Google Inc.",
+                "model": "Chromecast Ultra",
+                "name": "Woonkamer ultra",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "9f42605d4d1746bda0a1ce796b68d4c5"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "07af0d7cc2b248908e028c46d9bf07f1",
+                "identifiers": [
+                    [
+                        "cast",
+                        "e324a508ce8910c3d5e0cc3c97d3882f"
+                    ]
+                ],
+                "manufacturer": "Google Inc.",
+                "model": "Google Nest Hub",
+                "name": "Keuken hub",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "9f42605d4d1746bda0a1ce796b68d4c5"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "aeb8bb2bf1524886a393c65e0ebec8a2",
+                "identifiers": [
+                    [
+                        "cast",
+                        "c768bfa163ffcd6956f620327687873b"
+                    ]
+                ],
+                "manufacturer": "Google Inc.",
+                "model": "Google Home Mini",
+                "name": "Home Mini woonkamer",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "9f42605d4d1746bda0a1ce796b68d4c5"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "29f28c65769140a0824596af722e983c",
+                "identifiers": [
+                    [
+                        "cast",
+                        "46a96e59d4e78776352c3aaefdc36bb5"
+                    ]
+                ],
+                "manufacturer": "Google Inc.",
+                "model": "Chromecast",
+                "name": "Ouderslaapkamer",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "9f42605d4d1746bda0a1ce796b68d4c5"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "c4117b5a3deb4f93b4840c1885a2538a",
+                "identifiers": [
+                    [
+                        "cast",
+                        "c3f6e126ef52bcdf86381c01efa403ae"
+                    ]
+                ],
+                "manufacturer": "Google Inc.",
+                "model": "Chromecast Audio",
+                "name": "Eetkamer",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "ff6765d5568a4dce8495fb7f2952113f"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "7d165f38c7f44155a3ff9bd11a80e763",
+                "identifiers": [
+                    [
+                        "zwave",
+                        1
+                    ]
+                ],
+                "manufacturer": "AEON Labs",
+                "model": "ZW090 Z-Stick Gen5 EU",
+                "name": "AEON Labs ZW090 Z-Stick Gen5 EU",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "ff6765d5568a4dce8495fb7f2952113f"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "029bd45810034aa897424797e63ed802",
+                "identifiers": [
+                    [
+                        "zwave",
+                        13
+                    ]
+                ],
+                "manufacturer": "AEON Labs",
+                "model": "DSD37 Range Extender",
+                "name": "AEON Labs DSD37 Range Extender",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": "7d165f38c7f44155a3ff9bd11a80e763"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "ff6765d5568a4dce8495fb7f2952113f"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "413ecab981344d0e929b65a5110e9599",
+                "identifiers": [
+                    [
+                        "zwave",
+                        15
+                    ]
+                ],
+                "manufacturer": "Shenzhen Neo Electronics Co Ltd",
+                "model": "Siren Alarm",
+                "name": "Shenzhen Neo Electronics Co Ltd Siren Alarm",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": "7d165f38c7f44155a3ff9bd11a80e763"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "ff6765d5568a4dce8495fb7f2952113f"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "b62d67e101aa4c16a731e5e7c11ac6c2",
+                "identifiers": [
+                    [
+                        "zwave",
+                        16
+                    ]
+                ],
+                "manufacturer": "Heiman Technology Co. Ltd",
+                "model": "Smart Smoke Sensor HS1SA-Z",
+                "name": "Heiman Technology Co. Ltd Smart Smoke Sensor HS1SA-Z",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": "7d165f38c7f44155a3ff9bd11a80e763"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "ff6765d5568a4dce8495fb7f2952113f"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "ebe036ae0b1a40579c4a6037600c725e",
+                "identifiers": [
+                    [
+                        "zwave",
+                        18
+                    ]
+                ],
+                "manufacturer": "Shenzhen Neo Electronics Co Ltd",
+                "model": "Battery Powered PIR Sensor V2",
+                "name": "Shenzhen Neo Electronics Co Ltd Battery Powered PIR Sensor V2",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": "7d165f38c7f44155a3ff9bd11a80e763"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "ff6765d5568a4dce8495fb7f2952113f"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "fca73fdef38943d98eb8471db57c3665",
+                "identifiers": [
+                    [
+                        "zwave",
+                        19
+                    ]
+                ],
+                "manufacturer": "Shenzhen Neo Electronics Co Ltd",
+                "model": "Battery Powered PIR Sensor V2",
+                "name": "Shenzhen Neo Electronics Co Ltd Battery Powered PIR Sensor V2",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": "7d165f38c7f44155a3ff9bd11a80e763"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "ff6765d5568a4dce8495fb7f2952113f"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "d479b68296c74d4ea137c9b79d16691c",
+                "identifiers": [
+                    [
+                        "zwave",
+                        20
+                    ]
+                ],
+                "manufacturer": "Heiman Technology Co. Ltd",
+                "model": "Smart Smoke Sensor HS1SA-Z",
+                "name": "Heiman Technology Co. Ltd Smart Smoke Sensor HS1SA-Z",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": "7d165f38c7f44155a3ff9bd11a80e763"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "00:15:8d:00:04:a0:65:57"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "2c3c0f4573174964952335e596dc7463",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "00:15:8d:00:04:a0:65:57"
+                    ]
+                ],
+                "manufacturer": "LUMI",
+                "model": "lumi.sensor_magnet.aq2",
+                "name": "Garagedeur",
+                "name_by_user": null,
+                "sw_version": "20161128",
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "02:42:ac:1e:21:07"
+                    ],
+                    [
+                        "mac",
+                        "02:42:ac:1e:21:0e"
+                    ],
+                    [
+                        "mac",
+                        "02:42:ac:1e:21:08"
+                    ],
+                    [
+                        "mac",
+                        "02:42:ac:1e:21:03"
+                    ],
+                    [
+                        "mac",
+                        "02:42:ac:1e:21:05"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "66b20fb46c844318af015d6fed28191b",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "00212E0593F5"
+                    ]
+                ],
+                "manufacturer": "Dresden Elektronik",
+                "model": "deCONZ",
+                "name": "Phoscon-GW",
+                "name_by_user": null,
+                "sw_version": "2.5.75",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "ffbfafc40120404e8982d0c4e820aa59"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "00:17:88:ad:5a:e8"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "0ef9ddef342d4dafae6b1b0e6a40dd12",
+                "identifiers": [
+                    [
+                        "hue",
+                        "001788FFFEAD5AE8"
+                    ]
+                ],
+                "manufacturer": "Signify",
+                "model": "BSB002",
+                "name": "Zolder",
+                "name_by_user": null,
+                "sw_version": "1939070020",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "90cbfa97896543c19c4f27ce57de8f0b"
+                ],
+                "connections": [
+                    [
+                        "mac",
+                        "00:17:88:41:12:32"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "7b7f005e49ff48799ac554f8785975e3",
+                "identifiers": [
+                    [
+                        "hue",
+                        "001788FFFE411232"
+                    ]
+                ],
+                "manufacturer": "Signify",
+                "model": "BSB002",
+                "name": "Silverentand",
+                "name_by_user": null,
+                "sw_version": "1939070020",
+                "via_device_id": null
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "ff6765d5568a4dce8495fb7f2952113f"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "7911615b453d4e9fab068dffbbc57a3a",
+                "identifiers": [
+                    [
+                        "zwave",
+                        21
+                    ]
+                ],
+                "manufacturer": "Shenzhen Neo Electronics Co Ltd",
+                "model": "Unknown: type=0200, id=102c",
+                "name": "Shenzhen Neo Electronics Co Ltd Unknown: type=0200, id=102c",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": "7d165f38c7f44155a3ff9bd11a80e763"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "ec:1b:bd:ff:fe:a7:bb:1c"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "2c0c0ba7b25c467891077581e0eedfcd",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "ec:1b:bd:ff:fe:a7:bb:1c"
+                    ]
+                ],
+                "manufacturer": "IKEA of Sweden",
+                "model": "TRADFRI bulb E27 WW 806lm",
+                "name": "Toilet lamp",
+                "name_by_user": null,
+                "sw_version": "2.1.022",
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "68:0a:e2:ff:fe:12:f4:3a"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "cd943691fe6948c69a6fc5bfa289bdbc",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "68:0a:e2:ff:fe:12:f4:3a"
+                    ]
+                ],
+                "manufacturer": "IKEA of Sweden",
+                "model": "TRADFRI on/off switch",
+                "name": "Toiletknop",
+                "name_by_user": null,
+                "sw_version": "2.2.010",
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "ec:1b:bd:ff:fe:c2:8f:b6"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "329be893fd734f0b863f3c49714378ec",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "ec:1b:bd:ff:fe:c2:8f:b6"
+                    ]
+                ],
+                "manufacturer": "IKEA of Sweden",
+                "model": "TRADFRI bulb GU10 WS 400lm",
+                "name": "Hal wandlamp 1",
+                "name_by_user": null,
+                "sw_version": "2.0.022",
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [
+                    [
+                        "zigbee",
+                        "ec:1b:bd:ff:fe:cf:99:e7"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "6cc4364748b84a6a88e854fc1c733f37",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "ec:1b:bd:ff:fe:cf:99:e7"
+                    ]
+                ],
+                "manufacturer": "IKEA of Sweden",
+                "model": "TRADFRI bulb GU10 WS 400lm",
+                "name": "Hal wandlamp 2",
+                "name_by_user": null,
+                "sw_version": "2.0.022",
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "ff37d29557de49189b2c2f961bcc4380",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "00212E0593F5-/groups/4"
+                    ]
+                ],
+                "manufacturer": "Dresden Elektronik",
+                "model": "deCONZ group",
+                "name": "Toilet",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": null,
+                "config_entries": [
+                    "afb26d122dd2486b87d70badd0dc4cf5"
+                ],
+                "connections": [],
+                "entry_type": null,
+                "id": "bb5415ad22994cb7bfedc0896d9508c3",
+                "identifiers": [
+                    [
+                        "deconz",
+                        "00212E0593F5-/groups/5"
+                    ]
+                ],
+                "manufacturer": "Dresden Elektronik",
+                "model": "deCONZ group",
+                "name": "Hal",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": "66b20fb46c844318af015d6fed28191b"
+            },
+            {
+                "area_id": "da13ae9e0ad34afcb52784f7b14891f0",
+                "config_entries": [
+                    "3d54fab0dea144b38c1a18a1ca62db4e"
+                ],
+                "connections": [
+                    [
+                        "upnp",
+                        "uuid:4d696e69-444c-164e-9d42-30469a1b62d8"
+                    ]
+                ],
+                "entry_type": null,
+                "id": "d1e14d183ad446c79b14b4476995a94d",
+                "identifiers": [
+                    [
+                        "upnp",
+                        "uuid:4d696e69-444c-164e-9d42-30469a1b62d8"
+                    ]
+                ],
+                "manufacturer": "NETGEAR, Inc.",
+                "model": "WNDR3700 router",
+                "name": "WNDR3700 (Gateway)",
+                "name_by_user": null,
+                "sw_version": null,
+                "via_device_id": null
+            }
+        ]
+    },
+    "key": "core.device_registry",
+    "version": 1
+}

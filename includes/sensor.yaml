@@ -1,0 +1,573 @@
+#- platform: huesensor
+
+- platform: p2000
+  name: Veldhoven e.o.
+  regios: 22
+  disciplines: 1,2,3,4
+  radius: 2000
+  scan_interval: 20
+  latitude: 51.426948
+  longitude: 5.423349
+
+- platform: dsmr
+  port: /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AD3Z7YJM-if00-port0
+  dsmr_version: 5
+
+- platform: buienalarm
+  timeframe: 15
+  name: buienalarm
+  monitored_conditions:
+    - temperature
+    - precipitation
+    - precipitation_forecast_average
+    - precipitation_forecast_total
+    - next_rain_forecast
+
+  # Example configuration.yaml entry
+- platform: buienradar
+  name: 'Eindhoven'
+  # Force 'Meetstation Eindhoven' to be used:
+  latitude: 51.45
+  longitude: 5.42
+  monitored_conditions:
+    - stationname
+    - conditioncode
+    - condition
+    - conditiondetailed
+    - conditionexact
+    - symbol
+    - humidity
+    - temperature
+    - groundtemperature
+    - windspeed
+    - windforce
+    - winddirection
+    - windazimuth
+    - pressure
+    - visibility
+    - windgust
+    - precipitation
+    - irradiance
+    - precipitation_forecast_average
+    - precipitation_forecast_total
+  # conditions for forecasted data:
+    - symbol_1d
+    - symbol_2d
+    - symbol_3d
+    - symbol_4d
+    - symbol_5d
+    - temperature_1d
+    - temperature_2d
+    - temperature_3d
+    - temperature_4d
+    - temperature_5d
+    - rainchance_1d
+    - rainchance_2d
+    - rainchance_3d
+    - rainchance_4d
+    - rainchance_5d
+    - sunchance_1d
+    - sunchance_2d
+    - sunchance_3d
+    - sunchance_4d
+    - sunchance_5d
+    - rain_1d
+    - rain_2d
+    - rain_3d
+    - rain_4d
+    - rain_5d
+
+- platform: darksky
+  api_key: !secret darksky_api
+  name: Weather
+  language: nl
+  monitored_conditions:
+    - summary
+#      - icon
+#      - nearest_storm_distance
+#      - nearest_storm_bearing
+#      - precip_type
+    - precip_intensity
+    - precip_probability
+    - temperature
+    - apparent_temperature
+#      - dew_point
+#      - wind_speed
+#      - wind_bearing
+    - cloud_cover
+    - humidity
+#      - pressure
+    - visibility
+#      - ozone
+#      - minutely_summary
+    - hourly_summary
+    - daily_summary
+#      - precip_intensity_max 
+
+- platform: yr
+  name: Weather
+  forecast: 24
+  monitored_conditions:
+    - temperature
+    - symbol
+    - precipitation
+    - windSpeed
+    - pressure
+    - windDirection
+    - humidity
+    - fog
+    - cloudiness
+    - lowClouds
+    - mediumClouds
+    - highClouds
+    - dewpointTemperature
+
+- platform: scrape
+  resource: https://www.knmi.nl/nederland-nu/weer/waarschuwingen/noord-brabant
+  select: "a.alert__description"
+  name: knmi_alert_description
+  scan_interval: 300
+- platform: scrape
+  resource: https://www.knmi.nl/nederland-nu/weer/waarschuwingen/noord-brabant
+  select: "div.alert__heading"
+  name: knmi_waarschuwing
+  scan_interval: 300
+
+- platform: rest
+  resource: !secret genie_resource
+  method: GET
+  name: Genie Geur Status
+  value_template: '{{ value_json.0.hub.sensors.fillc.title }}'
+
+- platform: rest
+  resource: !secret genie_resource
+  method: GET
+  name: Genie Batterij Status
+  value_template: '{{ value_json.0.hub.sensors.battc.title }}'
+
+- platform: rest
+  resource: !secret genie_resource
+  method: GET
+  name: Genie Wifi Status
+  value_template: '{{ value_json.0.hub.sensors.wific.title }}'
+  
+- platform: rest
+  resource: !secret genie_resource
+  method: GET
+  name: Genie Geur
+  value_template: '{{ value_json.0.hub.sensors.rfidc.title }}'
+
+- platform: template
+  sensors:
+    erik_status:
+      value_template: '{{ states.input_select.erik_status_dropdown.state }}'
+      friendly_name: 'Erik'
+    nathalie_status:
+      value_template: '{{ states.input_select.nathalie_status_dropdown.state }}'
+      friendly_name: 'Nathalie'
+    devices:
+      friendly_name: personen thuis
+      value_template: >-
+        {% if is_state('person.erik', 'home') %}
+          home
+        {% else %}
+          {% if is_state('person.nathalie', 'home') %}
+            home
+          {% else %}
+            not_home
+          {% endif %}
+        {% endif %}
+
+- platform: afvalinfo
+  resources:
+    - pbd
+    - gft
+    - papier
+    - restafval
+    - trash_type_today
+  location: !secret afvalinfo_city
+  postcode: !secret afvalinfo_postcode
+  streetnumber: !secret afvalinfo_number
+  dateformat: '%A %d %B'
+  locale: 'nl'
+  timespanindays: 365
+
+- platform: lastfm
+  api_key: !secret lastfm
+  users:
+    - rikkie80
+
+- platform: spotcast
+
+- platform: folder
+  folder: 'www/video'
+
+- platform: files
+  folder: 'www/video'
+  name: woonkamer
+  filter: woonkamer_*
+
+- platform: files
+  folder: 'www/video'
+  name: oprit
+  filter: oprit_*
+
+- platform: files
+  folder: 'www/video'
+  name: gallery_images
+  sort: date
+
+- platform: template
+  sensors:
+    zonhoek:
+       friendly_name: "zonhoek"
+       unit_of_measurement: '°'
+       value_template: "{{ state_attr('sun.sun', 'elevation') }}"
+
+- platform: template
+  sensors:
+    azimuth:
+       friendly_name: "Azimuth"
+       unit_of_measurement: '°'
+       value_template: "{{ state_attr('sun.sun', 'azimuth') }}"
+
+- platform: time_date
+  display_options:
+    - 'date'
+    - 'time'
+    - 'date_time'
+
+#### PIR
+- platform: template
+  sensors:
+      neo_coolcam_pir1:
+        friendly_name: Beweging
+        value_template: >-
+          {{ is_state('zwave.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2', 'on') }}
+        icon_template: >-
+          {% if is_state('zwave.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2', 'on') %}
+            mdi:run-fast
+          {% else %}
+            mdi:walk
+          {% endif %}
+      average_lux:
+        friendly_name: Gemiddeld daglicht
+        icon_template: mdi:brightness-6
+        value_template: >-
+           {% set value_woonkamer = float((states.sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_luminance.state) | int) %}
+           {% set value_beneden = float((states.sensor.hal_sensor_beneden_light_level.state) | int) %}
+           {% set value_boven = float((states.sensor.hal_sensor_boven_light_level.state) | int) %}
+           {{ ((value_woonkamer + value_boven + value_beneden)/3) | round(2) }}
+
+################ Energy monitor switches
+- platform: template
+  sensors:
+    droger_watts:
+      friendly_name_template: "{{ states.switch.droger.name}} Huidig Verbruik"
+      value_template: '{{ states.switch.droger.attributes["current_power_w"] | float }}'
+      unit_of_measurement: 'W'
+    wasmachine_watts:
+      friendly_name_template: "{{ states.switch.wasmachine.name}} Huidig Verbruik"
+      value_template: '{{ states.switch.wasmachine.attributes["current_power_w"] | float }}'
+      unit_of_measurement: 'W'
+    wasmachine_current:
+      friendly_name: 'Wasmachine Verbruik <4 Watt'
+      value_template: >-
+        {% if states.switch.wasmachine.attributes["current_power_w"] | replace(" W", "") | float <4 %}
+          Klaar
+        {% else %}
+          Draait
+        {% endif %}
+    droger_current:
+      friendly_name: 'Droger Verbruik <5 Watt'
+      value_template: >-
+        {% if states.switch.droger.attributes["current_power_w"] | replace(" W", "") | float <5 %}
+          Klaar
+        {% else %}
+          Draait
+        {% endif %}
+
+- platform: template
+  sensors:
+    daily_energy:
+      friendly_name: Daily Energy
+      unit_of_measurement: kWh
+      value_template: "{{ (states('sensor.daily_energy_offpeak')|float + states('sensor.daily_energy_peak')|float)|round(2) }}"
+    monthly_energy:
+      friendly_name: Monthly Energy
+      unit_of_measurement: kWh
+      value_template: "{{ (states('sensor.monthly_energy_offpeak')|float + states('sensor.monthly_energy_peak')|float)|round(2) }}"
+
+#### RSS Feedparser
+- platform: feedparser
+  name: ED Veldhoven
+  feed_url: 'https://www.ed.nl/veldhoven/rss.xml'
+  date_format: '%a, %b %d %I:%M %p'
+  inclusions:
+    - title
+    - link
+    - description
+    - media:thumbnail
+    - pubDate
+- platform: feedparser
+  name: ED Binnenland
+  feed_url: 'https://www.ed.nl/binnenland/rss.xml'
+  date_format: '%a, %b %d %I:%M %p'
+  inclusions:
+    - title
+    - link
+    - description
+    - media:thumbnail
+    - pubDate
+- platform: feedparser
+  name: ED PSV
+  feed_url: 'https://www.ed.nl/psv/rss.xml'
+  date_format: '%a, %b %d %I:%M %p'
+  inclusions:
+    - title
+    - link
+    - description
+    - media:thumbnail
+    - pubDate
+- platform: feedparser
+  name: NU Algemeen nieuws
+  feed_url: 'https://www.nu.nl/rss/Algemeen'
+  date_format: '%a, %b %d %I:%M %p'
+  inclusions:
+    - title
+    - link
+    - description
+    - enclosure
+    - pubDate
+############################
+#### sunlight ##############
+############################
+- platform: template
+  sensors:
+    sunlight_pct:
+      entity_id:
+        - sun.sun
+        - sensor.weather_cloud_coverage
+      value_template: >-
+        {%- set elevation = state_attr('sun.sun','elevation') | float %}
+        {%- set cloud_coverage = states('sensor.weather_cloud_coverage') | float %}
+        {%- set cloud_factor = (1 - (0.75 * ( cloud_coverage / 100) ** 3 )) %}
+        {%- set min_elevation = -6 %}
+        {%- set max_elevation = 90 %}
+        {%- set adjusted_elevation = elevation - min_elevation %}
+        {%- set adjusted_elevation = [adjusted_elevation,0] | max %}
+        {%- set adjusted_elevation = [adjusted_elevation,max_elevation - min_elevation] | min %}
+        {%- set adjusted_elevation = adjusted_elevation / (max_elevation - min_elevation) %}
+        {%- set adjusted_elevation = adjusted_elevation %}
+        {%- set adjusted_elevation = adjusted_elevation * 100 %}
+        {%- set brightness = adjusted_elevation * cloud_factor %}
+        {{ brightness | round }}
+      unit_of_measurement: '%'
+      device_class: 'illuminance'
+
+##########################################################
+## Printer information via SNMP
+##########################################################
+
+# Printer status
+
+- platform: snmp
+  name: '150nw_total_pages_printed'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.43.10.2.1.4.1.1
+  accept_errors: true
+  scan_interval: 60
+  unit_of_measurement: "pagina's geprint"
+
+- platform: snmp
+  name: '150nw_color_pages_printed'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.4.1.11.2.3.9.4.2.1.4.1.2.7.0
+  accept_errors: true
+  scan_interval: 60
+  unit_of_measurement: "kleurenpagina's geprint"
+
+- platform: snmp
+  name: '150nw_printer_status_code'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.25.3.5.1.1.1
+  accept_errors: true
+  scan_interval: 5
+
+- platform: snmp
+  name: '150nw_printer_error_code'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.4.1.11.2.3.9.4.2.1.4.1.2.22.0
+  accept_errors: true
+  scan_interval: 5
+
+- platform: snmp
+  name: '150nw_uptime'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.1.3.0
+  accept_errors: true
+  scan_interval: 1
+
+- platform: template
+  sensors:
+    150nw_bw_pages_printed:
+      friendly_name: "zwartwit pagina's geprint"
+      unit_of_measurement: "zwartwit pagina's geprint"
+      value_template: "{{ (states('sensor.150nw_total_pages_printed')|float - states('sensor.150nw_color_pages_printed')|float) | round(0) }}"
+
+    150nw_printer_error:
+      friendly_name: "Printer Error"
+      value_template: >-
+        {% if is_state('sensor.150nw_printer_error_code', '0') %}
+          Papier bijna op
+        {% elif is_state('sensor.150nw_printer_error_code', '1') %}
+          Geen papier beschikbaar
+        {% elif is_state('sensor.150nw_printer_error_code', '2') %}
+          Toner bijna op
+        {% elif is_state('sensor.150nw_printer_error_code', '3') %}
+          Geen toner beschikbaar
+        {% elif is_state('sensor.150nw_printer_error_code', '4') %}
+          Een klep van de printer is open
+        {% elif is_state('sensor.150nw_printer_error_code', '5') %}
+          Er zit iets vast in de printer
+        {% elif is_state('sensor.150nw_printer_error_code', '6') %}
+          De printer is offline
+        {% elif is_state('sensor.150nw_printer_error_code', '7') %}
+          Technische service is benodigd voor de printer
+        {% elif is_state('sensor.150nw_printer_error_code', '8') %}
+          De input tray ontbreekt of is niet correct geinstalleerd
+        {% elif is_state('sensor.150nw_printer_error_code', '9') %}
+          De output tray ontbreekt of is niet correct geinstalleerd
+        {% elif is_state('sensor.150nw_printer_error_code', '10') %}
+          De marker supply ontbreekt of is niet correct geinstalleerd
+        {% elif is_state('sensor.150nw_printer_error_code', '11') %}
+          De output tray is bijna vol
+        {% elif is_state('sensor.150nw_printer_error_code', '12') %}
+          De output tray is vol
+        {% elif is_state('sensor.150nw_printer_error_code', '13') %}
+          De input tray is leeg
+        {% elif is_state('sensor.150nw_printer_error_code', '14') %}
+          De printer is overdue voor preventief onderhoud
+        {% else %}  
+          Onbekend
+        {% endif %}
+
+    150nw_printer_status:
+      friendly_name: "Printer Status"
+      value_template: >-
+        {% if is_state('sensor.150nw_printer_status_code', '1') %}
+          Overige
+        {% elif is_state('sensor.150nw_printer_status_code', '2') %}
+          Onbekend
+        {% elif is_state('sensor.150nw_printer_status_code', '3') %}
+          Standby
+        {% elif is_state('sensor.150nw_printer_status_code', '4') %}
+          Aan het printen
+        {% elif is_state('sensor.150nw_printer_status_code', '5') %}
+          Opwarmen
+        {% else %}  
+          Onbekend
+        {% endif %}
+
+    150nw_printer_uptime:
+      friendly_name: "Printer Uptime"
+      value_template: >-
+        {% set t = states('sensor.150nw_uptime') | int %}
+        {% set t = (t/10) | int %}
+        {{ '{:d}d {:02d}h {:02d}m {:02d}s'.format(t // 86400, (t // 3600) % 24, (t % 3600) // 60, (t % 3600) % 60) }}
+
+# Black toner
+- platform: snmp
+  name: '150nw_black_capacity'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.43.11.1.1.8.1.1
+  accept_errors: true
+  scan_interval: 3600
+  #unit_of_measurement: '%'
+
+- platform: snmp
+  name: '150nw_black_remaining'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.43.11.1.1.9.1.1
+  accept_errors: true
+  scan_interval: 3600
+  #unit_of_measurement: '%'
+
+- platform: template
+  sensors:
+    150nw_black_level:
+      friendly_name: "Niveau Zwarte Toner"
+      unit_of_measurement: '%'
+      value_template: "{{ (states('sensor.150nw_black_remaining')|float / states('sensor.150nw_black_capacity')|float * 100) | round(0) }}"
+
+# Cyan tomer
+- platform: snmp
+  name: '150nw_cyan_capacity'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.43.11.1.1.8.1.2
+  accept_errors: true
+  scan_interval: 3600
+  #unit_of_measurement: '%'
+
+- platform: snmp
+  name: '150nw_cyan_remaining'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.43.11.1.1.9.1.2
+  accept_errors: true
+  scan_interval: 3600
+  #unit_of_measurement: '%'
+
+- platform: template
+  sensors:
+    150nw_cyan_level:
+      friendly_name: "Niveau Cyan Toner"
+      unit_of_measurement: '%'
+      value_template: "{{ (states('sensor.150nw_cyan_remaining')|float / states('sensor.150nw_cyan_capacity')|float * 100) | round(0) }}"
+
+# Magenta tomer   
+- platform: snmp
+  name: '150nw_magenta_capacity'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.43.11.1.1.8.1.3
+  accept_errors: true
+  scan_interval: 3600
+  #unit_of_measurement: '%'
+
+- platform: snmp
+  name: '150nw_magenta_remaining'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.43.11.1.1.9.1.3
+  accept_errors: true
+  scan_interval: 3600
+  #unit_of_measurement: '%'
+
+- platform: template
+  sensors:
+    150nw_magenta_level:
+      friendly_name: "Niveau Magenta Toner"
+      unit_of_measurement: '%'
+      value_template: "{{ (states('sensor.150nw_magenta_remaining')|float / states('sensor.150nw_magenta_capacity')|float * 100) | round(0) }}"
+
+# Yellow toner
+- platform: snmp
+  name: '150nw_yellow_capacity'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.43.11.1.1.8.1.4
+  accept_errors: true
+  scan_interval: 3600
+  #unit_of_measurement: '%'
+
+- platform: snmp
+  name: '150nw_yellow_remaining'
+  host: !secret printer_ip
+  baseoid: 1.3.6.1.2.1.43.11.1.1.9.1.4
+  accept_errors: true
+  scan_interval: 3600
+  #unit_of_measurement: '%'
+
+- platform: template
+  sensors:
+    150nw_yellow_level:
+      friendly_name: "Niveau Gele Toner"
+      unit_of_measurement: '%'
+      value_template: "{{ (states('sensor.150nw_yellow_remaining')|float / states('sensor.150nw_yellow_capacity')|float * 100) | round(0) }}"

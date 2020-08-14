@@ -1,0 +1,373 @@
+set_hue_scene:
+  alias: Set Hue scene
+  sequence:
+  - service: hue.hue_activate_scene
+    data_template:
+      group_name: '{{ states(''input_select.hue_groups'') }}'
+      scene_name: '{{ states(''input_select.hue_scenes'') }}'
+dining_light:
+  alias: Meer licht op de eettafel
+  sequence:
+  - service: light.turn_on
+    entity_id: light.eetkamer_en_keuken
+    data:
+      brightness_pct: 90
+      kelvin: 2700
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.verlichting_steady
+living_light:
+  alias: Meer licht in de woonkamer
+  sequence:
+  - service: light.turn_on
+    entity_id: light.woonkamer
+    data:
+      brightness_pct: 90
+      kelvin: 2700
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.verlichting_steady
+groundfloor_light:
+  alias: Meer licht beneden overal
+  sequence:
+  - service: light.turn_on
+    entity_id: light.lampen_beneden
+    data:
+      brightness_pct: 90
+      kelvin: 2700
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.verlichting_steady
+nachtlicht_aan:
+  alias: Licht aan in de nacht
+  sequence:
+  - service: timer.cancel
+    entity_id: timer.timer_lamp_beneden
+  - service: light.turn_on
+    data:
+      entity_id: light.lampen_beneden
+      brightness: 60
+      rgb_color:
+      - 226
+      - 188
+      - 117
+  - service: timer.start
+    entity_id: timer.timer_lamp_beneden
+nachtlicht_uit:
+  alias: Licht uit
+  sequence:
+  - service: light.turn_off
+    data:
+      entity_id:
+        - light.lampen_beneden
+        - light.keukenspots_all
+        - light.hall_all
+      transition: 120
+###############################
+######### Buitenlicht #########
+###############################
+floodlight_aan:
+  alias: Floodlight aan
+  sequence:
+  - service: timer.cancel
+    entity_id: timer.timer_buiten
+  - service: light.turn_on
+    data:
+      entity_id: light.garage_floodlight
+      brightness: 255
+      kelvin: 5500
+  - service: light.turn_on
+    data:
+      entity_id:
+      - light.tasmota
+  - service: timer.start
+    entity_id: timer.timer_buiten
+floodlight_uit:
+  alias: Floodlight uit
+  sequence:
+  - service: light.turn_off
+    data:
+      entity_id: light.garage_floodlight
+      transition: 120
+  - service: light.turn_off
+    data:
+      entity_id:
+      - light.tasmota
+garagelicht_aan:
+  alias: Licht aan in de garage
+  sequence:
+  - service: timer.cancel
+    entity_id: timer.timer_garage
+  - service: light.turn_on
+    data:
+      entity_id: light.garagelamp_2
+  - service: timer.start
+    entity_id: timer.timer_garage
+garagelicht_uit:
+  alias: Garagelicht uit
+  sequence:
+  - service: light.turn_off
+    data:
+      entity_id: light.garagelamp
+daglicht_aan:
+  alias: Licht aan overdag
+  sequence:
+    service: light.turn_on
+    data_template:
+      entity_id: >-
+        {% if states('sensor.sunlight_pct')|float <8 %}
+        light.keukenspots_all, light.lampen_beneden, light.flux_liefde
+        {% else %}
+        light.lampen_beneden, light.flux_liefde
+        {% endif %}
+      brightness: 90
+      rgb_color:
+      - 226
+      - 188
+      - 117
+      transition: 30
+keukenspots_aan:
+  alias: Keukenspots aan
+  sequence:
+    service: light.turn_on
+    data:
+      entity_id:
+      - light.keukenspots_all
+########################################
+############### Toilet #################
+########################################
+wc_licht_aan:
+  alias: WC licht aan
+  sequence:
+  - service: timer.cancel
+    entity_id: timer.timer_toilet
+  - service: light.turn_on
+    data:
+      entity_id: light.dimmable_light_2
+      brightness: 180
+  - service: timer.start
+    entity_id: timer.timer_toilet
+wc_licht_uit:
+  alias: WC licht uit
+  sequence:
+  - service: light.turn_off
+    data:
+      entity_id:
+        - light.dimmable_light_2
+      transition: 10
+########################################
+################ Evie ##################
+########################################
+sunrise_evie:
+  sequence:
+  - service: light.turn_on
+    data:
+      entity_id: light.kamer_evie
+      xy_color:
+      - 0.67
+      - 0.39
+      brightness: 1
+  - delay:
+      seconds: 1
+  - service: light.turn_on
+    data:
+      entity_id: light.kamer_evie
+      xy_color:
+      - 0.65
+      - 0.41
+      brightness: 85
+      transition: 600
+  - delay:
+      seconds: 600
+  - service: light.turn_on
+    data:
+      entity_id: light.kamer_evie
+      xy_color:
+      - 0.6
+      - 0.4
+      brightness: 170
+      transition: 600
+  - delay:
+      seconds: 600
+  - service: light.turn_on
+    data:
+      entity_id: light.kamer_evie
+      xy_color:
+      - 0.48
+      - 0.4
+      brightness: 255
+      transition: 600
+########################################
+################ Jules #################
+########################################
+sunrise_jules:
+  sequence:
+  - service: light.turn_on
+    data:
+      entity_id: light.kamer_jules
+      xy_color:
+      - 0.67
+      - 0.39
+      brightness: 1
+  - delay:
+      seconds: 1
+  - service: light.turn_on
+    data:
+      entity_id: light.kamer_jules
+      xy_color:
+      - 0.65
+      - 0.41
+      brightness: 85
+      transition: 600
+  - delay:
+      seconds: 600
+  - service: light.turn_on
+    data:
+      entity_id: light.kamer_jules
+      xy_color:
+      - 0.6
+      - 0.4
+      brightness: 170
+      transition: 600
+  - delay:
+      seconds: 600
+  - service: light.turn_on
+    data:
+      entity_id: light.kamer_jules
+      xy_color:
+      - 0.48
+      - 0.4
+      brightness: 255
+      transition: 600
+########################################
+########## Ouderslaapkamer  ############
+########################################
+sunrise_ouders:
+  sequence:
+  - service: light.turn_on
+    data:
+      entity_id: light.ouderslaapkamer
+      xy_color:
+      - 0.67
+      - 0.39
+      brightness: 1
+  - delay:
+      seconds: 1
+  - service: light.turn_on
+    data:
+      entity_id: light.ouderslaapkamer
+      xy_color:
+      - 0.65
+      - 0.41
+      brightness: 85
+      transition: 600
+  - delay:
+      seconds: 600
+  - service: light.turn_on
+    data:
+      entity_id: light.ouderslaapkamer
+      xy_color:
+      - 0.6
+      - 0.4
+      brightness: 170
+      transition: 600
+  - delay:
+      seconds: 600
+  - service: light.turn_on
+    data:
+      entity_id: light.ouderslaapkamer
+      xy_color:
+      - 0.48
+      - 0.4
+      brightness: 255
+      transition: 600
+########################################
+################# HAL ##################
+########################################
+sunrise_hal:
+  sequence:
+  - service: light.turn_on
+    data:
+      entity_id: light.hal
+      xy_color:
+      - 0.67
+      - 0.39
+      brightness: 1
+  - delay:
+      seconds: 1
+  - service: light.turn_on
+    data:
+      entity_id: light.hal
+      xy_color:
+      - 0.65
+      - 0.41
+      brightness: 85
+      transition: 600
+  - delay:
+      seconds: 600
+  - service: light.turn_on
+    data:
+      entity_id: light.hal
+      xy_color:
+      - 0.6
+      - 0.4
+      brightness: 170
+      transition: 600
+  - delay:
+      seconds: 600
+  - service: light.turn_on
+    data:
+      entity_id: light.hal
+      xy_color:
+      - 0.48
+      - 0.4
+      brightness: 255
+      transition: 600
+hal_nachtlicht_aan:
+  alias: Hallicht aan in de nacht
+  sequence:
+  - service: timer.cancel
+    entity_id: timer.timer_hal
+  - service: light.turn_on
+    data:
+      entity_id:
+        - light.hal
+      brightness: 20
+      rgb_color:
+      - 245
+      - 188
+      - 50
+  - service: light.turn_on
+    data:
+      brightness: 20
+      color_temp: 450
+      entity_id:
+        - light.color_temperature_light_3
+  - service: timer.start
+    entity_id: timer.timer_hal
+hal_nachtlicht_uit:
+  alias: Hallicht uit
+  sequence:
+  - service: light.turn_off
+    data:
+      entity_id:
+        - light.hal
+        - light.hal_2
+      transition: 10
+hal_daglicht_aan:
+  alias: Hallicht aan overdag
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.hal
+        brightness: 190
+        rgb_color:
+        - 245
+        - 188
+        - 117
+    - service: light.turn_on
+      data:
+        brightness: 50
+        color_temp: 350
+        entity_id:
+          - light.hal_2
+    - service: timer.start
+      entity_id: timer.timer_hal

@@ -1,0 +1,170 @@
+  irradiance:
+    name: Zonnestraling
+    icon: mdi:gauge
+#    initial: 100
+    min: 0
+    max: 1000
+    step: 50
+
+  high_lux:
+    name: High Lux
+    icon: mdi:gauge
+#    initial: 100
+    min: 0
+    max: 100
+    step: 1
+
+  low_lux:
+    name: Low Lux
+    icon: mdi:gauge
+#    initial: 40
+    min: 0
+    max: 100
+    step: 1
+
+  high_lux_buiten:
+    name: High Lux Buiten
+    icon: mdi:gauge
+#    initial: 100
+    min: 0
+    max: 4000
+    step: 50
+
+  low_lux_buiten:
+    name: Low Lux Buiten
+    icon: mdi:gauge
+#    initial: 40
+    min: 0
+    max: 4000
+    step: 50
+
+  zonhoek:
+    name: Zonhoek
+    icon: mdi:gauge
+    min: -90
+    max: 90
+    step: 1
+
+  azimuth_min:
+    name: Azimuth min
+    icon: mdi:gauge
+    min: 0
+    max: 360
+    step: 1
+
+  azimuth_max:
+    name: Azimuth max
+    icon: mdi:gauge
+    min: 0
+    max: 360
+    step: 1
+
+  wolkendek:
+    name: Wolkendek
+    icon: mdi:gauge
+    min: 0
+    max: 100
+    step: 1
+
+  lichtwaarde:
+    name: Lichtwaarde
+    icon: mdi:brightness-6
+    min: 0
+    max: 100
+    step: 1
+
+  volume_radio:
+    name: Volume
+    icon: mdi:volume-high
+    initial: 0.2
+    min: 0
+    max: 1
+    step: 0.05
+
+#########################################
+############ Energie ####################
+#########################################
+# Meterstand elektra voorgaand jaar
+  meterstand_elektra:
+    name: Beginstand Elektra
+    mode: box
+    min: 502
+    max: 99999
+    step: 1
+# Variabele leveringskosten enkeltarief Elektra
+  variabele_leveringskosten_enkeltarief_elektra:
+    name: Variabele leveringskosten enkeltarief Elektra
+    mode: box
+    min: 0.002
+    max: 1
+    step: 0.001
+# Vaste leveringskosten Elektra
+  vaste_leveringskosten_elektra:
+    name: Vaste leveringskosten Elektra
+    mode: box
+    min: 0.002
+    max: 1
+    step: 0.001
+# Netbeheerkosten Elektra
+  netbeheerkosten_elektra:
+    name: Netbeheerkosten Elektra
+    mode: box
+    min: 0.1
+    max: 2
+    step: 0.001
+# Energiebelasting Elektra
+  energiebelasting_elektra:
+    name: Energiebelasting Elektra
+    mode: box
+    min: 0.01
+    max: 2
+    step: 0.001
+# Opslag Duurzame Energie Elektra
+  opslag_duurzame_energie_elektra:
+    name: Opslag Duurzame Energie Elektra
+    mode: box
+    min: 0.001
+    max: 2
+    step: 0.001
+# Vermindering energiebelasting Elektra
+  vermindering_energiebelasting_elektra:
+    name: Vermindering energiebelasting Elektra
+    mode: box
+    min: 0.1
+    max: 5
+    step: 0.01
+# Variabele leveringskosten Gas
+  variabele_leveringskosten_gas:
+    name: Variabele leveringskosten Gas
+    mode: box
+    min: 0.1
+    max: 5
+    step: 0.01
+# Vaste leveringskosten Gas
+  vaste_leveringskosten_gas:
+    name: Vaste leveringskosten Gas
+    mode: box
+    min: 0.1
+    max: 5
+    step: 0.01
+# Netbeheerkosten Gas
+  netbeheerkosten_gas:
+    name: Netbeheerkosten Gas
+    mode: box
+    min: 0.1
+    max: 5
+    step: 0.01
+# Energiebelasting Gas
+  energiebelasting_gas:
+    name: Energiebelasting Gas
+    mode: box
+    min: 0.1
+    max: 5
+    step: 0.001
+# Opslag Duurzame Energie Gas
+  opslag_duurzame_energie_gas:
+    name: Opslag Duurzame Energie Gas
+    mode: box
+    min: 0.001
+    max: 2
+    step: 0.001

@@ -1,0 +1,71 @@
+##########################
+##### Kerstboom ##########
+##########################
+- alias: Kerstboom aan
+  trigger:
+  - platform: state
+    entity_id: input_boolean.nachtstand
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: input_boolean.vakantiestand
+    state: 'off'
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: group.all_devices
+      state: home
+    - condition: state
+      entity_id: person.erik
+      state: home
+    - condition: state
+      entity_id: person.nathalie
+      state: home
+  action:
+  - service: switch.turn_on
+    entity_id: switch.kerstboom
+- alias: Kerstboom uit
+  trigger:
+  - platform: state
+    entity_id: input_boolean.nachtstand
+    to: 'on'
+  action:
+  - service: switch.turn_off
+    entity_id: switch.kerstboom
+- alias: Kerstboom aan via dimmer
+  trigger:
+  - entity_id: sensor.woonkamer_schakelaar
+    platform: state
+    to: 1_click_up
+  condition:
+  - condition: state
+    entity_id: light.beneden
+    state: 'off'
+  action:
+  - data:
+      entity_id:
+      - switch.kerstboom
+    service: switch.turn_on
+- alias: Kerstboom uit via dimmer
+  trigger:
+  - entity_id: sensor.woonkamer_schakelaar
+    platform: state
+    to: 4_click_up
+  condition:
+  - condition: state
+    entity_id: light.beneden
+    state: 'on'
+  action:
+  - service: switch.turn_off
+    data:
+      entity_id: switch.kerstboom
+- alias: kerstboom uit met bovendimmer
+  trigger:
+  - entity_id: sensor.ouderslaapkamer_schakelaar
+    platform: state
+    to: 4_hold
+  action:
+  - data:
+      entity_id:
+      - switch.kerstboom
+    service: switch.turn_off

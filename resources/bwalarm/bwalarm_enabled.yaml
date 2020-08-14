@@ -1,0 +1,77 @@
+#- platform: manual
+#  name: Thuis Alarm
+#  code: 1603
+#  arming_time: 30
+#  delay_time: 5
+#  trigger_time: 120
+#  disarmed:
+#    trigger_time: 0
+#  armed_home:
+#    delay_time: 0
+- platform: bwalarm
+  panel:
+    cameras: []
+    panel_title: Alarm Thuis
+    enable_clock: true
+    enable_weather: true
+    hide_passcode: false
+    hide_sidebar: true
+    shadow_effect: true
+    round_buttons: true
+    enable_serif_font: false
+    enable_sensors_panel: true
+    enable_camera_panel: true
+  enable_night_mode: false
+  states:
+    armed_away:
+      immediate:
+        - binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor
+      delayed: []
+      override: []
+      pending_time: '45'
+      warning_time: 0
+      trigger_time: 600
+    armed_home:
+      immediate: []
+      delayed: []
+      override: []
+      pending_time: 0
+      warning_time: 0
+      trigger_time: 600
+    armed_night:
+      immediate: []
+      delayed: []
+      override: []
+      pending_time: 0
+      warning_time: 0
+      trigger_time: 600
+  users:
+  - id: 73f3702887124e04991252389b33f968
+    name: Home Assistant Cloud
+    enabled: false
+    code: 73f3702887124e04991252389b33f968
+    picture: ha.png
+  - id: a08e38a41c3743e2a1d783bc04041d95
+    name: Hass.io
+    enabled: false
+    code: a08e38a41c3743e2a1d783bc04041d95
+    picture: ha.png
+  - id: 62b721a2148742728f9544abe8478cb3
+    name: Silverentand
+    enabled: true
+    code: 62b721a2148742728f9544abe8478cb3
+    picture: ha.png
+  - id: 6ae8f9c3d03d429eb132798427307b95
+    name: Nathalie
+    enabled: true
+    code: 6ae8f9c3d03d429eb132798427307b95
+    picture: ha.png
+  - id: 83d8360fc2224b688c9341e2aeb2834a
+    name: app
+    enabled: false
+    code: 83d8360fc2224b688c9341e2aeb2834a
+    picture: ha.png
+  admin_password: pvgrhbX3
+  code: '1603'
+  panic_code: '1234'
+  code_to_arm: true

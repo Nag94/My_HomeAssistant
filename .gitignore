@@ -1,0 +1,35 @@
+# You can whitelist files/folders with !, these will not be ignored.
+
+# Ignore folders.
+.storage
+.cloud
+.vscode
+.google.token
+.google_maps_location_sharing.cookies.esilverentand_gmail_com
+.google_maps_location_sharing.cookies.silverentand_assistant_gmail_com
+deps
+dist
+esphome
+glances
+node-red
+tmp
+tts
+www
+python_scripts
+appdaemon
+
+# Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
+secrets.yaml
+known_devices.yaml
+home-assistant.log
+*.json
+*.js
+.google.token
+*.conf
+*.xml
+*.sqlite
+.google_maps_location_sharing.cookies.esilverentand_gmail_com
+.google_maps_location_sharing.cookies.silverentand_assistant_gmail_com
+OZW_Log.txt
+core
+*.yam_

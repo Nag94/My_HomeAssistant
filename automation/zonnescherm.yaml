@@ -1,0 +1,149 @@
+- alias: zonnescherm openen
+  trigger:
+    - platform: time_pattern
+      minutes: '/5'
+  condition:
+    - condition: state
+      entity_id: group.all_persons
+      state: 'home'
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.zonwering_open
+      state: 'on'
+    - condition: state
+      entity_id: binary_sensor.azimuth_input
+      state: 'on'
+    - condition: state
+      entity_id: binary_sensor.zonhoek_low_input
+      state: 'off'  
+    - condition: numeric_state
+      entity_id: sensor.eindhoven_wind_gust
+      below: 40
+#    - condition: numeric_state
+#      entity_id: sensor.buienalarm_next_rain_forecast
+#      above: 15 # No rain the next 15 min
+#      below: 0
+    - condition: template
+      value_template: "{{ states('sensor.buienalarm_next_rain_forecast')|int < 0 or states('sensor.buienalarm_next_rain_forecast')|int > 15 }}"
+    - condition: state
+      entity_id: binary_sensor.low_irradiance_input
+      state: 'on'
+    - condition: numeric_state
+      entity_id: sensor.sunlight_pct
+      above: 30
+    - condition: numeric_state
+      entity_id: sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_temperature
+      above: 19
+    - condition: template
+      value_template: "{{ now().month > 3 }}"
+    - condition: template
+      value_template: "{{ now().month < 10 }}"
+    - condition: state
+      entity_id: input_boolean.disable_automatic_sunscreens
+      state: 'on'
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: 'off'
+  action:
+    - service: cover.set_cover_position
+      data:
+        entity_id: cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level
+        position: 0
+    - delay:
+        seconds: 10
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.zonwering_open
+    - service: notify.html5
+      data:
+        message: "Het zonnescherm is geopend"
+        title: zonnescherm
+    - service: notify.mobile_app_phone_erik
+      data:
+        message: "Het zonnescherm is geopend"
+        title: zonnescherm
+    - service: notify.mobile_app_sm_g973f
+      data:
+        message: "Het zonnescherm is geopend"
+        title: zonnescherm
+- alias: zonnescherm sluiten
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.azimuth_input
+      to: 'off'
+    - platform: state
+      entity_id: binary_sensor.zonhoek_low_input
+      to: 'on'
+    - platform: state
+      entity_id: sun.sun
+      to: 'below_horizon'
+    - platform: state
+      entity_id: binary_sensor.lichtwaarde_input
+      to: 'off'
+      for:
+        minutes: 10
+    - platform: state
+      entity_id: binary_sensor.low_irradiance_input
+      to: 'off'
+      for:
+        minutes: 30
+    - platform: numeric_state
+      entity_id: sensor.eindhoven_wind_gust
+      above: 40
+    - platform: numeric_state
+      entity_id: sensor.buienalarm_next_rain_forecast
+      above: 0
+      below: 15
+  condition:
+    - condition: state
+      entity_id: input_boolean.zonwering_open
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.disable_automatic_sunscreens
+      state: 'on'
+  action:
+    - service: cover.set_cover_position
+      data:
+        entity_id: cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level
+        position: 100
+    - delay:
+        seconds: 10
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.zonwering_open
+    - service: notify.html5
+      data:
+        message: "Het zonnescherm is gesloten"
+        title: zonnescherm
+    - service: notify.mobile_app_phone_erik
+      data_template:
+        message: "Het zonnescherm is gesloten, reden: {{ state_attr(trigger.entity_id, 'friendly_name') }}"
+        title: zonnescherm
+    - service: notify.mobile_app_sm_g973f
+      data:
+        message: "Het zonnescherm is gesloten"
+        title: zonnescherm
+- alias: schakelaar om bij uitklappen zonescherm
+  trigger:
+    - platform: state
+      entity_id: cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level
+      to: 'closed'
+  condition:
+    - condition: state
+      entity_id: input_boolean.zonwering_open
+      state: 'on'
+  action:
+    service: input_boolean.turn_off
+    entity_id: input_boolean.zonwering_open
+- alias: schakelaar om bij inklappen zonnescherm
+  trigger:
+    - platform: state
+      entity_id: cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level
+      to: 'open'
+  condition:
+    - condition: state
+      entity_id: input_boolean.zonwering_open
+      state: 'off'
+  action:
+    service: input_boolean.turn_on
+    entity_id: input_boolean.zonwering_open

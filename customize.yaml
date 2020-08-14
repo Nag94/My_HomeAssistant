@@ -1,0 +1,7 @@
+sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_luminance:
+  friendly_name: PIR Sensor Luminance
+
+sensor.erik_status:
+  entity_picture: https://lh3.googleusercontent.com/a-/AAuE7mDr2ZzSznTXECWZE4hMklX_gMPmUVb9EMItu_8QdQ=s96
+sensor.nathalie_status:
+  entity_picture: https://lh4.googleusercontent.com/-o3TePp2K5Ik/AAAAAAAAAAI/AAAAAAAAAXo/S3hzmAxZIg8/photo.jpg

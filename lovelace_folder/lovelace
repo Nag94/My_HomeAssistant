@@ -1,0 +1,1118 @@
+{
+    "data": {
+        "config": {
+            "cch": {
+                "clock_am_pm": false,
+                "clock_date": true,
+                "clock_format": "24",
+                "conditional_styles": {
+                    "template": [
+                        {
+                            "tab": {
+                                "2": [
+                                    {
+                                        "icon": "if (entity[\"alarm_control_panel.thuis_alarm\"].state == \"disarmed\") \"mdi:shield-check\"; else if (entity[\"alarm_control_panel.thuis_alarm\"].state == \"armed_away\") \"mdi:shield-lock\"; else if (entity[\"alarm_control_panel.thuis_alarm\"].state == \"armed_home\") \"mdi:shield-home\"; else if (entity[\"alarm_control_panel.thuis_alarm\"].state == \"pending\") \"mdi:shield-outline\"; else if (entity[\"alarm_control_panel.thuis_alarm\"].state == \"triggered\") \"mdi:bell-alert\"; else \"mdi:shield-check\";\n"
+                                    },
+                                    {
+                                        "color": "if (states[\"alarm_control_panel.thuis_alarm\"].state == \"armed_away\") \"red\"; else \"#00FF00\";\n"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "tab": {
+                                "3": [
+                                    {
+                                        "icon": "if (states[\"sensor.postnl_deliveries\"].state > 0) \"mdi:mailbox\"; else \"mdi:mailbox-up\";\n"
+                                    },
+                                    {
+                                        "color": "if (states[\"sensor.postnl_deliveries\"].state > 0) \"#FFFFFF\"; else \"red\";\n"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "options": "clock",
+                "swipe": true
+            },
+            "resources": [
+                {
+                    "type": "module",
+                    "url": "/community_plugin/spotify-card/spotify-card.js"
+                },
+                {
+                    "type": "module",
+                    "url": "/community_plugin/weather-card/weather-card.js"
+                },
+                {
+                    "type": "js",
+                    "url": "/community_plugin/calendar-card/calendar-card.js"
+                },
+                {
+                    "type": "module",
+                    "url": "/community_plugin/atomic_calendar/atomic_calendar.js"
+                },
+                {
+                    "type": "js",
+                    "url": "/community_plugin/gauge-card/gauge-card.js"
+                },
+                {
+                    "type": "js",
+                    "url": "/community_plugin/lovelace-swipe-navigation/swipe-navigation.js"
+                },
+                {
+                    "type": "module",
+                    "url": "/community_plugin/lovelace-postnl-card/postnl-card.js"
+                },
+                {
+                    "type": "js",
+                    "url": "/community_plugin/light-entity-card/light-entity-card.js"
+                },
+                {
+                    "type": "module",
+                    "url": "/community_plugin/button-card/button-card.js"
+                },
+                {
+                    "type": "module",
+                    "url": "/community_plugin/circle-sensor-card/circle-sensor-card.js"
+                },
+                {
+                    "type": "module",
+                    "url": "/community_plugin/compact-custom-header/compact-custom-header.js"
+                },
+                {
+                    "type": "js",
+                    "url": "/community_plugin/lovelace-card-mod/card-mod.js"
+                },
+                {
+                    "type": "js",
+                    "url": "/community_plugin/list-card/list-card.js"
+                }
+            ],
+            "title": "Home",
+            "views": [
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "entity": "weather.eindhoven",
+                            "style": "ha-card {\n  box-shadow: none\n}\n",
+                            "type": "custom:weather-card"
+                        },
+                        {
+                            "dateColor": "black",
+                            "dateSize": 90,
+                            "dayWrapperLineColor": "black",
+                            "defaultMode": 1,
+                            "dimFinishedEvents": true,
+                            "enableModeChange": true,
+                            "entities": [
+                                {
+                                    "entity": "calendar.esilverentand_gmail_com",
+                                    "type": "icon3"
+                                },
+                                {
+                                    "entity": "calendar.nathaliehouben11_gmail_com",
+                                    "type": "icon3"
+                                },
+                                {
+                                    "entity": "calendar.onze_agenda",
+                                    "type": "icon2"
+                                },
+                                {
+                                    "entity": "calendar.afval",
+                                    "type": "icon3"
+                                },
+                                {
+                                    "entity": "calendar.jules",
+                                    "type": "icon3"
+                                },
+                                {
+                                    "entity": "calendar.evie",
+                                    "type": "icon3"
+                                },
+                                {
+                                    "entity": "calendar.gezin",
+                                    "type": "icon2"
+                                },
+                                {
+                                    "entity": "calendar.feestdagen_in_nederland",
+                                    "type": "icon3"
+                                },
+                                {
+                                    "entity": "calendar.psv",
+                                    "type": "icon3"
+                                },
+                                {
+                                    "entity": "calendar.evenementenkalender_l_union_fraternelle",
+                                    "type": "icon3"
+                                },
+                                {
+                                    "entity": "calendar.erikennathalie_silverentand_net",
+                                    "type": "icon2"
+                                }
+                            ],
+                            "eventBarColor": "blue",
+                            "finishedEventFilter": "grayscale(100%)",
+                            "finishedEventOpacity": 0.6,
+                            "fullDayEventText": "Hele dag",
+                            "locationIconColor": "rgb(230, 124, 115)",
+                            "locationLinkColor": "black",
+                            "locationTextSize": 90,
+                            "maxDaysToShow": 7,
+                            "progressBarColor": "blue",
+                            "showColors": true,
+                            "showCurrentEventLine": false,
+                            "showLocation": true,
+                            "showMonth": false,
+                            "showProgressBar": true,
+                            "style": "ha-card {\n  box-shadow: none\n}\n",
+                            "timeColor": "blue",
+                            "timeSize": 90,
+                            "title": "Kalender",
+                            "titleColor": "black",
+                            "titleSize": 100,
+                            "type": "custom:atomic-calendar",
+                            "untilText": "t/m"
+                        },
+                        {
+                            "cards": [
+                                {
+                                    "entity": "switch.tuinverlichting",
+                                    "hold_action": {
+                                        "action": "more-info"
+                                    },
+                                    "icon": "mdi:lightbulb",
+                                    "show_icon": true,
+                                    "show_name": true,
+                                    "tap_action": {
+                                        "action": "toggle"
+                                    },
+                                    "type": "entity-button"
+                                },
+                                {
+                                    "entity": "switch.haard",
+                                    "hold_action": {
+                                        "action": "more-info"
+                                    },
+                                    "icon": "mdi:fire",
+                                    "show_icon": true,
+                                    "show_name": true,
+                                    "tap_action": {
+                                        "action": "toggle"
+                                    },
+                                    "type": "entity-button"
+                                },
+                                {
+                                    "entity": "switch.koffie",
+                                    "hold_action": {
+                                        "action": "more-info"
+                                    },
+                                    "icon": "mdi:coffee",
+                                    "show_icon": true,
+                                    "show_name": true,
+                                    "tap_action": {
+                                        "action": "toggle"
+                                    },
+                                    "type": "entity-button"
+                                }
+                            ],
+                            "type": "horizontal-stack"
+                        },
+                        {
+                            "cards": [
+                                {
+                                    "cards": [
+                                        {
+                                            "entity": "light.living",
+                                            "name": "Woonkamer",
+                                            "theme": "Backend-selected",
+                                            "type": "light"
+                                        },
+                                        {
+                                            "entity": "light.eetkamer_en_keuken",
+                                            "name": "Eetkamer / Keuken",
+                                            "theme": "Backend-selected",
+                                            "type": "light"
+                                        }
+                                    ],
+                                    "type": "horizontal-stack"
+                                },
+                                {
+                                    "cards": [
+                                        {
+                                            "entity": "light.ouderslaapkamer",
+                                            "name": "Ouderslaapkamer",
+                                            "theme": "Backend-selected",
+                                            "type": "light"
+                                        },
+                                        {
+                                            "entity": "light.kamer_evie",
+                                            "name": "Kamer Evie",
+                                            "theme": "Backend-selected",
+                                            "type": "light"
+                                        }
+                                    ],
+                                    "type": "horizontal-stack"
+                                },
+                                {
+                                    "cards": [
+                                        {
+                                            "entity": "light.kamer_jules",
+                                            "name": "Kamer Jules",
+                                            "theme": "Backend-selected",
+                                            "type": "light"
+                                        },
+                                        {
+                                            "entity": "light.yoga_kamer",
+                                            "name": "Yoga kamer",
+                                            "theme": "Backend-selected",
+                                            "type": "light"
+                                        }
+                                    ],
+                                    "type": "horizontal-stack"
+                                }
+                            ],
+                            "type": "vertical-stack"
+                        },
+                        {
+                            "cards": [
+                                {
+                                    "entity": "sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_temperature_3",
+                                    "max": 40,
+                                    "min": 10,
+                                    "name": "Woonkamer",
+                                    "theme": "Backend-selected",
+                                    "type": "gauge"
+                                },
+                                {
+                                    "entity": "sensor.temp_overloop",
+                                    "max": 40,
+                                    "min": 10,
+                                    "name": "Boven",
+                                    "theme": "Backend-selected",
+                                    "type": "gauge"
+                                }
+                            ],
+                            "type": "horizontal-stack"
+                        },
+                        {
+                            "cards": [
+                                {
+                                    "entities": [
+                                        {
+                                            "entity": "device_tracker.google_maps_111003784876807104536"
+                                        },
+                                        {
+                                            "entity": "device_tracker.google_maps_esilverentand_gmail_com"
+                                        }
+                                    ],
+                                    "type": "map"
+                                },
+                                {
+                                    "entities": [
+                                        {
+                                            "entity": "sensor.erik_status"
+                                        },
+                                        {
+                                            "entity": "sensor.nathalie_status"
+                                        },
+                                        {
+                                            "entity": "binary_sensor.iemand_thuis",
+                                            "icon": "mdi:home-account"
+                                        }
+                                    ],
+                                    "show_header_toggle": false,
+                                    "title": "Waar zijn wij?",
+                                    "type": "entities"
+                                }
+                            ],
+                            "type": "vertical-stack"
+                        },
+                        {
+                            "cards": [
+                                {
+                                    "entity": "camera.oprit",
+                                    "type": "picture-entity"
+                                },
+                                {
+                                    "entity": "camera.woonkamer",
+                                    "type": "picture-entity"
+                                }
+                            ],
+                            "type": "vertical-stack"
+                        }
+                    ],
+                    "icon": "mdi:view-dashboard",
+                    "title": "Bedieningspaneel"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "cards": null,
+                            "client_id": "fd501a7e99b64b2d8252e269b3421886",
+                            "limit": 10,
+                            "type": "custom:spotify-card"
+                        },
+                        {
+                            "cards": [
+                                {
+                                    "cards": [
+                                        {
+                                            "entity": "media_player.eetkamer_speakers",
+                                            "type": "media-control"
+                                        },
+                                        {
+                                            "entity": "media_player.keuken_1",
+                                            "type": "media-control"
+                                        }
+                                    ],
+                                    "type": "horizontal-stack"
+                                },
+                                {
+                                    "cards": [
+                                        {
+                                            "entity": "media_player.googlehome4502",
+                                            "type": "media-control"
+                                        },
+                                        {
+                                            "entity": "media_player.chromecastultra2178",
+                                            "type": "media-control"
+                                        }
+                                    ],
+                                    "type": "horizontal-stack"
+                                },
+                                {
+                                    "cards": [
+                                        {
+                                            "entity": "media_player.eetkamer",
+                                            "type": "media-control"
+                                        },
+                                        {
+                                            "entity": "media_player.groep_beneden",
+                                            "type": "media-control"
+                                        }
+                                    ],
+                                    "type": "horizontal-stack"
+                                }
+                            ],
+                            "type": "vertical-stack"
+                        }
+                    ],
+                    "icon": "mdi:youtube",
+                    "path": "media",
+                    "title": "Media"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "entity": "alarm_control_panel.thuis_alarm",
+                            "name": "Alarm paneel",
+                            "states": [
+                                "disarmed",
+                                "arm_away",
+                                "arm_home"
+                            ],
+                            "type": "alarm-panel"
+                        }
+                    ],
+                    "icon": "mdi:shield-lock",
+                    "panel": true,
+                    "title": "Alarm"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "date_format": "DD MMM YYYY",
+                            "delivery": "sensor.postnl_delivery",
+                            "distribution": "sensor.postnl_distribution",
+                            "hide": {
+                                "delivered": true,
+                                "first_letter": false,
+                                "header": false
+                            },
+                            "letters": "sensor.postnl_letters",
+                            "past_days": 14,
+                            "time_format": "HH:mm",
+                            "type": "custom:postnl-card"
+                        }
+                    ],
+                    "icon": "mdi:mailbox",
+                    "panel": false,
+                    "title": "Post"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "entity": "camera.oprit",
+                            "type": "picture-entity"
+                        },
+                        {
+                            "entity": "camera.woonkamer",
+                            "type": "picture-entity"
+                        }
+                    ],
+                    "icon": "mdi:cctv",
+                    "panel": false
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "entities": [
+                                {
+                                    "entity": "light.lampen_beneden"
+                                },
+                                {
+                                    "entity": "light.eetkamer_en_keuken"
+                                },
+                                {
+                                    "entity": "light.woonkamer"
+                                },
+                                {
+                                    "entity": "light.ouderslaapkamer"
+                                },
+                                {
+                                    "entity": "light.kamer_evie"
+                                },
+                                {
+                                    "entity": "light.kamer_jules"
+                                },
+                                {
+                                    "entity": "light.yoga_kamer"
+                                },
+                                {
+                                    "entity": "light.tv_1"
+                                },
+                                {
+                                    "entity": "light.tv_2"
+                                },
+                                {
+                                    "entity": "light.bank"
+                                },
+                                {
+                                    "entity": "light.borden"
+                                },
+                                {
+                                    "entity": "light.flux_liefde"
+                                },
+                                {
+                                    "entity": "light.hue_go_woonkamer"
+                                },
+                                {
+                                    "entity": "light.eettafel_1"
+                                },
+                                {
+                                    "entity": "light.eettafel_2"
+                                },
+                                {
+                                    "entity": "light.schilderij"
+                                },
+                                {
+                                    "entity": "light.schuifpui"
+                                },
+                                {
+                                    "entity": "light.keuken"
+                                },
+                                {
+                                    "entity": "light.hal"
+                                },
+                                {
+                                    "entity": "light.ouderslaapkamer_1"
+                                },
+                                {
+                                    "entity": "light.ouderslaapkamer_2"
+                                },
+                                {
+                                    "entity": "light.hue_go_yoga"
+                                },
+                                {
+                                    "entity": "light.hue_go_evie"
+                                },
+                                {
+                                    "entity": "light.hue_go_jules"
+                                }
+                            ],
+                            "title": "Licht",
+                            "type": "entities"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "input_number.high_lux"
+                                },
+                                {
+                                    "entity": "input_number.low_lux"
+                                },
+                                {
+                                    "entity": "input_number.wolkendek"
+                                },
+                                {
+                                    "entity": "input_number.zonhoek"
+                                },
+                                {
+                                    "entity": "input_number.azimuth_min"
+                                },
+                                {
+                                    "entity": "input_number.azimuth_max"
+                                },
+                                {
+                                    "entity": "binary_sensor.high_lux_input"
+                                },
+                                {
+                                    "entity": "binary_sensor.low_lux_input"
+                                },
+                                {
+                                    "entity": "binary_sensor.wolkendek_input"
+                                },
+                                {
+                                    "entity": "binary_sensor.zonhoek_low_input"
+                                },
+                                {
+                                    "entity": "binary_sensor.azimuth_input"
+                                },
+                                {
+                                    "entity": "binary_sensor.nachtmode_aan"
+                                },
+                                {
+                                    "entity": "input_datetime.nacht_aan_tijd"
+                                },
+                                {
+                                    "entity": "input_datetime.nacht_uit_tijd"
+                                }
+                            ],
+                            "show_header_toggle": false,
+                            "title": "Numerieke invoer",
+                            "type": "entities"
+                        },
+                        {
+                            "cards": [
+                                {
+                                    "detail": 1,
+                                    "entity": "sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_temperature_3",
+                                    "graph": "line",
+                                    "name": "Woonkamer",
+                                    "theme": "Backend-selected",
+                                    "type": "sensor",
+                                    "unit": "\u00b0C"
+                                },
+                                {
+                                    "detail": 1,
+                                    "entity": "sensor.hal_sensor_boven_temperature",
+                                    "graph": "line",
+                                    "name": "Boven",
+                                    "theme": "Backend-selected",
+                                    "type": "sensor",
+                                    "unit": "\u00b0C"
+                                }
+                            ],
+                            "type": "horizontal-stack"
+                        },
+                        {
+                            "cards": [
+                                {
+                                    "detail": 2,
+                                    "entity": "sensor.hal_sensor_beneden_light_level",
+                                    "graph": "line",
+                                    "name": "Licht beneden",
+                                    "theme": "Backend-selected",
+                                    "type": "sensor",
+                                    "unit": "lux"
+                                },
+                                {
+                                    "detail": 2,
+                                    "entity": "sensor.weather_cloud_coverage",
+                                    "graph": "line",
+                                    "name": "Hoog wolkendek",
+                                    "theme": "Backend-selected",
+                                    "type": "sensor",
+                                    "unit": "%"
+                                },
+                                {
+                                    "detail": 2,
+                                    "entity": "sensor.weather_medium_clouds",
+                                    "graph": "line",
+                                    "name": "Wolkendek medium hoogte",
+                                    "theme": "Backend-selected",
+                                    "type": "sensor",
+                                    "unit": "%"
+                                },
+                                {
+                                    "detail": 2,
+                                    "entity": "sensor.weather_low_clouds",
+                                    "graph": "line",
+                                    "name": "Wolkendek lage hoogte",
+                                    "theme": "Backend-selected",
+                                    "type": "sensor",
+                                    "unit": "%"
+                                }
+                            ],
+                            "type": "vertical-stack"
+                        },
+                        {
+                            "cards": [
+                                {
+                                    "detail": 2,
+                                    "entity": "sensor.eindhoven_irradiance",
+                                    "graph": "line",
+                                    "name": "zonnestraling",
+                                    "theme": "Backend-selected",
+                                    "type": "sensor",
+                                    "unit": "W/m2"
+                                },
+                                {
+                                    "detail": 2,
+                                    "entity": "sensor.zonhoek",
+                                    "graph": "line",
+                                    "name": "Zonhoek",
+                                    "theme": "Backend-selected",
+                                    "type": "sensor"
+                                },
+                                {
+                                    "detail": 2,
+                                    "entity": "sensor.azimuth",
+                                    "graph": "line",
+                                    "theme": "Backend-selected",
+                                    "type": "sensor"
+                                }
+                            ],
+                            "type": "vertical-stack"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "alarm_control_panel.thuis_alarm"
+                                },
+                                {
+                                    "entity": "input_boolean.alarm_switch"
+                                },
+                                {
+                                    "entity": "input_boolean.notify_home"
+                                },
+                                {
+                                    "entity": "input_boolean.nachtstand"
+                                },
+                                {
+                                    "entity": "input_boolean.camera_switch"
+                                },
+                                {
+                                    "entity": "input_boolean.vakantiestand"
+                                },
+                                {
+                                    "entity": "input_boolean.ochtendgebed"
+                                }
+                            ],
+                            "show_header_toggle": false,
+                            "type": "entities"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "input_select.erik_status_dropdown"
+                                },
+                                {
+                                    "entity": "input_select.nathalie_status_dropdown"
+                                }
+                            ],
+                            "show_header_toggle": false,
+                            "title": "Status uitgebreide aanwezigheid",
+                            "type": "entities"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "input_select.hue_groups"
+                                },
+                                {
+                                    "entity": "input_select.hue_scenes"
+                                }
+                            ],
+                            "show_header_toggle": false,
+                            "title": "Verlichting",
+                            "type": "entities"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "binary_sensor.iemand_thuis"
+                                },
+                                {
+                                    "entity": "binary_sensor.erik_aanwezig"
+                                },
+                                {
+                                    "entity": "binary_sensor.nathalie_aanwezig"
+                                }
+                            ],
+                            "type": "entities"
+                        }
+                    ],
+                    "icon": "mdi:tune",
+                    "title": "Settings"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "brightness": true,
+                            "color_picker": true,
+                            "color_temp": true,
+                            "color_wheel": true,
+                            "effects_list": true,
+                            "entity": "light.woonkamer",
+                            "group": false,
+                            "header": "",
+                            "persist_features": true,
+                            "type": "custom:light-entity-card",
+                            "white_value": true
+                        },
+                        {
+                            "color_stops": {
+                                "0": "#00FFFF",
+                                "15": "#FFFF00",
+                                "35": "#FF0000"
+                            },
+                            "entity": "sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_temperature_3",
+                            "font_style": {
+                                "font-family": "Trebuchet MS",
+                                "font-size": "6em",
+                                "text-shadow": "2px 2px grey"
+                            },
+                            "gradient": true,
+                            "max": 35,
+                            "min": 10,
+                            "show_max": false,
+                            "stroke_width": 5,
+                            "style": {
+                                "height": "50px",
+                                "left": "30%",
+                                "top": "30%",
+                                "width": "50px"
+                            },
+                            "type": "custom:circle-sensor-card",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "entity": "sensor.neo_coolcam_pir1",
+                            "hold_action": {
+                                "action": "none"
+                            },
+                            "icon_height": "100px",
+                            "show_icon": true,
+                            "show_name": true,
+                            "tap_action": {
+                                "action": "none"
+                            },
+                            "type": "entity-button"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "input_boolean.camera_switch"
+                                }
+                            ],
+                            "show_header_toggle": false,
+                            "title": "Camera",
+                            "type": "entities"
+                        },
+                        {
+                            "entity": "switch.haard",
+                            "hold_action": {
+                                "action": "more-info"
+                            },
+                            "icon_height": "100px",
+                            "show_icon": true,
+                            "show_name": true,
+                            "tap_action": {
+                                "action": "toggle"
+                            },
+                            "type": "entity-button"
+                        },
+                        {
+                            "entity": "media_player.yamaha_receiver",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "media_player.yamaha_receiver_zone_2",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "media_player.chromecastultra2178",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "media_player.yamaha_receiver_zone_3",
+                            "type": "media-control"
+                        }
+                    ],
+                    "theme": "default",
+                    "title": "Woonkamer"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "brightness": true,
+                            "color_picker": true,
+                            "color_temp": true,
+                            "color_wheel": true,
+                            "effects_list": true,
+                            "entity": "light.eetkamer_en_keuken",
+                            "group": false,
+                            "header": "",
+                            "name": "Licht",
+                            "persist_features": true,
+                            "type": "custom:light-entity-card",
+                            "white_value": true
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level_3"
+                                }
+                            ],
+                            "type": "entities"
+                        },
+                        {
+                            "entity": "media_player.eetkamer",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "media_player.eetkamer_speakers",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "media_player.keuken_1",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "switch.koffie",
+                            "hold_action": {
+                                "action": "more-info"
+                            },
+                            "show_icon": true,
+                            "show_name": true,
+                            "tap_action": {
+                                "action": "toggle"
+                            },
+                            "type": "entity-button"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "sensor.neo_coolcam_pir1"
+                                }
+                            ],
+                            "type": "entities"
+                        }
+                    ],
+                    "theme": "default",
+                    "title": "Eetkamer"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "brightness": true,
+                            "color_picker": true,
+                            "color_temp": true,
+                            "color_wheel": true,
+                            "effects_list": true,
+                            "entity": "light.ouderslaapkamer",
+                            "group": false,
+                            "header": "",
+                            "name": "Licht",
+                            "persist_features": true,
+                            "type": "custom:light-entity-card",
+                            "white_value": true
+                        },
+                        {
+                            "entity": "media_player.googlehome4502",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "media_player.tv_woonkamer",
+                            "type": "media-control"
+                        }
+                    ],
+                    "title": "Slaapkamer Ouders"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "brightness": true,
+                            "color_picker": true,
+                            "color_temp": true,
+                            "color_wheel": true,
+                            "effects_list": true,
+                            "entity": "light.hue_go_evie",
+                            "group": false,
+                            "header": "",
+                            "name": "Licht",
+                            "persist_features": true,
+                            "type": "custom:light-entity-card",
+                            "white_value": true
+                        }
+                    ],
+                    "title": "Slaapkamer Evie"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "brightness": true,
+                            "color_picker": true,
+                            "color_temp": true,
+                            "color_wheel": true,
+                            "effects_list": true,
+                            "entity": "light.hue_go_jules",
+                            "group": false,
+                            "header": "",
+                            "name": "Licht",
+                            "persist_features": true,
+                            "type": "custom:light-entity-card",
+                            "white_value": true
+                        }
+                    ],
+                    "title": "Slaapkamer Jules"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "brightness": true,
+                            "color_picker": true,
+                            "color_temp": true,
+                            "color_wheel": true,
+                            "effects_list": true,
+                            "entity": "light.hue_go_yoga",
+                            "group": false,
+                            "header": "",
+                            "name": "Licht",
+                            "persist_features": true,
+                            "type": "custom:light-entity-card",
+                            "white_value": true
+                        }
+                    ],
+                    "title": "Yoga kamer"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "brightness": true,
+                            "color_picker": true,
+                            "color_temp": true,
+                            "color_wheel": true,
+                            "effects_list": true,
+                            "entity": "light.hal",
+                            "group": false,
+                            "header": "",
+                            "persist_features": true,
+                            "theme": "Backend-selected",
+                            "type": "custom:light-entity-card",
+                            "white_value": true
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "binary_sensor.hal_sensor_boven_motion"
+                                },
+                                {
+                                    "entity": "binary_sensor.hal_sensor_beneden_motion"
+                                }
+                            ],
+                            "type": "entities"
+                        },
+                        {
+                            "detail": 2,
+                            "entity": "sensor.hal_sensor_beneden_temperature",
+                            "graph": "line",
+                            "name": "Hal temperatuur",
+                            "type": "sensor"
+                        }
+                    ],
+                    "panel": false,
+                    "title": "Hal"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "entity": "switch.tuinverlichting",
+                            "hold_action": {
+                                "action": "more-info"
+                            },
+                            "show_icon": true,
+                            "show_name": true,
+                            "tap_action": {
+                                "action": "toggle"
+                            },
+                            "type": "entity-button"
+                        },
+                        {
+                            "entity": "media_player.keuken_1",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "media_player.eetkamer",
+                            "type": "media-control"
+                        }
+                    ],
+                    "theme": "default",
+                    "title": "Tuin"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "columns": [
+                                {
+                                    "add_link": "link",
+                                    "field": "title",
+                                    "title": "Titel"
+                                }
+                            ],
+                            "entity": "sensor.nu_algemeen_nieuws",
+                            "title": "NU.nl - Algemeen nieuws",
+                            "type": "custom:list-card"
+                        },
+                        {
+                            "columns": [
+                                {
+                                    "add_link": "link",
+                                    "field": "title",
+                                    "title": "Titel"
+                                }
+                            ],
+                            "entity": "sensor.ed_veldhoven",
+                            "title": "Eindhovens Dagblad, Veldhoven",
+                            "type": "custom:list-card"
+                        },
+                        {
+                            "columns": [
+                                {
+                                    "add_link": "link",
+                                    "field": "title",
+                                    "title": "Titel"
+                                }
+                            ],
+                            "entity": "sensor.ed_psv",
+                            "title": "Eindhovens Dagblad, PSV",
+                            "type": "custom:list-card"
+                        }
+                    ],
+                    "icon": "mdi:newspaper",
+                    "panel": false
+                }
+            ]
+        }
+    },
+    "key": "lovelace",
+    "version": 1
+}

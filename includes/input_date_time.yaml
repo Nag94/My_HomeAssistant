@@ -1,0 +1,41 @@
+nacht_aan_tijd:
+  name: "Start de nachtstand om"
+  icon: mdi:sleep
+  has_time: true
+  has_date: false
+  initial: "23:00"
+nacht_uit_tijd:
+  name: "Eindig de nachtstand om"
+  icon: mdi:sleep-off
+  has_time: true
+  has_date: false
+  initial: "06:00"
+wakeup_tijd:
+  name: "Start Wake-up om"
+  has_time: true
+  has_date: false
+  initial: "05:45"
+wakeup_tijd_evie:
+  name: "Start Wake-up Evie om"
+  has_time: true
+  has_date: false
+  initial: "06:00"
+wakeup_tijd_jules:
+  name: "Start Wake-up Jules om"
+  has_time: true
+  has_date: false
+  initial: "06:00"
+wakeup_tijd_ouders:
+  name: "Start Wake-up ouders om"
+  has_time: true
+  has_date: false
+  initial: "06:00"
+wakeup_tijd_hal:
+  name: "Start Wake-up hal om"
+  has_time: true
+  has_date: false
+  initial: "05:45"
+datum_eindafrekening:
+  name: "Datum eindafrekening"
+  has_date: true
+  has_time: false

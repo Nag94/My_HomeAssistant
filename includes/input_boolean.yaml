@@ -1,0 +1,76 @@
+notify_home:
+  name: Gasten-mode
+  initial: off
+  icon: mdi:account-multiple-outline
+camera_switch:
+  name: Camera in woonkamer
+  initial: off
+  icon: mdi:cctv
+alarm_switch:
+  name: Alarm gaat af
+  initial: off
+  icon: mdi:alarm-light
+nachtstand:
+  name: Nachtstand actief
+  initial: off
+  icon: mdi:theme-light-dark
+vakantiestand:
+  name: Vakantiemodus
+  initial: off
+  icon: mdi:airplane-takeoff
+brievenbus:
+  name: Post in de brievenbus
+  initial: off
+  icon: mdi:mailbox
+record_oprit:
+  name: Opritcamera neemt op
+  icon: mdi:cctv
+  initial: 'off'
+record_woonkamer:
+  name: Camera in woonkamer neemt op
+  icon: mdi:cctv
+  initial: 'off'
+ochtendgebed:
+  name: Ochtendgebed afgespeeld?
+  initial: off
+  icon: mdi:text-to-speech
+disable_automatic_sunscreens:
+  name: Automatisch zonnescherm
+  icon: mdi:storefront
+zonwering_open:
+  name: Zonnescherm open
+  initial: on
+verlichting_als_overdag:
+  name: Verlichting als overdag
+  icon: mdi:light
+verlichting_steady:
+  name: Verlichting stabiel houden
+  icon: mdi:lightbulb-on
+  initial: off
+wakeup_evie_enabled:
+  name: "Evie: Wake-up light"
+  icon: mdi:theme-light-dark
+wakeup_jules_enabled:
+  name: "Jules: Wake-up light"
+  icon: mdi:theme-light-dark
+wakeup_ouders_enabled:
+  name: "Ouders: Wake-up light"
+  icon: mdi:theme-light-dark
+wakeup_hal_enabled:
+  name: "Hal: Wake-up light"
+  icon: mdi:theme-light-dark
+wakeup_jules_weekend:
+  name: "Jules: Wake-up aan in weekend"
+  icon: mdi:calendar-blank
+wakeup_evie_weekend:
+  name: "Evie: Wake-up aan in weekend"
+  icon: mdi:calendar-blank
+wakeup_ouders_weekend:
+  name: "Ouders: Wake-up aan in weekend"
+  icon: mdi:calendar-blank
+wakeup_hal_weekend:
+  name: "Hal: Wake-up aan in weekend"
+  icon: mdi:calendar-blank
+ochtendmuziek:
+  name: "Ochtendmuziek aan"
+  icon: mdi:spotify

@@ -1,0 +1,80 @@
+play_spotify_morning:
+  sequence:
+  - data:
+      entity_id: media_player.eetkamer_speakers
+      source: Spotify
+    service: media_player.select_source
+  - data:
+      entity_id: media_player.spotify_erik_silverentand
+      source: eetkamer speakers
+    service: media_player.select_source
+  - data:
+      entity_id: media_player.eetkamer_speakers
+      volume_level: 0.1
+    service: media_player.volume_set
+  - service: media_player.shuffle_set
+    data:
+      entity_id: media_player.spotify_erik_silverentand
+      shuffle: true
+  - data:
+      entity_id: media_player.spotify_erik_silverentand
+      media_content_id: spotify:playlist:37i9dQZEVXbeccjaf96LOc
+      media_content_type: playlist
+    service: media_player.play_media
+  alias: play_spotify_morning
+
+play_media:
+  alias: Media afspelen
+  icon: mdi:play
+  sequence:
+    - service: media_player.play_media
+      data_template:
+        entity_id: >
+          {% if is_state("input_select.afspeelmedium", "Woonkamer (Chromecast)") %} media_player.woonkamer_ultra
+          {% elif is_state("input_select.afspeelmedium", "Woonkamer (Home Mini)") %} media_player.home_mini_woonkamer
+          {% elif is_state("input_select.afspeelmedium", "Eetkamer") %} media_player.eetkamer
+          {% elif is_state("input_select.afspeelmedium", "Keukenspeaker") %} media_player.keuken_speaker_2
+          {% elif is_state("input_select.afspeelmedium", "Nest Hub Keuken") %} media_player.keuken_hub
+          {% endif %}
+        media_content_id: >
+          {% if is_state("input_select.radio_station", "Efteling Radio") %} http://ice.cr2.streamzilla.xlcdn.com:8000/sz=efteling=hdstream
+          {% elif is_state("input_select.radio_station", "NPO Radio 1") %} https://icecast.omroep.nl/radio1-bb-mp3
+          {% elif is_state("input_select.radio_station", "NPO Radio 2") %} https://icecast.omroep.nl/radio2-bb-mp3
+          {% elif is_state("input_select.radio_station", "NPO 3FM") %} https://icecast.omroep.nl/3fm-bb-mp3
+          {% elif is_state("input_select.radio_station", "NPO Radio 4") %} https://icecast.omroep.nl/radio4-bb-mp3
+          {% elif is_state("input_select.radio_station", "NPO Radio 5") %} https://icecast.omroep.nl/radio5-bb-mp3
+          {% elif is_state("input_select.radio_station", "Kink") %} http://playerservices.streamtheworld.com/api/livestream-redirect/KINK.mp3
+          {% elif is_state("input_select.radio_station", "Studio Brussel") %} http://icecast.vrtcdn.be/stubru-high.mp3
+          {% elif is_state("input_select.radio_station", "Sky Radio") %} https://19993.live.streamtheworld.com/SKYRADIO.mp3
+          {% elif is_state("input_select.radio_station", "Veronica") %} https://20873.live.streamtheworld.com/VERONICA.mp3
+          {% elif is_state("input_select.radio_station", "Radio Veldhoven") %} http://77.166.186.207:8000/Veldhoven
+          {% endif %}
+        media_content_type: 'audio/mp4'
+
+pause_media:
+  alias: Media afspelen pauzeren
+  icon: mdi:pause
+  sequence:
+    -  service: media_player.media_pause
+       data_template:
+         entity_id: >
+           {% if is_state("input_select.afspeelmedium", "Woonkamer (Chromecast)") %} media_player.woonkamer_ultra
+           {% elif is_state("input_select.afspeelmedium", "Woonkamer (Home Mini)") %} media_player.home_mini_woonkamer
+           {% elif is_state("input_select.afspeelmedium", "Eetkamer") %} media_player.eetkamer
+           {% elif is_state("input_select.afspeelmedium", "Keukenspeaker") %} media_player.keuken_speaker_2
+           {% elif is_state("input_select.afspeelmedium", "Nest Hub Keuken") %} media_player.keuken_hub
+           {% endif %}
+
+stop_media:
+  alias: Media afspelen stoppen
+  icon: mdi:stop
+  sequence:
+    -  service: media_player.media_stop
+       data_template:
+         entity_id: >
+           {% if is_state("input_select.afspeelmedium", "Woonkamer (Chromecast)") %} media_player.woonkamer_ultra
+           {% elif is_state("input_select.afspeelmedium", "Woonkamer (Home Mini)") %} media_player.home_mini_woonkamer
+           {% elif is_state("input_select.afspeelmedium", "Eetkamer") %} media_player.eetkamer
+           {% elif is_state("input_select.afspeelmedium", "Keukenspeaker") %} media_player.keuken_speaker_2
+           {% elif is_state("input_select.afspeelmedium", "Nest Hub Keuken") %} media_player.keuken_hub
+           {% endif %}

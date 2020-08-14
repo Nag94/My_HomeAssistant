@@ -1,0 +1,127 @@
+alarm_beneden:
+  alias: Alarm beneden
+  sequence:
+  - service: light.turn_on
+    data:
+      entity_id: light.garage_floodlight
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      brightness: 255
+  - service: tts.google_translate_say
+    entity_id: media_player.eetkamer_speakers
+    data:
+      message: Betrapt! Een foto van jou is verstuurd en de politie zal gewaarschuwd worden!
+  - delay:
+      seconds: 60
+  - service: light.turn_off
+    data:
+      entity_id: light.garage_floodlight
+flash_beneden:
+  alias: Flash beneden On
+  sequence:
+  - service: homeassistant.turn_on
+    data:
+      entity_id:
+      - light.lampen_beneden
+      - light.garage_floodlight
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      brightness: 255
+  - delay:
+      seconds: 1
+  - service: homeassistant.turn_off
+    data:
+      entity_id:
+      - light.lampen_beneden
+      - light.garage_floodlight
+  - service: script.turn_on
+    data:
+      entity_id: script.flash_loop
+flash_loop:
+  alias: Flash loop
+  sequence:
+  - delay:
+      seconds: 1
+  - service: script.turn_on
+    data:
+      entity_id: script.flash_beneden
+sirene_alarm_sound_on:
+  alias: Alarm geluid
+  sequence:
+  - service: script.turn_on
+    data:
+      entity_id: script.sound_siren_in_alarm_mode
+  - service: switch.turn_on
+    entity_id: switch.shenzhen_neo_electronics_co_ltd_siren_alarm_switch
+fire_alarm:
+  alias: Fire Alarm
+  sequence:
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.eetkamer_speakers
+      volume_level: 0.7
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.eetkamer_speakers
+      message: Brandalarm! Ga zo snel mogelijk naar buiten!
+  - service: homeassistant.turn_on
+    data:
+      entity_id:
+      - light.lampen_beneden
+      - light.garage_floodlight
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      brightness: 255
+  - delay:
+      seconds: 1
+  - service: homeassistant.turn_off
+    data:
+      entity_id:
+      - light.lampen_beneden
+      - light.garage_floodlight
+  - delay:
+      seconds: 2
+  - service: script.turn_on
+    data:
+      entity_id: script.fire_alarm_loop
+fire_alarm_loop:
+  alias: Fire Alarm loop
+  sequence:
+  - delay:
+      seconds: 1
+  - service: script.turn_on
+    data:
+      entity_id: script.fire_alarm
+noop:
+  alias: noop
+  sequence:
+    delay: 00:00:00
+alarm_bericht:
+  sequence:
+  - service: browser_mod.command
+    data:
+      command: close-popup
+  - service: browser_mod.command
+    data:
+      command: popup
+      title: ' '
+      style:
+        background: red
+        font-family: Verdana
+        --primary-text-color: rgba(255,5,5,0.9)
+        font-weight: bold
+        font-size: 20px
+        height: 70%
+        width: 70%
+        margin: 15
+      card:
+        type: entities
+        title: Alarm!!! Het alarm gaat af!
+        entities:
+        - input_boolean.alarm_switch

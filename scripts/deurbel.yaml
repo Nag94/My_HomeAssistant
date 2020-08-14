@@ -1,0 +1,64 @@
+deurbelscript:
+  alias: Deurbel script
+  sequence:
+  - data:
+      entity_id: media_player.keuken_hub
+      volume_level: 0.7
+    service: media_player.volume_set
+  - data_template:
+      cache: false
+      language: nl
+      message: Ding Dong! Er staat iemand aan de deur.
+    entity_id: media_player.keuken_hub
+    service: tts.google_translate_say
+  - data:
+      entity_id: camera.deur_camera
+      filename: tmp/deurbel.jpg
+    service: camera.snapshot
+sirene_doorbell_sound_on:
+  alias: Bel geluid
+  sequence:
+  - service: script.turn_on
+    data:
+      entity_id: script.sound_siren_in_doorbell_mode
+  - service: switch.turn_on
+    entity_id: switch.shenzhen_neo_electronics_co_ltd_siren_alarm_switch
+################################
+##### Deurbel test #############
+################################
+deurbel_aan:
+  sequence:
+  - service: media_player.media_pause
+    entity_id: media_player.eetkamer_speakers
+  - data_template:
+      cache: false
+      language: nl
+      message: Er staat iemand aan de deur!
+    entity_id:
+      - media_player.home_mini_woonkamer
+      - media_player.keuken_hub
+      - media_player.eetkamer_speakers
+    service: tts.google_translate_say
+  - data:
+      entity_id: media_player.home_mini_woonkamer
+      volume_level: 0.7
+    service: media_player.volume_set
+  - service: camera.snapshot
+    data:
+      entity_id: camera.oprit
+      filename: 'www/deurbel/deurbel.jpg'
+  - service: notify.mobile_app_phone_erik
+    data:
+      message: 'Er staat iemand aan de deur'
+      title: 'Ding Dong'
+      data:
+        clickAction: 'https://silverentand.duckdns.org/local/deurbel/deurbel.jpg'
+  - service: notify.mobile_app_sm_g973f
+    data:
+      message: 'Er staat iemand aan de deur'
+      title: 'Ding Dong!'
+      data:
+        clickAction: 'https://silverentand.duckdns.org/local/deurbel/deurbel.jpg'
+  - delay: '00:00:01'
+  - service: media_player.media_play
+    entity_id: media_player.eetkamer_speakers

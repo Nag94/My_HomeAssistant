@@ -1,0 +1,183 @@
+'1557170594134':
+  alias: Praten
+  sequence:
+  - data:
+      entity_id: media_player.home_mini_woonkamer
+      volume_level: 0.8
+    service: media_player.volume_set
+  - delay: 00:00:02
+  - data:
+      message: Mama, Evie en Jules zijn lief!
+    entity_id: media_player.home_midni_woonkamer
+    service: tts.google_translate_say
+weerscript:
+  alias: weer
+  sequence:
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.eetkamer_speakers
+      volume_level: 0.5
+  - delay: 00:00:02
+  - service: tts.google_translate_say
+    entity_id: media_player.eetkamer_speakers
+    data_template:
+      message: Goedemorgen. Lekker geslapen? {% set day = ["Maandag", "Dinsdag", "Woensdag",
+        "Donderdag", "Vrijdag", "Zaterdag", "Zondag"] %} {% set month = ["Januari",
+        "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September",
+        "Oktober", "November", "December"] %} {% set day_of_week = day[now().weekday()]
+        %} {% set month = month[now().month - 1] %} Het is vandaag {{ day_of_week
+        }} {{ now().day }} {{ month }}. Het is momenteel {% if states.sensor.eindhoven_temperature.state
+        | int < 0 %} erg koud met een temperatuur van {{states('sensor.eindhoven_temperature')|round}}
+        graden, let op het kan glad zijn. {% elif states.sensor.eindhoven_temperature.state
+        | int < 10 %} koud met een temperatuur van {{states('sensor.eindhoven_temperature')|round}}
+        graden. {% elif states.sensor.eindhoven_temperature.state | int < 15 %} fris
+        met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
+        {% elif states.sensor.eindhoven_temperature.state | int < 20 %} lekker met
+        een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
+        {% elif states.sensor.eindhoven_temperature.state | int > 20 %} warm met een
+        temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden. {%
+        endif %} Het wordt vandaag {% if states.weather.dark_sky.attributes.forecast[0].temperature
+        | int < 0 %} erg koud met een maximale temperatuur van {{states.weather.dark_sky.attributes.forecast[0].temperature|round}}
+        graden. {% elif states.weather.dark_sky.attributes.forecast[0].temperature
+        | int < 10 %} koud met een maximale temperatuur van {{states.weather.dark_sky.attributes.forecast[0].temperature|round}}
+        graden. {% elif states.weather.dark_sky.attributes.forecast[0].temperature
+        | int < 15 %} fris met een maximale temperatuur van {{states.weather.dark_sky.attributes.forecast[0].temperature|round}}
+        graden. {% elif states.weather.dark_sky.attributes.forecast[0].temperature
+        | int < 20 %} lekker met een maximale temperatuur van {{states.weather.dark_sky.attributes.forecast[0].temperature|round}}
+        graden. {% elif states.weather.dark_sky.attributes.forecast[0].temperature
+        | int > 20 %} warm met een maximale temperatuur van {{states.weather.dark_sky.attributes.forecast[0].temperature|round}}
+        graden.       {% endif %} De kans op regen is vandaag {% if
+        states.sensor.eindhoven_rainchance_1d.state | int < 10 %} heel erg klein met een
+        hoeveelheid van {{states('sensor.eindhoven_rain_1d')|round}} millimeter. {%
+        elif states.sensor.eindhoven_rainchance_1d.state | int < 25 %} klein met een hoeveelheid
+        van {{states('sensor.eindhoven_rain_1d')|round}} millimeter. {% elif states.sensor.eindhoven_rainchance_1d.state
+        | int < 50 %} groot met een hoeveelheid van {{states('sensor.eindhoven_rain_1d')|round}}
+        millimeter. {% elif states.sensor.eindhoven_rainchance_1d.state | int > 75 %} heel
+        groot met een hoeveelheid van {{states('sensor.eindhoven_rain_1d')|round}}
+        millimeter. {% endif %} De luchtkwaliteit is momenteel {% if states.sensor.u_s_air_quality_index.state|int
+        <= 50 %} gezond {% elif 50 < states.sensor.u_s_air_quality_index.state|int <=
+        100 %} gemiddeld {% elif 100 < states.sensor.u_s_air_quality_index.state|int
+        <= 150 %} ongezond voor kwetsbare mensen {% elif 150 < states.sensor.u_s_air_quality_index.state|int
+        <= 200 %} ongezond {% elif 200 < states.sensor.u_s_air_quality_index.state|int
+        <= 300 %} erg ongezond {% elif states.sensor.u_s_air_quality_index.state|int
+        > 300 %} erg ongezond {% endif %} met een waarde van {{ states.sensor.u_s_air_quality_index.state
+        }}
+      language: nl
+      cache: false
+
+agendascript:
+  alias: Evenementen van vandaag
+  sequence:
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.eetkamer_speakers
+      volume_level: 0.5
+  - delay: 00:00:05
+  - service: tts.google_translate_say
+    entity_id: media_player.eetkamer_speakers
+    data_template:
+      message: >
+        {% if -1 < (as_timestamp(state_attr('calendar.contacts', 'start_time')) - as_timestamp(now()))/86400 < 0.7%}
+          {{ state_attr('calendar.contacts', 'message') }}
+        {% endif %}
+        {% if -1 < (as_timestamp(state_attr('calendar.gezin', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+          Activiteit vandaag is {{ state_attr('calendar.gezin', 'message') }}.
+        {% endif %}
+        {% if -1 < (as_timestamp(state_attr('calendar.onze_agenda', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+          Activiteit vandaag is {{ state_attr('calendar.onze_agenda', 'message') }}.
+        {% endif %}
+        {% if -1 < (as_timestamp(state_attr('calendar.erikennathalie_silverentand_net', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+          Activiteit vandaag is {{ state_attr('calendar.erikennathalie_silverentand_net', 'message') }}.
+        {% endif %}
+      language: nl
+      cache: false
+afvalscript:
+  alias: Afval bericht
+  sequence:
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.eetkamer_speakers
+      volume_level: 0.5
+  - delay: 00:00:05
+  - service: tts.google_translate_say
+    entity_id: media_player.eetkamer_speakers
+    data_template:
+      message: >
+       {% if state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') == 0 %}
+          Vandaag wordt de groene bak opgehaald, 
+        {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') == 1 %}
+          Morgen wordt de groene bak opgehaald, 
+        {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') < 7 %}
+          {{ states.sensor.afvalinfo_gft.state.split(" ")[0] }} wordt de groene bak opgehaald, 
+        {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') < 14 %}
+          {{ states.sensor.afvalinfo_gft.state }} wordt de groene bak opgehaald, 
+        {% else %}
+          {{ states.sensor.afvalinfo_gft.state.split(" ")[1] + " " + states.sensor.afvalinfo_gft.state.split(" ")[2] }} wordt de groene bak geleegd, 
+        {% endif %}
+        {% if state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') == 0 %}
+          vandaag worden de PMD-zakken opgehaald, 
+        {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') == 1 %}
+          morgen worden de PMD-zakken opgehaald, 
+        {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') < 7 %}
+          {{ states.sensor.afvalinfo_pbd.state.split(" ")[0] }} worden de PMD-zakken opgehaald, 
+        {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') < 14 %}
+          {{ states.sensor.afvalinfo_pbd.state }} worden de PMD-zakken opgehaald, 
+        {% else %}
+          {{ states.sensor.afvalinfo_pbd.state.split(" ")[1] + " " + states.sensor.afvalinfo_pbd.state.split(" ")[2] }} worden de PMD-zakken opgehaald, 
+        {% endif %}
+        {% if state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') == 0 %}
+          vandaag wordt de grijze bak opgehaald, 
+        {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') == 1 %}
+          morgen wordt de grijze bak opgehaald, 
+        {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') < 7 %}
+          {{ states.sensor.afvalinfo_restafval.state.split(" ")[0] }} wordt de grijze bak opgehaald, 
+        {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') < 14 %}
+          {{ states.sensor.afvalinfo_restafval.state }} wordt de grijze bak opgehaald, 
+        {% else %}
+          {{ states.sensor.afvalinfo_restafval.state.split(" ")[1] + " " + states.sensor.afvalinfo_restafval.state.split(" ")[2] }} wordt de grijze bak geleegd, 
+        {% endif %}
+        {% if state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') == 0 %}
+          en vandaag wordt het oud papier opgehaald.
+        {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') == 1 %}
+          en morgen wordt het oud papier opgehaald.
+        {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') < 7 %}
+          en {{ states.sensor.afvalinfo_papier.state.split(" ")[0] }} wordt het oud papier opgehaald.
+        {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') < 14 %}
+          en {{ states.sensor.afvalinfo_papier.state }} wordt het oud papier opgehaald.
+        {% else %}
+          en {{ states.sensor.afvalinfo_papier.state.split(" ")[1] + " " + states.sensor.afvalinfo_papier.state.split(" ")[2] }} wordt het oud papier opgehaald.
+        {% endif %}
+      language: nl
+      cache: false
+nieuwsscript:
+  alias: Nieuws van de dag
+  sequence:
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.eetkamer_speakers
+      volume_level: 0.5
+  - delay: 00:00:05
+  - service: tts.google_translate_say
+    entity_id: media_player.eetkamer_speakers
+    data_template:
+      message: "Hier is het recente nieuws uit Veldhoven:\n  {{ (states.sensor.ed_veldhoven.attributes\
+        \ | string).split(\"title\")[1].split(\":\")[1] }}.\n  {{ (states.sensor.ed_veldhoven.attributes\
+        \ | string).split(\"title\")[3].split(\":\")[1] }}.\n  {{ (states.sensor.ed_veldhoven.attributes\
+        \ | string).split(\"title\")[5].split(\":\")[1] }}.\n  {{ (states.sensor.ed_veldhoven.attributes\
+        \ | string).split(\"title\")[7].split(\":\")[1] }}.\n  {{ (states.sensor.ed_veldhoven.attributes\
+        \ | string).split(\"title\")[9].split(\":\")[1] }}.\nVerder heb ik nog algemeen\
+        \ nieuws:\n  {{ (states.sensor.nu_algemeen_nieuws.attributes | string).split(\"\
+        title':\")[1].split(\":\")[0] }}.\n  {{ (states.sensor.nu_algemeen_nieuws.attributes\
+        \ | string).split(\"title':\")[2].split(\":\")[0] }}.\n  {{ (states.sensor.nu_algemeen_nieuws.attributes\
+        \ | string).split(\"title':\")[3].split(\":\")[0] }}.\n  {{ (states.sensor.nu_algemeen_nieuws.attributes\
+        \ | string).split(\"title':\")[4].split(\":\")[0] }}.\n  {{ (states.sensor.nu_algemeen_nieuws.attributes\
+        \ | string).split(\"title':\")[5].split(\":\")[0] }}.\nEn voor de liefhebber\
+        \ heb ik ook nog nieuws over PSV:\n  {{ (states.sensor.ed_psv.attributes |\
+        \ string).split(\"title\")[1].split(\":\")[1] }}.\n  {{ (states.sensor.ed_psv.attributes\
+        \ | string).split(\"title\")[3].split(\":\")[1] }}.\n  {{ (states.sensor.ed_psv.attributes\
+        \ | string).split(\"title\")[5].split(\":\")[1] }}.\n  {{ (states.sensor.ed_psv.attributes\
+        \ | string).split(\"title\")[7].split(\":\")[1] }}.\n  {{ (states.sensor.ed_psv.attributes\
+        \ | string).split(\"title\")[9].split(\":\")[1] }}.\nDat was ie weer! Een\
+        \ fijne dag vandaag!"
+      language: nl
+      cache: false

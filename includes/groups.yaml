@@ -1,0 +1,17 @@
+all_persons:
+  name: All Persons
+  entities:
+    - person.erik
+    - person.nathalie
+
+all_lights:
+  name: Alle Lichten
+  entities:
+    - light.hal
+    - light.flux_liefde
+    - light.yoga_kamer
+    - light.woonkamer
+    - light.kamer_jules
+    - light.kamer_evie
+    - light.eetkamer_en_keuken
+    - light.ouderslaapkamer

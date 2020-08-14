@@ -1,0 +1,108 @@
+- platform: flux_led
+  devices:
+    192.168.1.28:
+      name: flux_liefde
+      protocol: 'ledenet'
+      mode: 'w'
+- platform: switch
+  name: tuinslinger_achter
+  entity_id: switch.tuinverlichting
+- platform: group
+  name: living
+  entities:
+    - light.tv_1
+    - light.tv_2
+    - light.borden
+    - light.hue_go_woonkamer
+    - light.bank
+    - light.flux_liefde
+- platform: group
+  name: keukenspots_all
+  entities:
+    - light.keukenspots_2
+    - light.keukenspot_1
+- platform: group
+  name: eetkamer_keuken
+  entities:
+    - light.keukenspots_2
+    - light.keukenspot_1
+    - light.keuken
+    - light.eettafel_1
+    - light.eettafel_2
+    - light.schilderij
+    - light.schuifpui
+- platform: group
+  name: hal_wandlamp
+  entities:
+    - light.color_temperature_light_3
+    - light.color_temperature_light_4
+- platform: group
+  name: buiten
+  entities:
+    - light.garagelamp
+    - light.garage_floodlight
+    - light.tasmota
+    - light.tasmota_2
+- platform: group
+  name: hall_all
+  entities:
+    - light.color_temperature_light_3
+    - light.color_temperature_light_4
+    - light.hal
+<<<<<<< HEAD
+- platform: group
+  name: tuinverlichting
+  entities:
+    - light.tuinslinger
+    - light.tuinslinger_achter
+- platform: mqtt
+  name: "Keukenspots"
+  state_topic: "keukenspots/stats/POWER"
+  command_topic: "keukenspots/cmnd/POWER"
+  availability_topic: "keukenspots/tele/LWT"
+  payload_on: "ON"
+  payload_off: "OFF"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  optimistic: false
+  qos: 1
+- platform: mqtt
+  name: "Voordeurlamp"
+  state_topic: "stats/voordeurlamp/POWER"
+  command_topic: "cmnd/voordeurlamp/POWER"
+  availability_topic: "tele/voordeurlamp/LWT"
+  payload_on: "ON"
+  payload_off: "OFF"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  optimistic: false
+  qos: 1
+- platform: mqtt
+  name: "Opritlampen"
+  state_topic: "stats/opritlampen/POWER"
+  command_topic: "cmnd/opritlampen/POWER"
+  availability_topic: "tele/opritlampen/LWT"
+  payload_on: "ON"
+  payload_off: "OFF"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  optimistic: false
+  qos: 1
+- platform: mqtt
+  name: "Garagelamp"
+  state_topic: "stats/garagelamp/POWER"
+  command_topic: "cmnd/garagelamp/POWER"
+  availability_topic: "tele/garagelamp/LWT"
+  payload_on: "ON"
+  payload_off: "OFF"
+  payload_available: "Online"
+  payload_not_available: "Offline"
+  optimistic: false
+  qos: 1
+=======
+>>>>>>> 5a5d69b3d6d16a28228264ffda61acd6712dfd38
+- platform: philips_ambilight
+  name: Woonkamer_Ambilight
+  host: !secret tv_woonkamer
+  username: !secret tv_username
+  password: !secret tv_password

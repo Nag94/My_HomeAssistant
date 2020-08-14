@@ -1,0 +1,196 @@
+- platform: template
+  sensors:
+    low_irradiance_input:
+      friendly_name: Zonnestraling input
+      value_template: >
+        {% if (states('sensor.eindhoven_irradiance') | float) > (states('input_number.irradiance') | float) %}
+          True
+        {% else %}
+          False
+        {% endif %}
+    low_lux_input:
+      friendly_name: Low lux input
+      value_template: >
+        {% if (states('sensor.hal_sensor_beneden_light_level') | float) < (states('input_number.low_lux') | float) %}
+          True
+        {% else %}
+          False
+        {% endif %}
+    high_lux_input:
+      friendly_name: High lux input
+      value_template: >
+        {% if (states('sensor.hal_sensor_beneden_light_level') | float) > (states('input_number.high_lux') | float) %}
+         True
+        {% else %}
+          False
+        {% endif %}
+    low_lux_input_buiten:
+      friendly_name: Low lux buiten
+      value_template: >
+        {% if (states('sensor.motion_sensor_buiten_light_level') | float) < (states('input_number.low_lux_buiten') | float) %}
+          True
+        {% else %}
+          False
+        {% endif %}
+    high_lux_input_buiten:
+      friendly_name: High lux buiten
+      value_template: >
+        {% if (states('sensor.motion_sensor_buiten_light_level') | float) > (states('input_number.high_lux_buiten') | float) %}
+         True
+        {% else %}
+          False
+        {% endif %}
+    zonhoek_low_input:
+      friendly_name: Lage zonhoek input
+      value_template: >
+        {% if (states('sensor.zonhoek') | float) < (states('input_number.zonhoek') | float) %}
+          True
+        {% else %}
+          False
+        {% endif %}
+    azimuth_input:
+      friendly_name: Azimuth input
+      value_template: >
+        {% if (states('input_number.azimuth_min') | float) < (states('sensor.azimuth') | float) < (states('input_number.azimuth_max') | float) %}
+          True
+        {% else %}
+          False
+        {% endif %}
+    wolkendek_input:
+      friendly_name: Wolkendek input
+      value_template: >
+        {% if (states('sensor.weather_cloud_coverage') | float) > (states('input_number.wolkendek') | float) %}
+          True
+        {% else %}
+          False
+        {% endif %}
+    nachtmode_aan:
+      friendly_name: Nachtstand aan
+      value_template: >-
+        {% set current_time = as_timestamp(strptime(states.sensor.date_time.state, "%Y-%m-%d, %H:%M")) | int %}
+        {% set nacht_aan_vol = states.sensor.date.state + ", " + states.input_datetime.nacht_aan_tijd.state[0:5] %}
+        {% set nacht_uit_vol = states.sensor.date.state + ", " + states.input_datetime.nacht_uit_tijd.state[0:5] %}
+        {% set nacht_aan = as_timestamp(strptime(nacht_aan_vol, "%Y-%m-%d, %H:%M")) | int %}
+        {% set nacht_uit = as_timestamp(strptime(nacht_uit_vol, "%Y-%m-%d, %H:%M")) | int %} 
+        {%- if current_time | int >= nacht_uit | int %}
+          {% set nacht_uit_mod = nacht_uit | int + 86400 %}
+        {%- else %}
+          {% set nacht_uit_mod = nacht_uit | int %}
+        {% endif %}
+        {% if nacht_aan > nacht_uit_mod %}
+          {% if nacht_aan >= current_time <= nacht_uit_mod %}
+            True
+          {% else %}
+            False
+          {% endif %}
+        {% else %}
+          {% if nacht_aan <= current_time <= nacht_uit_mod %}
+            True
+          {% else %}
+            False
+          {% endif %}
+        {%- endif %}
+    lichtwaarde_input:
+      friendly_name: Lichwaarde input
+      value_template: >
+        {% if (states('sensor.sunlight_pct') | float) > (states('input_number.lichtwaarde') | float) %}
+          True
+        {% else %}
+          False
+        {% endif %}
+
+- platform: workday
+  country: NL
+
+- platform: rest
+  resource: https://rituals.sense-company.com/api/account/hubs/eyJpdiI6IlExTFZ6VFNiOXZycUhoeWtvZFJOa1E9PSIsInZhbHVlIjoiOUhMMlVkaEdEalF2UFwvR3Y5N2JiOUNiZGZsUDluUmZvUXNkaCttZGtQUG89IiwibWFjIjoiYTBkZDI1MGUzZmEzOWFhMWExZWY5NzMzYmUyMWEwMDMzNGYxNGZiYzY4OWI3NjY5MjkzMTBlODgwZDVmYmEyZCJ9
+  method: GET
+  name: Genie Status
+  value_template: '{{ value_json.0.hub.attributes.fanc == "1" }}'
+
+### Bayesian trackers ###
+- platform: bayesian
+  prior: 0.5
+  name: 'Nathalie aanwezig'
+  probability_threshold: 0.9
+  observations:
+    - entity_id: 'device_tracker.nathalie'
+      prob_given_true: 0.9
+      prob_given_false: 0.1
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.google_maps_111003784876807104536'
+      prob_given_true: 0.9
+      prob_given_false: 0.2
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.sm_g973f'
+      prob_given_true: 0.7
+      prob_given_false: 0.3
+      platform: 'state'
+      to_state: 'home'
+- platform: bayesian
+  prior: 0.5
+  name: 'Erik aanwezig'
+  probability_threshold: 0.9
+  observations:
+    - entity_id: 'device_tracker.erik'
+      prob_given_true: 0.9
+      prob_given_false: 0.1
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.google_maps_110538620571626781876'
+      prob_given_true: 0.9
+      prob_given_false: 0.2
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.google_maps_esilverentand_gmail_com'
+      prob_given_true: 0.9
+      prob_given_false: 0.2
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.in2023'
+      prob_given_true: 0.9
+      prob_given_false: 0.1
+      platform: 'state'
+      to_state: 'home'
+- platform: bayesian
+  prior: 0.5
+  name: 'Iemand thuis?'
+  probability_threshold: 0.9
+  observations:
+    - entity_id: 'binary_sensor.erik_aanwezig'
+      prob_given_true: 0.8
+      prob_given_false: 0.2
+      platform: 'state'
+      to_state: 'on'
+    - entity_id: 'binary_sensor.nathalie_aanwezig'
+      prob_given_true: 0.8
+      prob_given_false: 0.2
+      platform: 'state'
+      to_state: 'on'
+    - entity_id: 'device_tracker.nathalie'
+      prob_given_true: 0.7
+      prob_given_false: 0.3
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.hue_samsung_sm_g935f'
+      prob_given_true: 0.5
+      prob_given_false: 0.5
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.sm_g973f'
+      prob_given_true: 0.5
+      prob_given_false: 0.5
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.google_maps_110538620571626781876'
+      prob_given_true: 0.8
+      prob_given_false: 0.2
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.google_maps_111003784876807104536'
+      prob_given_true: 0.8
+      prob_given_false: 0.2
+      platform: 'state'
+      to_state: 'home'

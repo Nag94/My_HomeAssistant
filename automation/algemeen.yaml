@@ -1,0 +1,147 @@
+#########################
+####### Thema ###########
+#########################
+- id: 'themestartup'
+  alias: 'Custom Theme bij Startup'
+  trigger:
+    platform: homeassistant
+    event: start
+  action:
+    service: frontend.set_theme
+    data:
+      name: 'Google Light Theme'
+- id: 'changetheme'
+  alias: 'System - Change Current Theme'
+  trigger:
+    - platform: state
+      entity_id: input_select.themes
+  action:
+    - service: frontend.set_theme
+      data_template:
+        name: "{{states('input_select.themes')}}"
+##################################################################
+#       Goedemorgen Werkdagen                                    #
+##################################################################
+- alias: Google Home - Goedemorgen Werkdagen
+  trigger:
+    - platform: state  
+      entity_id: binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor
+      to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        after: '06:00:00'
+        before: '07:30:00'
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.ochtendgebed
+        state: 'off'
+  action:
+    - service: bluesound.unjoin
+      entity_id: media_player.keuken_speaker_2
+    - service: script.turn_on
+      entity_id: script.weerscript
+    - delay: 00:00:30
+    - service: script.turn_on
+      entity_id: script.afvalscript
+    - delay: 00:00:30
+    - service: script.turn_on
+      entity_id: script.agendascript
+    - delay: 00:00:30
+    - service: script.turn_on
+      entity_id: script.nieuwsscript
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.ochtendgebed
+- alias: Keep Google Home Alive
+  trigger:
+    platform: time_pattern
+    minutes: '/2'
+    seconds: 00
+  condition:
+    - condition: template
+      value_template: '{{ states.media_player.home_mini_woonkamer.state != "playing"}}'
+    - condition: template
+      value_template: '{{ states.media_player.keuken_hub.state != "playing"}}'
+  action:
+    service: media_player.play_media
+    entity_id:
+      - media_player.keuken_hub
+      - media_player.home_mini_woonkamer
+    data:
+      media_content_id: config/resources/audio1sec.mp3
+      media_content_type: music
+######### IFTTT ###########
+- alias: Recieve information from IFTTT
+  trigger:
+    platform: event
+    event_type: ifttt_webhook_received
+    event_data:
+      action: call_service_general
+  action:
+    service_template: '{{ trigger.event.data.service }}'
+    data_template:
+      entity_id: '{{ trigger.event.data.entity_id }}'
+      message: '{{ trigger.event.data.message }}'
+############################
+###### update Hassio #######
+############################
+- alias: update message hassio
+  trigger:
+    platform: state
+    entity_id: binary_sensor.updater
+    to: 'on'
+  action:
+    service: notify.mobile_app_phone_erik
+    data:
+      message: 'Er staat een update klaar voor je Home Assistant'
+      title: 'Hassio Update'
+- alias: Create a notification when somethig is added to HACS
+  trigger:
+    platform: event
+    event_type: hacs/repository
+    event_data:
+      action: registration
+  condition:
+    condition: template
+    value_template: "{{ trigger.event.data.repository is defined }}"
+  action:
+    service: persistent_notification.create
+    data_template:
+      title: Nieuw item in HACS
+      message: >-
+        {% set repo = trigger.event.data.repository %}
+        {% set id = trigger.event.data.repository_id %}
+        [{{ repo }}](/hacs/repository/{{ id }})
+        is net toegevoegd aan HACS.
+############################
+########### P2000 ##########
+############################
+- alias: 'P2000 Bericht'
+  trigger:
+    platform: state
+    entity_id: sensor.p2000
+  action:
+    - service_template: notify.mobile_app_phone_erik
+      data_template:
+        title: "P2000 Bericht"
+        message: >
+          {{ states.sensor.p2000.state + states.sensor.p2000.attributes.capcodes }}
+        data:
+          url: "https://www.google.com/maps/search/?api=1&query={{ states.sensor.p2000.attributes.latitude }},{{ states.sensor.p2000.attributes.longitude }}"
+##############################
+######## Files opschonen #####
+##############################
+- alias: Oude video-files opschonen
+  trigger:
+    platform: time
+    at: '03:00:00'
+  condition: []
+  action:
+    service: shell_command.remove_video
+###########################
+######## Test ruimte #####
+###########################
