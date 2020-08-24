@@ -24,6 +24,8 @@ default_config:
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 http:
+  ip_ban_enabled: false
+  login_attempts_threshold: 5
 #  base_url: !secret base_url
 #  ssl_certificate: /ssl/fullchain.pem
 #  ssl_key: /ssl/privkey.pem
@@ -98,7 +100,7 @@ tts:
 
 # RFXtrx
 rfxtrx:
-  device: '/dev/serial/by-id/usb-RFXCOM_RFXtrx433_A12IPPXJ-if00-port0'
+  device: /dev/serial/by-id/usb-RFXCOM_RFXtrx433_A12IPPXJ-if00-port0
   debug: true
   automatic_add: true
 
@@ -225,7 +227,7 @@ home_connect:
 
 fan:
   - platform: xiaomi_miio_fan
-    name: Ventilator 1
+    name: ventilator
     host: 192.168.1.45
     token: !secret fan1_token
   - platform: mqtt

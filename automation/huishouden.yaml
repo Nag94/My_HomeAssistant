@@ -30,6 +30,9 @@
       data:
         message: De was is schoon!
         title: Wasmachine
+    - delay:
+        minutes: 10
+    - service: html5.dismiss
 - alias: "Notify when the tumbledryer cycle is complete"
   trigger:
     platform: state
@@ -61,6 +64,9 @@
       data:
         message: De was is droog!
         title: Droger
+    - delay:
+        minutes: 10
+    - service: html5.dismiss
 ### Vaatwasser ##########
 - alias: Notify when the dishwasher cycle is complete
   trigger:
@@ -92,6 +98,9 @@
       data:
         message: De vaat is schoon!
         title: Vaatwasser
+    - delay:
+        minutes: 10
+    - service: html5.dismiss
 ### Koffie!!!
 - alias: Espressomachine aan
   trigger:
@@ -123,7 +132,7 @@
 - alias: Espressomachine uit
   trigger:
     - platform: template
-      value_template: '{{ states.person.erik.state != "home" and states.person.nathalie.state != "home" and states.group.all_persons.state == "not_home" }}'
+      value_template: '{{ states("person.erik") != "home" and states("person.nathalie") != "home" and states("group.all_persons") == "not_home" }}'
     - platform: state
       entity_id: input_boolean.nachtstand
       to: 'on'
@@ -239,22 +248,21 @@
       data:
         message: 'Er zit iets in de brievenbus!'
         title: 'Brievenalert'
-    - service: notify.html5
-      data:
-        message: 'Er zit iets in de brievenbus!'
-        title: 'Brievenalert'
     - service: notify.mobile_app_phone_erik
       data:
         message: 'Er zit iets in de brievenbus!'
         title: 'Brievenalert'
         data:
-          sticky: 'true'
+          sticky: 'false'
     - service: notify.mobile_app_sm_g973f
       data:
         message: 'Er zit iets in de brievenbus!'
         title: 'Brievenalert'
         data:
-          sticky: 'true'
+          sticky: 'false'
+    - delay:
+        minutes: 10
+    - service: html5.dismiss
 - alias: reset brievenbus
   trigger:
     - platform: time

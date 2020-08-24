@@ -98,7 +98,7 @@
   trigger:
   - entity_id: sensor.woonkamer_remote
     platform: state
-    to: 1_click_up
+    to: '1_click_up'
   condition:
   - condition: state
     entity_id: light.beneden
@@ -108,13 +108,15 @@
       entity_id:
         - light.living
         - light.eetkamer_keuken
+        - light.keukenspots_all
+        - light.flux_liefde
     service: light.turn_on
 - id: '1560531143161'
   alias: Lampen uit via dimmer
   trigger:
   - entity_id: sensor.woonkamer_remote
     platform: state
-    to: 4_click_up
+    to: '4_click_up'
   condition:
   - condition: state
     entity_id: light.beneden
@@ -125,6 +127,8 @@
         - light.living
         - light.eetkamer_keuken
         - light.tuinverlichting
+        - light.keukenspots_all
+        - light.flux_liefde
     service: light.turn_off
   - service: switch.turn_off
     data:
@@ -137,13 +141,14 @@
   trigger:
   - entity_id: sensor.ouderslaapkamer_remote
     platform: state
-    to: 4_hold_up
+    to: '4_hold_up'
   action:
   - data:
       entity_id:
         - light.beneden
         - light.boven
         - light.keukenspots_all
+        - light.flux_liefde
         - light.tasmota
         - light.tasmota_2
         - light.hal
@@ -434,7 +439,7 @@
   action:
   - delay: '{% if trigger.platform == "state" %}00:00:10{% else %}0{{ (range(0,1)|random|int) }}:{{ (range(10, 59)|random|int) }}:{{ (range(10, 59)|random|int) }}{% endif %}'
   - service_template: 'light.turn_{{ trigger.platform|replace("state", "on")|replace("time", "off") }}'
-    entity_id: group.beneden
+    entity_id: light.beneden
   - service: persistent_notification.create
     data_template:
       message: 'lichten {% if trigger.to_state.state == "on" %}aan{% else %}uit{%endif %}'
@@ -494,7 +499,7 @@
 - alias: "Wake me up with hal light transition for weekdays"
   trigger:
     platform: template
-    value_template: "{{ states('sensor.time') == (states.input_datetime.wakeup_tijd_hal.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+    value_template: "{{ states('sensor.time') == (state_attr('input_datetime.wakeup_tijd_hal', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
   condition:
     - condition: state
       entity_id: input_boolean.wakeup_hal_enabled
@@ -536,13 +541,13 @@
 - alias: "Wake me up with ouder light transition for weekdays"
   trigger:
     platform: template
-    value_template: "{{ states('sensor.time') == (states.input_datetime.wakeup_tijd_ouders.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+    value_template: "{{ states('sensor.time') == (state_attr('input_datetime.wakeup_tijd_ouders', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
   condition:
     - condition: state
       entity_id: input_boolean.wakeup_ouders_enabled
       state: 'on'
     - condition: template
-      value_template: "{{ states.group.all_persons.state == 'home' or states.input_boolean.notify_home.state == 'on' }}"
+      value_template: "{{ is_state('group.all_persons', 'home') or is_state('input_boolean.notify_home', 'on') }}"
     - condition: state
       entity_id: input_boolean.vakantiestand
       state: 'off'
@@ -591,13 +596,13 @@
 - alias: "Wake me up with evie light transition for weekdays"
   trigger:
     platform: template
-    value_template: "{{ states('sensor.time') == (states.input_datetime.wakeup_tijd_evie.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+    value_template: "{{ states('sensor.time') == (state_attr('input_datetime.wakeup_tijd_evie', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
   condition:
     - condition: state
       entity_id: input_boolean.wakeup_evie_enabled
       state: 'on'
     - condition: template
-      value_template: "{{ states.group.all_persons.state == 'home' or states.input_boolean.notify_home.state == 'on' }}"
+      value_template: "{{ is_state('group.all_persons', 'home') or is_state('input_boolean.notify_home', 'on') }}"
     - condition: state
       entity_id: input_boolean.vakantiestand
       state: 'off'
@@ -681,13 +686,13 @@
 - alias: "Wake me up with jules light transition for weekdays"
   trigger:
     platform: template
-    value_template: "{{ states('sensor.time') == (states.input_datetime.wakeup_tijd_jules.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+    value_template: "{{ states('sensor.time') == (state_attr('input_datetime.wakeup_tijd_jules', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
   condition:
     - condition: state
       entity_id: input_boolean.wakeup_jules_enabled
       state: 'on'
     - condition: template
-      value_template: "{{ states.group.all_persons.state == 'home' or states.input_boolean.notify_home.state == 'on' }}"
+      value_template: "{{ is_state('group.all_persons', 'home') or is_state('input_boolean.notify_home', 'on') }}"
     - condition: state
       entity_id: input_boolean.vakantiestand
       state: 'off'
@@ -961,10 +966,17 @@
         entity_id: script.wc_licht_aan
 - alias: pir_toilet_off
   trigger:
-  - platform: event
-    event_type: timer.finished
-    event_data:
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.timer_toilet
+    - platform: state
+      entity_id: binary_sensor.toiletdeur
+      to: 'on'
+  condition:
+    - condition: state
       entity_id: timer.timer_toilet
+      state: 'active'
   action:
     - service: light.turn_off
       data:

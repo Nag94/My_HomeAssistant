@@ -49,7 +49,6 @@
     - light.color_temperature_light_3
     - light.color_temperature_light_4
     - light.hal
-<<<<<<< HEAD
 - platform: group
   name: tuinverlichting
   entities:
@@ -99,8 +98,6 @@
   payload_not_available: "Offline"
   optimistic: false
   qos: 1
-=======
->>>>>>> 5a5d69b3d6d16a28228264ffda61acd6712dfd38
 - platform: philips_ambilight
   name: Woonkamer_Ambilight
   host: !secret tv_woonkamer

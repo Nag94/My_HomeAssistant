@@ -12,6 +12,12 @@
     - platform: state
       entity_id: binary_sensor.openclose_8
       to: 'on'
+    - platform: state
+      entity_id: binary_sensor.balkondeur_ouderslaapkamer
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.balkondeur_voor
+      to: 'on'
   condition:
     - condition: state
       entity_id: alarm_control_panel.thuis_alarm
@@ -42,8 +48,8 @@
         message: "ALARM!! de {{ state_attr(trigger.entity_id, 'friendly_name') }} gaat open!"
         title: 'ALARM!!!'
         data:
-          sticky: true   
-          color: red
+          sticky: 'true'
+          color: 'red'
           channel: Alarm
           importance: high
           vibrationPattern: "100,30,100,30,100,30,200,30,200,30,200,30,100,30,100,30,100"
@@ -226,7 +232,7 @@
         {% endif %}
   - service: light.turn_on
     data_template:
-      entity_id: "{% if (states.sensor.time.state > '20:00') and (states.sensor.time.state < '02:00') %}\n  light.tuinverlichting{% endif %}"
+      entity_id: "{% if (states('sensor.time') > '20:00' and states('sensor.time') < '02:00') %}\n  light.tuinverlichting{% endif %}"
   id: fc0fd67abd07497d85ccdd1aef90c08c
 - alias: overrule alarm
   trigger:

@@ -2,7 +2,7 @@
   alias: Check if Erik is away
   trigger:
   - platform: template
-    value_template: '{{ states.person.erik.state != "home" and states.person.nathalie.state != "home" }}'
+    value_template: '{{ states("person.erik") != "home" and states("person.nathalie") != "home" }}'
 #  - entity_id: group.all_persons
 #    for: 00:02:30
 #    from: 'home'
@@ -45,17 +45,17 @@
       event: alarm_buiten_on
 - id: Erik_away_buiten_off
   alias: alarm buitencamera uit
-  condition:
-  - condition: state
-    entity_id: group.all_persons
-    state: 'home'
   trigger:
   - platform: state
     entity_id: sensor.erik_status
     to: Thuis
     for: 00:05:00
   - platform: time
-    at: '9:00:00'
+    at: '09:00:00'
+  condition:
+  - condition: state
+    entity_id: group.all_persons
+    state: 'home'
   action:
   - service: ifttt.trigger
     data:
@@ -126,105 +126,131 @@
   trigger:
   - platform: state
     entity_id: person.erik
-    to: home
+    to: 'home'
   - platform: state
     entity_id: person.nathalie
-    to: home
+    to: 'home'
   action:
   - service: input_select.select_option
     data_template:
-      entity_id: "{% if trigger.entity_id == 'person.erik' %}\n  input_select.erik_status_dropdown\n\
-        {% else %}\n  input_select.nathalie_status_dropdown\n{% endif %}\n"
-      option: "{% if trigger.entity_id == 'person.erik' %}\n  {% if states.input_select.erik_status_dropdown.state\
-        \ == 'Net vertrokken' %}\n    Thuis\n  {% else %}\n    Net thuis aangekomen\n\
-        \  {% endif %}\n{% else %}\n  {% if states.input_select.nathalie_status_dropdown.state\
-        \ == 'Net vertrokken' %}\n    Thuis\n  {% else %}\n    Net thuis aangekomen\n\
-        \  {% endif %}\n{% endif %}\n"
+      entity_id: >-
+        {% if trigger.entity_id == 'person.erik' %}
+          input_select.erik_status_dropdown
+        {% else %}
+          input_select.nathalie_status_dropdown
+        {% endif %}
+      option: >-
+        "{% if trigger.entity_id == 'person.erik' %}
+           {% if states('input_select.erik_status_dropdown') == 'Net vertrokken' %}
+             'Thuis'
+           {% else %}
+             'Net thuis aangekomen'
+           {% endif %}
+         {% else %}
+           {% if states('input_select.nathalie_status_dropdown') == 'Net vertrokken' %}
+             'Thuis'
+           {% else %}
+             'Net thuis aangekomen'
+           {% endif %}
+         {% endif %}"
   id: f4d0db06b4664705bdef61a31161c5b3
 - alias: Mark person as home
   trigger:
   - platform: state
     entity_id: input_select.erik_status_dropdown
-    to: Net thuis aangekomen
+    to: 'Net thuis aangekomen'
     for:
       minutes: 5
   - platform: state
     entity_id: input_select.nathalie_status_dropdown
-    to: Net thuis aangekomen
+    to: 'Net thuis aangekomen'
     for:
       minutes: 5
   action:
   - service: input_select.select_option
     data_template:
-      entity_id: "{% if trigger.entity_id == 'input_select.erik_status_dropdown' %}\n\
-        \  input_select.erik_status_dropdown\n{% else %}\n  input_select.nathalie_status_dropdown\n\
-        {% endif %}\n"
-      option: Thuis
+      entity_id: >-
+        {% if trigger.entity_id == 'input_select.erik_status_dropdown' %}
+          input_select.erik_status_dropdown
+        {% else %}
+          input_select.nathalie_status_dropdown
+        {% endif %}
+      option: 'Thuis'
   id: 14242f62ba2247bba9ac61d4f5bf4484
 - alias: Mark person as just left
   trigger:
   - platform: state
     entity_id: person.erik
-    to: not_home
+    to: 'not_home'
   - platform: state
     entity_id: person.nathalie
-    to: not_home
+    to: 'not_home'
   action:
   - service: input_select.select_option
     data_template:
-      entity_id: "{% if trigger.entity_id == 'person.erik' %}\n  input_select.erik_status_dropdown\n\
-        {% else %}\n  input_select.nathalie_status_dropdown\n{% endif %}\n"
-      option: Net vertrokken
+      entity_id: >-
+        {% if trigger.entity_id == 'person.erik' %}
+          input_select.erik_status_dropdown
+        {% else %}
+          input_select.nathalie_status_dropdown
+        {% endif %}
+      option: 'Net vertrokken'
   id: 20459e8b38954e1baaf8bb0be05c72b7
 - alias: Mark person as away
   trigger:
   - platform: state
     entity_id: input_select.erik_status_dropdown
-    to: Net vertrokken
+    to: 'Net vertrokken'
     for:
       minutes: 5
   - platform: state
     entity_id: input_select.nathalie_status_dropdown
-    to: Net vertrokken
+    to: 'Net vertrokken'
     for:
       minutes: 5
   action:
   - service: input_select.select_option
     data_template:
-      entity_id: "{% if trigger.entity_id == 'input_select.erik_status_dropdown' %}\n\
-        \  input_select.erik_status_dropdown\n{% else %}\n  input_select.nathalie_status_dropdown\n\
-        {% endif %}\n"
-      option: Afwezig
+      entity_id: >-
+        {% if trigger.entity_id == 'person.erik' %}
+          input_select.erik_status_dropdown
+        {% else %}
+          input_select.nathalie_status_dropdown
+        {% endif %}
+      option: 'Afwezig'
   id: 14225715828e420aafc0b8c52b3ba0ee
 - alias: Mark person as extended away
   trigger:
   - platform: state
     entity_id: input_select.erik_status_dropdown
-    to: Afwezig
+    to: 'Afwezig'
     for:
       hours: 24
   - platform: state
     entity_id: input_select.nathalie_status_dropdown
-    to: Afwezig
+    to: 'Afwezig'
     for:
       hours: 24
   action:
   - service: input_select.select_option
     data_template:
-      entity_id: "{% if trigger.entity_id == 'input_select.erik_status_dropdown' %}\n\
-        \  input_select.erik_status_dropdown\n{% else %}\n  input_select.nathalie_status_dropdown\n\
-        {% endif %}\n"
-      option: Langdurig afwezig
+      entity_id: >-
+        {% if trigger.entity_id == 'person.erik' %}
+          input_select.erik_status_dropdown
+        {% else %}
+          input_select.nathalie_status_dropdown
+        {% endif %}
+      option: 'Langdurig afwezig'
   id: 033f7229dd0644f9bbf22d131c4db9f6
 - id: '1562669502936'
   alias: Vakantiestand aan
   trigger:
   - entity_id: input_select.erik_status_dropdown
     platform: state
-    to: Langdurig afwezig
+    to: 'Langdurig afwezig'
   - entity_id: input_select.nathalie_status_dropdown
     platform: state
-    to: Langdurig afwezig
+    to: 'Langdurig afwezig'
   condition:
     condition: not
     conditions:
@@ -239,13 +265,13 @@
   alias: Vakantiestand uit
   trigger:
   - entity_id: input_select.erik_status_dropdown
-    from: Langdurig afwezig
+    from: 'Langdurig afwezig'
     platform: state
-    to: Net thuis aangekomen
+    to: 'Net thuis aangekomen'
   - entity_id: input_select.nathalie_status_dropdown
-    from: Langdurig afwezig
+    from: 'Langdurig afwezig'
     platform: state
-    to: Net thuis aangekomen
+    to: 'Net thuis aangekomen'
   condition: []
   action:
   - data:
@@ -281,11 +307,11 @@
       entity_id: media_player.home_mini_woonkamer
       data_template:
         message: >-
-          {% if (states.group.all_persons.state) == 'home' %}
+          {% if states('group.all_persons') == 'home' %}
             {% if (trigger.event) == 'leave' %}
-              {{ trigger.to_state.attributes.friendly_name }} is onderweg naar huis!
+              {{ state_attr(trigger.entity_id, 'friendly_name') }} is onderweg naar huis!
             {% else %}
-              {{ trigger.to_state.attributes.friendly_name }} is op het werk aangekomen
+              {{ state_attr(trigger.entity_id, 'friendly_name') }} is op het werk aangekomen
             {% endif %}
           {% endif %}
         language: 'nl'
@@ -299,9 +325,9 @@
       data_template:
         message: >-
             {% if (trigger.event) == 'leave' %}
-              {{ trigger.to_state.attributes.friendly_name }} is onderweg naar huis!
+              {{ state_attr(trigger.entity_id, 'friendly_name') }} is onderweg naar huis!
             {% else %}
-              {{ trigger.to_state.attributes.friendly_name }} is op het werk aangekomen
+              {{ state_attr(trigger.entity_id, 'friendly_name') }} is op het werk aangekomen
             {% endif %}
         title: 'Reisupdate'
         data:

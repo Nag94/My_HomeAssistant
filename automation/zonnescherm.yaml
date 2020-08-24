@@ -67,6 +67,9 @@
       data:
         message: "Het zonnescherm is geopend"
         title: zonnescherm
+    - delay:
+        minutes: 5
+    - service: html5.dismiss
 - alias: zonnescherm sluiten
   trigger:
     - platform: state
@@ -123,6 +126,9 @@
       data:
         message: "Het zonnescherm is gesloten"
         title: zonnescherm
+    - delay:
+        minutes: 10
+    - service: html5.dismiss
 - alias: schakelaar om bij uitklappen zonescherm
   trigger:
     - platform: state

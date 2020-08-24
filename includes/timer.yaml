@@ -11,7 +11,7 @@ timer_garage:
   duration: '00:01:00'
 
 timer_toilet:
-  duration: '00:03:00'
+  duration: '00:10:00'
 
 timer_oprit:
   duration: '00:00:45'

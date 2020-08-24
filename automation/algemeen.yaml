@@ -129,9 +129,9 @@
       data_template:
         title: "P2000 Bericht"
         message: >
-          {{ states.sensor.p2000.state + states.sensor.p2000.attributes.capcodes }}
+          {{ states('sensor.veldhoven_e_o') + state_attr('sensor.veldhoven_e_o', 'capcodes') }}
         data:
-          url: "https://www.google.com/maps/search/?api=1&query={{ states.sensor.p2000.attributes.latitude }},{{ states.sensor.p2000.attributes.longitude }}"
+          url: "https://www.google.com/maps/search/?api=1&query={{ state_attr('sensor.veldhoven_e_o', 'latitude') }},{{ state_attr('sensor.veldhoven_e_o', 'longitude') }}"
 ##############################
 ######## Files opschonen #####
 ##############################
