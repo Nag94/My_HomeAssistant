@@ -1,0 +1,18 @@
+# - id: '1599548174625'
+#   alias: Extra alle lichten uit handeling
+#   description: ''
+#   trigger:
+#   - device_id: 0435dbb6373049949c44c04f3de67525
+#     domain: hue
+#     platform: device
+#     subtype: turn_off
+#     type: remote_button_short_release
+#   condition: []
+#   action:
+#   - data: {}
+#     entity_id:
+#     - light.beneden
+#     - light.flux_liefde
+#     - light.keukenspots_all
+#     service: light.turn_off
+#   mode: single

@@ -13,6 +13,8 @@
 weerscript:
   alias: weer
   sequence:
+  - delay:
+      minutes: 5
   - service: media_player.volume_set
     data:
       entity_id: media_player.eetkamer_speakers
@@ -29,23 +31,24 @@ weerscript:
         {% set month = month[now().month - 1] %}
         Het is vandaag {{ day_of_week }} {{ now().day }} {{ month }}. Het is momenteel
         {% if states('sensor.eindhoven_temperature') | int < 0 %} erg koud met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden, let op het kan glad zijn.
-        {% elif states('sensor.eindhoven_temperature') | int < 10 %} koud met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
-        {% elif states('sensor.eindhoven_temperature') | int < 15 %} fris met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
-        {% elif states('sensor.eindhoven_temperature') | int < 20 %} lekker met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
+        {% elif states('sensor.eindhoven_temperature') | int <= 10 %} koud met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
+        {% elif states('sensor.eindhoven_temperature') | int <= 15 %} fris met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
+        {% elif states('sensor.eindhoven_temperature') | int <= 20 %} lekker met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
         {% elif states('sensor.eindhoven_temperature') | int > 20 %} warm met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
         {% endif %}
         Het wordt vandaag
-        {% if states('sensor.eindhoven_temperature') | int < 0 %} erg koud met een maximale temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
-        {% elif states('sensor.eindhoven_temperature') | int < 10 %} koud met een maximale temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
-        {% elif states('sensor.eindhoven_temperature') | int < 15 %} fris met een maximale temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
-        {% elif states('sensor.eindhoven_temperature') | int < 20 %} lekker met een maximale temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
-        {% elif states('sensor.eindhoven_temperature') | int > 20 %} warm met een maximale temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.
+        {% if state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max | int < 0 %} erg koud met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max |round}} graden.
+        {% elif state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max | int < 10 %} koud met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max |round}} graden.
+        {% elif state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max | int < 15 %} fris met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max |round}} graden.
+        {% elif state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max | int <= 20 %} lekker met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max |round}} graden.
+        {% elif state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max | int > 20 %} warm met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max |round}} graden.
         {% endif %}
         De kans op regen is vandaag
-        {% if states('sensor.eindhoven_rainchance_1d') | int < 10 %} heel erg klein met een hoeveelheid van {{states('sensor.eindhoven_rain_1d')|round}} millimeter.
-        {% elif states('sensor.eindhoven_rainchance_1d') | int < 25 %} klein met een hoeveelheid van {{states('sensor.eindhoven_rain_1d')|round}} millimeter.
-        {% elif states('sensor.eindhoven_rainchance_1d') | int < 50 %} groot met een hoeveelheid van {{states('sensor.eindhoven_rain_1d')|round}} millimeter.
-        {% elif states('sensor.eindhoven_rainchance_1d') | int > 75 %} heel groot met een hoeveelheid van {{states('sensor.eindhoven_rain_1d')|round}} millimeter.
+        {% if states('sensor.weather_precip_probability') | int <= 2 %} verwaarloosbaar.
+        {% elif states('sensor.weather_precip_probability') | int <= 10 %} heel erg klein met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.
+        {% elif states('sensor.weather_precip_probability') | int <= 25 %} klein met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.
+        {% elif states('sensor.weather_precip_probability') | int <= 50 %} groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.
+        {% elif states('sensor.weather_precip_probability') | int > 75 %} heel groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.
         {% endif %}
         De luchtkwaliteit is momenteel {% if states('sensor.u_s_air_quality_index')|int <= 50 %} gezond
         {% elif 50 < states('sensor.u_s_air_quality_index')|int <= 100 %} gemiddeld
@@ -171,6 +174,6 @@ nieuwsscript:
         {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title")[5].split("link")[0] }}.
         {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title")[7].split("link")[0] }}.
         {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title")[9].split("link")[0] }}.
-        Dat was ie weer! Een fijne dag vandaag!"
+        Dat was ie weer! Een fijne dag vandaag!
       language: nl
       cache: false

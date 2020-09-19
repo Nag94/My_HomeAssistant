@@ -96,31 +96,13 @@
 #      - wind_bearing
     - cloud_cover
     - humidity
-#      - pressure
+    - pressure
     - visibility
 #      - ozone
 #      - minutely_summary
     - hourly_summary
     - daily_summary
-#      - precip_intensity_max 
-
-- platform: yr
-  name: Weather
-  forecast: 24
-  monitored_conditions:
-    - temperature
-    - symbol
-    - precipitation
-    - windSpeed
-    - pressure
-    - windDirection
-    - humidity
-    - fog
-    - cloudiness
-    - lowClouds
-    - mediumClouds
-    - highClouds
-    - dewpointTemperature
+    - precip_intensity_max 
 
 - platform: scrape
   resource: https://www.knmi.nl/nederland-nu/weer/waarschuwingen/noord-brabant
@@ -287,17 +269,6 @@
           Draait
         {% endif %}
 
-- platform: template
-  sensors:
-    daily_energy:
-      friendly_name: Daily Energy
-      unit_of_measurement: kWh
-      value_template: "{{ (states('sensor.daily_energy_offpeak')|float + states('sensor.daily_energy_peak')|float)|round(2) }}"
-    monthly_energy:
-      friendly_name: Monthly Energy
-      unit_of_measurement: kWh
-      value_template: "{{ (states('sensor.monthly_energy_offpeak')|float + states('sensor.monthly_energy_peak')|float)|round(2) }}"
-
 #### RSS Feedparser
 - platform: feedparser
   name: ED Veldhoven
@@ -345,9 +316,9 @@
 - platform: template
   sensors:
     sunlight_pct:
-      entity_id:
-        - sun.sun
-        - sensor.weather_cloud_coverage
+#      entity_id:
+#        - sun.sun
+#        - sensor.weather_cloud_coverage
       value_template: >-
         {%- set elevation = state_attr('sun.sun','elevation') | float %}
         {%- set cloud_coverage = states('sensor.weather_cloud_coverage') | float %}
@@ -476,98 +447,288 @@
         {% set t = (t/10) | int %}
         {{ '{:d}d {:02d}h {:02d}m {:02d}s'.format(t // 86400, (t // 3600) % 24, (t % 3600) // 60, (t % 3600) % 60) }}
 
-# Black toner
-- platform: snmp
-  name: '150nw_black_capacity'
-  host: !secret printer_ip
-  baseoid: 1.3.6.1.2.1.43.11.1.1.8.1.1
-  accept_errors: true
-  scan_interval: 3600
-  #unit_of_measurement: '%'
+#############################
+######### Energy ###########
+#############################
 
-- platform: snmp
-  name: '150nw_black_remaining'
-  host: !secret printer_ip
-  baseoid: 1.3.6.1.2.1.43.11.1.1.9.1.1
-  accept_errors: true
-  scan_interval: 3600
-  #unit_of_measurement: '%'
 
-- platform: template
-  sensors:
-    150nw_black_level:
-      friendly_name: "Niveau Zwarte Toner"
-      unit_of_measurement: '%'
-      value_template: "{{ (states('sensor.150nw_black_remaining')|float / states('sensor.150nw_black_capacity')|float * 100) | round(0) }}"
+# - platform: template
+#   sensors:
+#     daily_energy:
+#       friendly_name: Daily Energy
+#       unit_of_measurement: kWh
+#       value_template: "{{ (states('sensor.daily_energy_offpeak')|float + states('sensor.daily_energy_peak')|float)|round(2) }}"
+#     monthly_energy:
+#       friendly_name: Monthly Energy
+#       unit_of_measurement: kWh
+#       value_template: "{{ (states('sensor.monthly_energy_offpeak')|float + states('sensor.monthly_energy_peak')|float)|round(2) }}"
 
-# Cyan tomer
-- platform: snmp
-  name: '150nw_cyan_capacity'
-  host: !secret printer_ip
-  baseoid: 1.3.6.1.2.1.43.11.1.1.8.1.2
-  accept_errors: true
-  scan_interval: 3600
-  #unit_of_measurement: '%'
-
-- platform: snmp
-  name: '150nw_cyan_remaining'
-  host: !secret printer_ip
-  baseoid: 1.3.6.1.2.1.43.11.1.1.9.1.2
-  accept_errors: true
-  scan_interval: 3600
-  #unit_of_measurement: '%'
 
 - platform: template
   sensors:
-    150nw_cyan_level:
-      friendly_name: "Niveau Cyan Toner"
-      unit_of_measurement: '%'
-      value_template: "{{ (states('sensor.150nw_cyan_remaining')|float / states('sensor.150nw_cyan_capacity')|float * 100) | round(0) }}"
 
-# Magenta tomer   
-- platform: snmp
-  name: '150nw_magenta_capacity'
-  host: !secret printer_ip
-  baseoid: 1.3.6.1.2.1.43.11.1.1.8.1.3
-  accept_errors: true
-  scan_interval: 3600
-  #unit_of_measurement: '%'
+# DSMR METER READINGS #
 
-- platform: snmp
-  name: '150nw_magenta_remaining'
-  host: !secret printer_ip
-  baseoid: 1.3.6.1.2.1.43.11.1.1.9.1.3
-  accept_errors: true
-  scan_interval: 3600
-  #unit_of_measurement: '%'
+    # CALCULATION TARIF LOW + NORMAL
+    hourly_energy:
+      friendly_name: Hourly energy
+      unit_of_measurement: kWh
+      value_template: "{{ states('sensor.hourly_energy_offpeak')|float + states('sensor.hourly_energy_peak')|float }}"
+    daily_energy:
+      friendly_name: Daily energy
+      unit_of_measurement: kWh
+      value_template: "{{ states('sensor.daily_energy_offpeak')|float + states('sensor.daily_energy_peak')|float }}"
+    weekly_energy:
+      friendly_name: Weekly energy
+      unit_of_measurement: kWh
+      value_template: "{{ states('sensor.weekly_energy_offpeak')|float + states('sensor.weekly_energy_peak')|float }}"
+    monthly_energy:
+      friendly_name: Monthly energy
+      unit_of_measurement: kWh
+      value_template: "{{ states('sensor.monthly_energy_offpeak')|float + states('sensor.monthly_energy_peak')|float }}"
+    yearly_energy:
+      friendly_name: Yearly energy
+      unit_of_measurement: kWh
+      value_template: "{{ states('sensor.yearly_energy_offpeak')|float + states('sensor.yearly_energy_peak')|float }}"
+    # # LAST PERIODS GAS
+    # yesterday_gas:
+    #   friendly_name: Yesterday Gas
+    #   unit_of_measurement: m3
+    #   value_template: "{{ state_attr('sensor.daily_gas','last_period') }}"
+    # last_week_gas:
+    #   friendly_name: last Week Gas
+    #   unit_of_measurement: m3
+    #   value_template: "{{ state_attr('sensor.weekly_gas','last_period') }}"
+    # last_month_gas:
+    #   friendly_name: last Month Gas
+    #   unit_of_measurement: m3
+    #   value_template: "{{ state_attr('sensor.monthly_gas','last_period') }}"
+    # last_year_gas:
+    #   friendly_name: last Year Gas
+    #   unit_of_measurement: m3
+    #   value_template: "{{ state_attr('sensor.yearly_gas','last_period') }}"
+    
+# LAST PERIODS energy
+    yesterday_energy:
+      friendly_name: Yesterday energy
+      unit_of_measurement: kWh
+      value_template: "{{ state_attr('sensor.daily_energy_offpeak','last_period')|float + state_attr('sensor.daily_energy_peak','last_period')|float }}"
+    last_week_energy:
+      friendly_name: Last Week energy
+      unit_of_measurement: kWh
+      value_template: "{{ state_attr('sensor.weekly_energy_offpeak','last_period')|float + state_attr('sensor.weekly_energy_peak','last_period')|float }}"
+    last_month_energy:
+      friendly_name: Last Month energy
+      unit_of_measurement: kWh
+      value_template: "{{ state_attr('sensor.monthly_energy_offpeak','last_period')|float + state_attr('sensor.monthly_energy_peak','last_period')|float }}"
+    last_year_energy:
+      friendly_name: Last Year energy
+      unit_of_measurement: kWh
+      value_template: "{{ state_attr('sensor.yearly_energy_offpeak','last_period')|float + state_attr('sensor.yearly_energy_peak','last_period')|float }}"
 
-- platform: template
-  sensors:
-    150nw_magenta_level:
-      friendly_name: "Niveau Magenta Toner"
-      unit_of_measurement: '%'
-      value_template: "{{ (states('sensor.150nw_magenta_remaining')|float / states('sensor.150nw_magenta_capacity')|float * 100) | round(0) }}"
+    # SHORT energy
+    daily_energy_short:
+      value_template: "{{ '%.3f'%(states('sensor.daily_energy') | float) | float }}"
+      unit_of_measurement: 'kWh'
 
-# Yellow toner
-- platform: snmp
-  name: '150nw_yellow_capacity'
-  host: !secret printer_ip
-  baseoid: 1.3.6.1.2.1.43.11.1.1.8.1.4
-  accept_errors: true
-  scan_interval: 3600
-  #unit_of_measurement: '%'
+    yesterday_energy_short:
+      value_template: "{{ '%.3f'%(states('sensor.yesterday_energy') | float) | float }}"
+      unit_of_measurement: 'kWh'
 
-- platform: snmp
-  name: '150nw_yellow_remaining'
-  host: !secret printer_ip
-  baseoid: 1.3.6.1.2.1.43.11.1.1.9.1.4
-  accept_errors: true
-  scan_interval: 3600
-  #unit_of_measurement: '%'
+    weekly_energy_short:
+      value_template: "{{ '%.3f'%(states('sensor.weekly_energy') | float) | float }}"
+      unit_of_measurement: 'kWh'
 
-- platform: template
-  sensors:
-    150nw_yellow_level:
-      friendly_name: "Niveau Gele Toner"
-      unit_of_measurement: '%'
-      value_template: "{{ (states('sensor.150nw_yellow_remaining')|float / states('sensor.150nw_yellow_capacity')|float * 100) | round(0) }}"
+    last_week_energy_short:
+      value_template: "{{ '%.3f'%(states('sensor.last_week_energy') | float) | float }}"
+      unit_of_measurement: 'kWh'
+    
+    monthly_energy_short:
+      value_template: "{{ '%.3f'%(states('sensor.monthly_energy') | float) | float }}"
+      unit_of_measurement: 'kWh'
+
+    last_month_energy_short:
+      value_template: "{{ '%.3f'%(states('sensor.last_month_energy') | float) | float }}"
+      unit_of_measurement: 'kWh'
+
+    yearly_energy_short:
+      value_template: "{{ '%.3f'%(states('sensor.yearly_energy') | float) | float }}"
+      unit_of_measurement: 'kWh'
+
+    last_year_energy_short:
+      value_template: "{{ '%.3f'%(states('sensor.last_year_energy') | float) | float }}"
+      unit_of_measurement: 'kWh'
+
+    # CACULATIONS
+    energy_kwh_to_watt:
+      friendly_name: 'Actueel Watt'
+      unit_of_measurement: 'Watt'
+      value_template: "{{ (states.sensor.power_consumption_phase_l1.state | float * 1000) | round(0) }}"
+    # #Gemiddeld
+    # average_gas_day:
+    #   unit_of_measurement: 'm3'
+    #   value_template: >-
+    #     {% set a = states('sensor.last_month_gas') | float %}
+    #     {{ (a / 30.41) | round(3) }}
+    #Gemiddeld
+    average_energy_day:
+      unit_of_measurement: 'kWh'
+      value_template: >-
+        {% set a = states('sensor.last_month_energy') | float %}
+        {{ (a / 30.41) | round(3) }}
+
+  # Greenchoice ENERGIE
+     # PRICES GAS
+    # today_gas_price:
+    #   unit_of_measurement: 'EUR'
+    #   value_template: >-
+    #     {% set a = states('sensor.daily_gas') | float %}
+    #     {% set b = states('input_number.all_in_enkeltarief_gas') | float %}
+    #     {% set c = states('input_number.netbeheerkosten_gas') | float / 365 %}
+    #     {% set d = states('input_number.vaste_leveringskosten_gas') | float / 365 %}
+    #     {{ (((a * b) + c) + d) | round(2) }}
+
+    # yesterday_gas_price:
+    #   unit_of_measurement: 'EUR'
+    #   value_template: >-
+    #     {% set a = states('sensor.yesterday_gas') | float %}
+    #     {% set b = states('input_number.all_in_enkeltarief_gas') | float %}
+    #     {% set c = states('input_number.netbeheerkosten_gas') | float / 365 %}
+    #     {% set d = states('input_number.vaste_leveringskosten_gas') | float / 365 %}
+    #     {{ (((a * b) + c) + d) | round(2) }}
+
+    # week_gas_price:
+    #   unit_of_measurement: 'EUR'
+    #   value_template: >-
+    #     {% set a = states('sensor.weekly_gas') | float %}
+    #     {% set b = states('input_number.all_in_enkeltarief_gas') | float %}
+    #     {% set c = states('input_number.netbeheerkosten_gas') | float / 52 %}
+    #     {% set d = states('input_number.vaste_leveringskosten_gas') | float / 52 %}
+    #     {{ (((a * b) + c) + d) | round(2) }}
+
+    # last_week_gas_price:
+    #   unit_of_measurement: 'EUR'
+    #   value_template: >-
+    #     {% set a = states('sensor.last_week_gas') | float %}
+    #     {% set b = states('input_number.all_in_enkeltarief_gas') | float %}
+    #     {% set c = states('input_number.netbeheerkosten_gas') | float / 52 %}
+    #     {% set d = states('input_number.vaste_leveringskosten_gas') | float / 52 %}
+    #     {{ (((a * b) + c) + d) | round(2) }}
+
+    # month_gas_price:
+    #   unit_of_measurement: 'EUR'
+    #   value_template: >-
+    #     {% set a = states('sensor.monthly_gas') | float %}
+    #     {% set b = states('input_number.all_in_enkeltarief_gas') | float %}
+    #     {% set c = states('input_number.netbeheerkosten_gas') | float / 12 %}
+    #     {% set d = states('input_number.vaste_leveringskosten_gas') | float / 12 %}
+    #     {{ (((a * b) + c) + d) | round(2) }}
+
+    # last_month_gas_price:
+    #   unit_of_measurement: 'EUR'
+    #   value_template: >-
+    #     {% set a = states('sensor.last_month_gas') | float %}
+    #     {% set b = states('input_number.all_in_enkeltarief_gas') | float %}
+    #     {% set c = states('input_number.netbeheerkosten_gas') | float / 12 %}
+    #     {% set d = states('input_number.vaste_leveringskosten_gas') | float / 12 %}
+    #     {{ (((a * b) + c) + d) | round(2) }}
+
+    # year_gas_price:
+    #   unit_of_measurement: 'EUR'
+    #   value_template: >-
+    #     {% set a = states('sensor.yearly_gas') | float %}
+    #     {% set b = states('input_number.all_in_enkeltarief_gas') | float %}
+    #     {% set c = states('input_number.netbeheerkosten_gas') | float %}
+    #     {% set d = states('input_number.vaste_leveringskosten_gas') | float %}
+    #     {{ (((a * b) + c) + d) | round(2) }}
+
+    # last_year_gas_price:
+    #   unit_of_measurement: 'EUR'
+    #   value_template: >-
+    #     {% set a = states('sensor.last_year_gas') | float %}
+    #     {% set b = states('input_number.all_in_enkeltarief_gas') | float %}
+    #     {% set c = states('input_number.netbeheerkosten_gas') | float %}
+    #     {% set d = states('input_number.vaste_leveringskosten_gas') | float %}
+    #     {{ (((a * b) + c) + d) | round(2) }}
+        
+
+     # PRICES energy
+    today_energy_price:
+      unit_of_measurement: 'EUR'
+      value_template: >-
+        {% set a = states('sensor.daily_energy') | float %}
+        {% set b = states('input_number.all_in_enkeltarief_stroom') | float %}
+        {% set c = states('input_number.netbeheerkosten_stroom') | float / 365 %}
+        {% set d = states('input_number.vaste_leveringskosten_stroom') | float / 365 %}
+        {% set e = states('input_number.vermindering_energiebelasting_stroom') | float / 365 %}
+        {{ ((((a * b) + c) + d) + e) | round(2) }}
+
+    yesterday_energy_price:
+      unit_of_measurement: 'EUR'
+      value_template: >-
+        {% set a = states('sensor.yesterday_energy') | float %}
+        {% set b = states('input_number.all_in_enkeltarief_stroom') | float %}
+        {% set c = states('input_number.netbeheerkosten_stroom') | float / 365 %}
+        {% set d = states('input_number.vaste_leveringskosten_stroom') | float / 365 %}
+        {% set e = states('input_number.vermindering_energiebelasting_stroom') | float / 365 %}
+        {{ ((((a * b) + c) + d) + e) | round(2) }}
+
+    week_energy_price:
+      unit_of_measurement: 'EUR'
+      value_template: >-
+        {% set a = states('sensor.weekly_energy') | float %}
+        {% set b = states('input_number.all_in_enkeltarief_stroom') | float %}
+        {% set c = states('input_number.netbeheerkosten_stroom') | float / 52 %}
+        {% set d = states('input_number.vaste_leveringskosten_stroom') | float / 52 %}
+        {% set e = states('input_number.vermindering_energiebelasting_stroom') | float / 52 %}
+        {{ ((((a * b) + c) + d) + e) | round(2) }}
+
+    last_week_energy_price:
+      unit_of_measurement: 'EUR'
+      value_template: >-
+        {% set a = states('sensor.last_week_energy') | float %}
+        {% set b = states('input_number.all_in_enkeltarief_stroom') | float %}
+        {% set c = states('input_number.netbeheerkosten_stroom') | float / 52 %}
+        {% set d = states('input_number.vaste_leveringskosten_stroom') | float / 52 %}
+        {% set e = states('input_number.vermindering_energiebelasting_stroom') | float / 52 %}
+        {{ ((((a * b) + c) + d) + e) | round(2) }}
+
+    month_energy_price:
+      unit_of_measurement: 'EUR'
+      value_template: >-
+        {% set a = states('sensor.monthly_energy') | float %}
+        {% set b = states('input_number.all_in_enkeltarief_stroom') | float %}
+        {% set c = states('input_number.netbeheerkosten_stroom') | float / 12 %}
+        {% set d = states('input_number.vaste_leveringskosten_stroom') | float / 12 %}
+        {% set e = states('input_number.vermindering_energiebelasting_stroom') | float / 12 %}
+        {{ ((((a * b) + c) + d) + e) | round(2) }}
+
+    last_month_energy_price:
+      unit_of_measurement: 'EUR'
+      value_template: >-
+        {% set a = states('sensor.last_month_energy') | float %}
+        {% set b = states('input_number.all_in_enkeltarief_stroom') | float %}
+        {% set c = states('input_number.netbeheerkosten_stroom') | float / 12 %}
+        {% set d = states('input_number.vaste_leveringskosten_stroom') | float / 12 %}
+        {% set e = states('input_number.vermindering_energiebelasting_stroom') | float / 12 %}
+        {{ ((((a * b) + c) + d) + e) | round(2) }}
+
+    year_energy_price:
+      unit_of_measurement: 'EUR'
+      value_template: >-
+        {% set a = states('sensor.yearly_energy') | float %}
+        {% set b = states('input_number.all_in_enkeltarief_stroom') | float %}
+        {% set c = states('input_number.netbeheerkosten_stroom') | float %}
+        {% set d = states('input_number.vaste_leveringskosten_stroom') | float %}
+        {% set e = states('input_number.vermindering_energiebelasting_stroom') | float %}
+        {{ ((((a * b) + c) + d) + e) | round(2) }}
+      
+    last_year_energy_price:
+      unit_of_measurement: 'EUR'
+      value_template: >-
+        {% set a = states('sensor.last_year_energy') | float %}
+        {% set b = states('input_number.all_in_enkeltarief_stroom') | float %}
+        {% set c = states('input_number.netbeheerkosten_stroom') | float %}
+        {% set d = states('input_number.vaste_leveringskosten_stroom') | float %}
+        {% set e = states('input_number.vermindering_energiebelasting_stroom') | float %}
+        {{ ((((a * b) + c) + d) + e) | round(2) }}

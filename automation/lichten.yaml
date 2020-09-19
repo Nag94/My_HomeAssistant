@@ -78,6 +78,7 @@
           {% endif %}
   id: '8ba5cd168d054483a9e86725bda32214'
 - alias: licht uit in woonkamer in de nacht
+  mode: single
   trigger:
   - platform: event
     event_type: timer.finished
@@ -95,10 +96,13 @@
   id: 59c5990eaaa641bca043fd678b047a30
 - id: '1560531033513'
   alias: Lampen beneden aan via dimmer
+  mode: single
   trigger:
-  - entity_id: sensor.woonkamer_remote
-    platform: state
-    to: '1_click_up'
+  - device_id: 0435dbb6373049949c44c04f3de67525
+    domain: hue
+    platform: device
+    subtype: turn_on
+    type: remote_button_short_release
   condition:
   - condition: state
     entity_id: light.beneden
@@ -111,12 +115,19 @@
         - light.keukenspots_all
         - light.flux_liefde
     service: light.turn_on
+  - service: switch.turn_off
+    data:
+      entity_id:
+        - input_boolean.camera_switch
 - id: '1560531143161'
   alias: Lampen uit via dimmer
+  mode: single
   trigger:
-  - entity_id: sensor.woonkamer_remote
-    platform: state
-    to: '4_click_up'
+  - device_id: 0435dbb6373049949c44c04f3de67525
+    domain: hue
+    platform: device
+    subtype: turn_off
+    type: remote_button_short_release
   condition:
   - condition: state
     entity_id: light.beneden
@@ -139,9 +150,11 @@
 - id: '1560618909344'
   alias: Alle lampen uit met dimmer
   trigger:
-  - entity_id: sensor.ouderslaapkamer_remote
-    platform: state
-    to: '4_hold_up'
+  - device_id: 1d234dbb22ab4ca28eb140f91541a673
+    domain: hue
+    platform: device
+    type: remote_button_long_release
+    subtype: turn_off
   action:
   - data:
       entity_id:

@@ -74,7 +74,10 @@
       entity_id: sensor.vaatwasser_program_progress
       to: '100'
       for:
-        seconds: 5
+        seconds: 30
+    - platform: template
+      value_template: >-
+        {{ as_timestamp(states('sensor.vaatwasser_remaining_program_time')) == as_timestamp(now()) }}
   condition:
     - condition: state
       entity_id: input_boolean.vakantiestand
@@ -248,13 +251,7 @@
       data:
         message: 'Er zit iets in de brievenbus!'
         title: 'Brievenalert'
-    - service: notify.mobile_app_phone_erik
-      data:
-        message: 'Er zit iets in de brievenbus!'
-        title: 'Brievenalert'
-        data:
-          sticky: 'false'
-    - service: notify.mobile_app_sm_g973f
+    - service: notify.all_mobile
       data:
         message: 'Er zit iets in de brievenbus!'
         title: 'Brievenalert'
@@ -329,3 +326,32 @@
   action:
     - service: switch.turn_off
       entity_id: switch.genie
+#####################################
+############## afval ################
+#####################################
+- alias: 'Bakken aan de straat'
+  trigger:
+    - platform: time
+      at: '06:00:00'
+  condition:
+    - condition: template
+      value_template: >
+        {% set awsh = [states.sensor.afvalinfo_gft, states.sensor.afvalinfo_pbd, states.sensor.afvalinfo_restafval, states.sensor.afvalinfo_papier] %}
+        {{ awsh | selectattr('attributes.days_until_collection_date','<', 1) | list | length >= 1 }}
+  action:
+    - service: notify.all_mobile
+      data_template:
+        title: Bakken aan de straat
+        message: >-
+           {% if state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') == 0 %}
+              - Groene bak
+           {% endif %}
+           {% if state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') == 0 %}
+              - PMD Zakken
+           {% endif %}
+           {% if state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') == 0 %}
+              - Grijze bak
+           {% endif %}
+           {% if state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') == 0 %}
+              - Oud papier
+           {% endif %}

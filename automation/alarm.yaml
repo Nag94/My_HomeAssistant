@@ -142,6 +142,9 @@
     data:
       entity_id: media_player.keuken_hub
       view_path: '3'
+  - delay:
+      minutes: 10
+  - service: html5.dismiss
   id: 9c161e0a271545a191ab7565ded2b9c3
 - alias: alarm aan
   trigger:

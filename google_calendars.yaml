@@ -131,14 +131,14 @@
   - device_id: agendaveldhovensemuziekkorpsen_gmail_com
     ignore_availability: true
     name: agendaveldhovensemuziekkorpsen@gmail.com
-    track: true
+    track: false
 
 - cal_id: qtthrsons2lbgh1k7frufs6i1k@group.calendar.google.com
   entities:
   - device_id: pr_luf
     ignore_availability: true
     name: PR LUF
-    track: true
+    track: false
 
 - cal_id: p#weather@group.v.calendar.google.com
   entities:

@@ -59,11 +59,7 @@
       data:
         message: "Het zonnescherm is geopend"
         title: zonnescherm
-    - service: notify.mobile_app_phone_erik
-      data:
-        message: "Het zonnescherm is geopend"
-        title: zonnescherm
-    - service: notify.mobile_app_sm_g973f
+    - service: notify.all_mobile
       data:
         message: "Het zonnescherm is geopend"
         title: zonnescherm
@@ -106,30 +102,32 @@
       entity_id: input_boolean.disable_automatic_sunscreens
       state: 'on'
   action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.zonwering_open
+    - service: tts.google_translate_say
+      entity_id: media_player.eetkamer_speakers
+      data_template:
+        message: "Het zonnescherm gaat sluiten. Reden: {{ state_attr(trigger.entity_id, 'friendly_name') }}"
+        language: 'nl'
+        cache: false
+    - service: notify.html5
+      data:
+        message: "Het zonnescherm is gesloten"
+        title: zonnescherm
+    - service: notify.all_mobile
+      data_template:
+        message: "Het zonnescherm gaat sluiten, reden: {{ state_attr(trigger.entity_id, 'friendly_name') }}"
+        title: zonnescherm
+    - delay:
+        seconds: 10
     - service: cover.set_cover_position
       data:
         entity_id: cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level
         position: 100
     - delay:
-        seconds: 10
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.zonwering_open
-    - service: notify.html5
-      data:
-        message: "Het zonnescherm is gesloten"
-        title: zonnescherm
-    - service: notify.mobile_app_phone_erik
-      data_template:
-        message: "Het zonnescherm is gesloten, reden: {{ state_attr(trigger.entity_id, 'friendly_name') }}"
-        title: zonnescherm
-    - service: notify.mobile_app_sm_g973f
-      data:
-        message: "Het zonnescherm is gesloten"
-        title: zonnescherm
-    - delay:
         minutes: 10
     - service: html5.dismiss
-- alias: schakelaar om bij uitklappen zonescherm
+- alias: schakelaar om bij uitklappen zonnescherm
   trigger:
     - platform: state
       entity_id: cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level

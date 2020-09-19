@@ -14,27 +14,27 @@ wakeup_tijd:
   name: "Start Wake-up om"
   has_time: true
   has_date: false
-  initial: "05:45"
+#  initial: "05:45"
 wakeup_tijd_evie:
   name: "Start Wake-up Evie om"
   has_time: true
   has_date: false
-  initial: "06:00"
+#  initial: "06:00"
 wakeup_tijd_jules:
   name: "Start Wake-up Jules om"
   has_time: true
   has_date: false
-  initial: "06:00"
+#  initial: "06:00"
 wakeup_tijd_ouders:
   name: "Start Wake-up ouders om"
   has_time: true
   has_date: false
-  initial: "06:00"
+#  initial: "06:00"
 wakeup_tijd_hal:
   name: "Start Wake-up hal om"
   has_time: true
   has_date: false
-  initial: "05:45"
+#  initial: "05:45"
 datum_eindafrekening:
   name: "Datum eindafrekening"
   has_date: true

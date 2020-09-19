@@ -1,20 +1,14 @@
 - platform: broadlink
-  host: 192.168.1.6
-  mac: 'B4:43:0D:CB:EB:CD'
-  type:  sp3
-  friendly_name: "Tuinverlichting"
+  mac: B4:43:0D:CB:EB:CD
+#  friendly_name: "Tuinverlichting"
 
 - platform: broadlink
-  host: 192.168.1.7
-  mac: '34:EA:34:9D:36:76'
-  type:  sp3
-  friendly_name: "Koffie"
+  mac: 34:EA:34:9D:36:76
+#  friendly_name: "Koffie"
 
 - platform: broadlink
-  host: 192.168.1.9
-  mac: '34:EA:34:9D:1C:50'
-  type:  sp3
-  friendly_name: "Haard"
+  mac: 34:EA:34:9D:1C:50
+#  friendly_name: "Haard"
 
 - platform: template
   switches:

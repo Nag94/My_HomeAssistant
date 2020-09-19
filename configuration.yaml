@@ -18,6 +18,8 @@ homeassistant:
     - /config/www/video/
   internal_url: !secret internal_url
   external_url: !secret external_url
+  media_dirs:
+    camera: /config/www/video/
 
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
@@ -87,6 +89,14 @@ notify:
     vapid_prv_key: !secret html_prv_key
     vapid_email: !secret html_email
     name: html5
+  - platform: nfandroidtv
+    name: bericht_woonkamertv
+    host: 192.168.1.42
+  - name: all_mobile
+    platform: group
+    services:
+      - service: mobile_app_phone_erik
+      - service: mobile_app_sm_g973f
 
 # Text to speech
 tts:
@@ -137,6 +147,9 @@ media_player:
     mac: !secret tv_mac
     username: !secret tv_username
     password: !secret tv_password
+  - platform: androidtv
+    name: "Android TV  Woonkamer"
+    host: !secret tv_woonkamer
 
 spotify:
   client_id: !secret spotify_id
@@ -153,16 +166,16 @@ camera:
   - platform: ffmpeg
     name: "Woonkamer"
     input: !secret cam_woonkamer
-  - platform: ezviz
-    username: !secret ezviz_un
-    password: !secret ezviz_pw
-    cameras:
-      178211475:
-        username: !secret ezviz_gen_un
-        password: !secret ezviz_gen_oprit
-      C35158510:
-        username: !secret ezviz_gen_un
-        password: !secret ezviz_gen_woonkamer
+#  - platform: ezviz
+#    username: !secret ezviz_un
+#    password: !secret ezviz_pw
+#    cameras:
+#      178211475:
+#        username: !secret ezviz_gen_un
+#        password: !secret ezviz_gen_oprit
+#      C35158510:
+#        username: !secret ezviz_gen_un
+#        password: !secret ezviz_gen_woonkamer
   - platform: buienradar
 
 stream:
@@ -214,12 +227,7 @@ utility_meter:
 google:
   client_id: !secret google_client_id
   client_secret: !secret google_client_secret
-  track_new_calendar: true
-
-#tuya:
-#  username: !secret some_user
-#  password: !secret some_password
-#  country_code: 31
+  track_new_calendar: false
 
 home_connect:
   client_id: !secret homeconnect_client_id

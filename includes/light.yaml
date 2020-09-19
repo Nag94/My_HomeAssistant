@@ -6,7 +6,7 @@
       mode: 'w'
 - platform: switch
   name: tuinslinger_achter
-  entity_id: switch.tuinverlichting
+  entity_id: switch.tuinverlichting_switch
 - platform: group
   name: living
   entities:

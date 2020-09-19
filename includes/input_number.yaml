@@ -84,6 +84,74 @@
 #########################################
 ############ Energie ####################
 #########################################
+##### Nieuw ####
+
+
+# STROOM TARIEVEN
+  all_in_enkeltarief_stroom:
+    name: All-in enkeltarief Stroom
+    initial: 0.200
+    min: 0.000
+    max: 0.500
+    mode: box
+    step: 0.001
+    unit_of_measurement: 'EUR per kWh'
+  vaste_leveringskosten_stroom:
+    name: Vaste leveringskosten Stroom
+    initial: 68.80 
+    min: 0.00
+    max: 100.00
+    mode: box
+    step: 0.01
+    unit_of_measurement: 'EUR per jaar'
+  vermindering_energiebelasting_stroom:
+    name: Vermindering Energiebelasting Stroom
+    initial: -527.17
+    min: -600.00
+    max: 0.00
+    mode: box
+    step: 0.01
+    unit_of_measurement: 'EUR per jaar'
+  netbeheerkosten_stroom:
+    name: Netbeheerkosten Stroom
+    initial: 231.70
+    min: 0.00
+    max: 400.00
+    mode: box
+    step: 0.01
+    unit_of_measurement: 'EUR per jaar'
+#   # GAS TARIEVEN
+#   all_in_enkeltarief_gas:
+#     name: All-in enkeltarief Gas
+#     initial: 0.725 
+#     min: 0.000
+#     max: 0.999
+#     mode: box
+#     step: 0.001
+#     unit_of_measurement: 'EUR per m3'
+#   vaste_leveringskosten_gas:
+#     name: Vaste leveringskosten Gas
+#     initial: 71.39
+#     min: 0.00
+#     max: 100.00
+#     mode: box
+#     step: 0.01
+#     unit_of_measurement: 'EUR per jaar'
+#   netbeheerkosten_gas:
+#     name: Netbeheerkosten Gas
+#     initial: 191.19
+#     min: 0.00
+#     max: 300.00 
+#     mode: box
+#     step: 0.01
+#     unit_of_measurement: 'EUR per jaar'
+
+
+
+
+
+##### OLD ####
+
 # Meterstand elektra voorgaand jaar
   meterstand_elektra:
     name: Beginstand Elektra
