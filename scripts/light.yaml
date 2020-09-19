@@ -113,8 +113,8 @@ daglicht_aan:
       data_template:
         entity_id: light.eettafel_1, light.eettafel_2
         brightness: >-
-          {% if '06:00' <= now().strftime("%H:%M") <= "08:00" or "17:30" <= now().strftime("%H:%M") <= "19:30" %}
-          200
+          {% if '06:00' <= now().strftime("%H:%M") <= "09:30" or "17:30" <= now().strftime("%H:%M") <= "19:30" %}
+          220
           {% else %}
           90
           {% endif %}
@@ -124,19 +124,19 @@ daglicht_aan:
         - 117
         transition: 30
     - service: light.turn_on
-    data_template:
-      entity_id: >-
-        {% if states('sensor.sunlight_pct')|float <8 %}
-        light.keukenspots_all, light.schilderij, light.schuifpui, light.keuken, light.woonkamer , light.flux_liefde
-        {% else %}
-        light.schilderij, light.schuifpui, light.keuken, light.woonkamer , light.flux_liefde
-        {% endif %}
-      brightness: 90
-      rgb_color:
-      - 226
-      - 188
-      - 117
-      transition: 30
+      data_template:
+        entity_id: >-
+          {% if states('sensor.sunlight_pct')|float <8 %}
+          light.keukenspots_all, light.schilderij, light.schuifpui, light.keuken, light.woonkamer , light.flux_liefde
+          {% else %}
+          light.schilderij, light.schuifpui, light.keuken, light.woonkamer , light.flux_liefde
+          {% endif %}
+        brightness: 90
+        rgb_color:
+        - 226
+        - 188
+        - 117
+        transition: 30
 keukenspots_aan:
   alias: Keukenspots aan
   sequence:
