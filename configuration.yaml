@@ -1,16 +1,10 @@
 homeassistant:
-  # Name of the location where Home Assistant is running
   name: Thuis
-  # Location required to calculate the time the sun rises and sets
   latitude: !secret lattitude
   longitude: !secret longitude
-  # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: !secret elevation
-  # metric for Metric, imperial for Imperial
   unit_system: metric
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: Europe/Amsterdam
-  # Customization file
   customize: !include customize.yaml
   allowlist_external_dirs:
     - /config/tmp/
@@ -28,9 +22,6 @@ default_config:
 http:
   ip_ban_enabled: false
   login_attempts_threshold: 5
-#  base_url: !secret base_url
-#  ssl_certificate: /ssl/fullchain.pem
-#  ssl_key: /ssl/privkey.pem
 
 # Discover some devices automatically
 discovery:
@@ -56,7 +47,6 @@ influxdb:
 # Set up themes
 frontend:
   themes: !include_dir_merge_named themes
-  javascript_version: latest
 
 breaking_changes:
 
@@ -64,9 +54,9 @@ python_script:
 
 browser_mod:
   devices:
-    b11267be-c6f95287:
+    1210b5b0 c3dfacb5:
       name: Erikmobiel
-    b2fdad50-2e27c84a:
+    c59ef2c8-790839dc:
       name: werklaptop
     492405d1-efc10bc8:
       name: Nathmobiel
@@ -76,11 +66,6 @@ browser_mod:
 google_assistant:
   project_id: amazing-limiter-212613
   service_account: !include My_Project-7788489780df.json
- # report_state: true
-
-#twilio:
-#  account_sid: !secret twillio_sid
-#  auth_token: !secret twillio_token
 
 # notifier via google
 notify:
@@ -110,7 +95,7 @@ tts:
 
 # RFXtrx
 rfxtrx:
-  device: /dev/serial/by-id/usb-RFXCOM_RFXtrx433_A12IPPXJ-if00-port0
+  device: '/dev/serial/by-id/usb-RFXCOM_RFXtrx433_A12IPPXJ-if00-port0'
   debug: true
   automatic_add: true
 
@@ -180,23 +165,23 @@ camera:
 
 stream:
 
-panel_custom:
-  - name: gallery
-    sidebar_title: CCTV
-    sidebar_icon: mdi:cctv
-    config:
-      title: Beveiligingscamera's
-      tabs:
-        - name: Oprit
-          entity_id: sensor.oprit
-          file_name_format: "oprit_%YYY%m%d-%H%M%S"
-          caption_format: "%m/%d %H:%M"
-          maximum_files: 10
-        - name: Woonkamer
-          entity_id: sensor.woonkamer
-          file_name_format: "woonkamer_%YYY%m%d-%H%M%S"
-          caption_format: "%m/%d %H:%M"
-          maximum_files: 10
+# panel_custom:
+#   - name: gallery
+#     sidebar_title: CCTV
+#     sidebar_icon: mdi:cctv
+#     config:
+#       title: Beveiligingscamera's
+#       tabs:
+#         - name: Oprit
+#           entity_id: sensor.oprit
+#           file_name_format: "oprit_%YYY%m%d-%H%M%S"
+#           caption_format: "%m/%d %H:%M"
+#           maximum_files: 10
+#         - name: Woonkamer
+#           entity_id: sensor.woonkamer
+#           file_name_format: "woonkamer_%YYY%m%d-%H%M%S"
+#           caption_format: "%m/%d %H:%M"
+#           maximum_files: 10
 
 shell_command:
   remove_video: find /config/www/video/* -mtime +3 -exec rm {} \;
@@ -229,7 +214,7 @@ google:
   client_secret: !secret google_client_secret
   track_new_calendar: false
 
-home_connect:
+home_connect_beta:
   client_id: !secret homeconnect_client_id
   client_secret: !secret homeconnect_client_secret
 

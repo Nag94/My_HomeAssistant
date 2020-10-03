@@ -5,6 +5,8 @@
     from: 'off'
     platform: state
     to: 'on'
+  - platform: time
+    at: '20:00:00'
   condition:
   - condition: state
     entity_id: binary_sensor.low_lux_input
@@ -299,7 +301,10 @@
     - platform: state
       entity_id: media_player.tv_woonkamer
       to: 'off'
-  condition: []
+  condition:
+    - condition: state
+      entity_id: light.woonkamer_ambilight
+      state: 'on'
   action:
     - service: light.turn_off
       data:
@@ -511,8 +516,8 @@
 
 - alias: "Wake me up with hal light transition for weekdays"
   trigger:
-    platform: template
-    value_template: "{{ states('sensor.time') == (state_attr('input_datetime.wakeup_tijd_hal', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    platform: time
+    at: input_datetime.wakeup_tijd_hal
   condition:
     - condition: state
       entity_id: input_boolean.wakeup_hal_enabled
@@ -553,8 +558,8 @@
 ############################
 - alias: "Wake me up with ouder light transition for weekdays"
   trigger:
-    platform: template
-    value_template: "{{ states('sensor.time') == (state_attr('input_datetime.wakeup_tijd_ouders', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    platform: time
+    at: input_datetime.wakeup_tijd_ouders
   condition:
     - condition: state
       entity_id: input_boolean.wakeup_ouders_enabled
@@ -608,8 +613,8 @@
 ############################
 - alias: "Wake me up with evie light transition for weekdays"
   trigger:
-    platform: template
-    value_template: "{{ states('sensor.time') == (state_attr('input_datetime.wakeup_tijd_evie', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    platform: time
+    at: input_datetime.wakeup_tijd_evie
   condition:
     - condition: state
       entity_id: input_boolean.wakeup_evie_enabled
@@ -698,8 +703,8 @@
 ############################
 - alias: "Wake me up with jules light transition for weekdays"
   trigger:
-    platform: template
-    value_template: "{{ states('sensor.time') == (state_attr('input_datetime.wakeup_tijd_jules', 'timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+    platform: time
+    at: input_datetime.wakeup_tijd_jules
   condition:
     - condition: state
       entity_id: input_boolean.wakeup_jules_enabled
@@ -915,7 +920,7 @@
   trigger:
   - platform: sun
     event: sunrise
-    offset: "00:10:00"
+    offset: "00:30:00"
   action:
     - service: light.turn_off
       data:

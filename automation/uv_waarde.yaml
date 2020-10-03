@@ -1,7 +1,7 @@
 - alias: Update OpenUV elke 60 minuten overdag
   trigger:
     platform: time_pattern
-    minutes: '/60'
+    hours: "/1"
   condition:
     condition: and
     conditions:

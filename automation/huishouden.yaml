@@ -40,7 +40,7 @@
     from: 'Draait'
     to: 'Klaar'
     for:
-      seconds: 120
+      minutes: 2
   condition:
     - condition: state
       entity_id: input_boolean.vakantiestand
@@ -73,11 +73,9 @@
     - platform: state
       entity_id: sensor.vaatwasser_program_progress
       to: '100'
-      for:
-        seconds: 30
     - platform: template
       value_template: >-
-        {{ as_timestamp(states('sensor.vaatwasser_remaining_program_time')) == as_timestamp(now()) }}
+        {{ as_timestamp(states('sensor.vaatwasser_remaining_program_time')) == (as_timestamp(utcnow())) }}
   condition:
     - condition: state
       entity_id: input_boolean.vakantiestand
@@ -131,7 +129,7 @@
         state: home
   action:
     - service: switch.turn_on
-      entity_id: switch.koffie
+      entity_id: switch.espressomachine_switch
 - alias: Espressomachine uit
   trigger:
     - platform: template
@@ -144,7 +142,7 @@
       to: 'on'
   action:
     - delay:
-        minutes: 60
+        hours: 1
     - service: switch.turn_off
       entity_id: switch.koffie
 ####################################
@@ -188,12 +186,6 @@
         {% else %}
           {{ is_state('binary_sensor.workday_sensor', 'off') or is_state('binary_sensor.workday_sensor', 'on') }}
         {% endif %}
-#    - condition: state
-#      entity_id: input_boolean.ochtendmuziek
-#      state: 'off'
-#    - condition: state
-#      entity_id: binary_sensor.workday_sensor
-#      state: 'off'
     - condition: or
       conditions:
       - condition: state

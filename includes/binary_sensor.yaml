@@ -194,3 +194,16 @@
       prob_given_false: 0.2
       platform: 'state'
       to_state: 'home'
+###########################
+####### Camera ###########
+##########################
+# - platform: mqtt
+#   name: "Opritcam"
+#   state_topic: "cameras/oprit/motion"
+#   name: Oprit Camera Motion
+#   device_class: motion
+# - platform: mqtt
+#   name: "Woonkamercam"
+#   state_topic: "cameras/woonkamer/motion"
+#   name: Woonkamer Camera Motion
+#   device_class: motion

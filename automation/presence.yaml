@@ -152,7 +152,7 @@
            {% else %}
              'Net thuis aangekomen'
            {% endif %}
-         {% endif %}"
+         {% endif %}
   id: f4d0db06b4664705bdef61a31161c5b3
 - alias: Mark person as home
   trigger:

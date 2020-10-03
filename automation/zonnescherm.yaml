@@ -1,7 +1,7 @@
 - alias: zonnescherm openen
   trigger:
     - platform: time_pattern
-      minutes: '/5'
+      minutes: "/5"
   condition:
     - condition: state
       entity_id: group.all_persons
@@ -104,6 +104,10 @@
   action:
     - service: input_boolean.turn_on
       entity_id: input_boolean.zonwering_open
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.eetkamer_speakers
+        volume_level: 0.5
     - service: tts.google_translate_say
       entity_id: media_player.eetkamer_speakers
       data_template:

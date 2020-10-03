@@ -1,3 +1,73 @@
+mediaplayer_say:
+  alias: TTS met pauzeren en hervatten van muziek
+  sequence:
+  - variables:
+      spotify: >-
+        {{ is_state_attr(player2, 'source', 'Spotify')  }}
+      playing: >-
+        {{ state_attr(player2, 'source') != 'Spotify' }}
+      media_content: >-
+        {% if state_attr(player2, 'friendly_name') == state_attr('media_player.spotify_erik_silverentand', 'source') %}
+          {{ state_attr('media_player.spotify_erik_silverentand', 'media_content_id') }}
+        {% else %}
+          {{ state_attr(player2, 'media_content_id') }}
+        {% endif %}
+      media_type: >-
+        {{ state_attr(player2, 'media_content_type') }}
+      volume_level: >-
+        {{ state_attr(player2, 'volume_level')|float }}
+      idle: >-
+        {{ states(player2) == 'idle' or states(player2) == 'paused' }}
+  - choose:
+    - conditions: "{{ idle }}"
+      sequence:
+      - service: media_player.turn_on
+        data:
+          entity_id: "{{ player2 }}"
+      - delay: 00:00:04
+  - service: media_player.media_pause
+    data:
+      entity_id: "{{ player2 }}"
+  - delay: 00:00:02
+  - service: media_player.volume_set
+    data:
+      entity_id: "{{ player2 }}"
+      volume_level: 0.6
+  - delay: 00:00:02
+  - service: tts.google_translate_say
+    data:
+      entity_id: "{{ player2 }}"
+      message: "{{ google_say }}"
+      cache: false
+      language: "nl"
+  - delay: 00:00:08
+  - service: media_player.turn_on
+    data:
+      entity_id: "{{ player2 }}"
+  - delay: 00:00:03
+  -  service: media_player.volume_set
+     data:
+       entity_id: "{{ player2 }}"
+       volume_level: "{{ volume_level }}"
+  - choose:
+    - conditions: "{{ idle }}"
+      sequence:
+      - service: media_player.turn_off
+        data:
+          entity_id: "{{ player2 }}"
+    - conditions: "{{ spotify }}"
+      sequence:
+      - service: spotcast.start
+        data:
+          device_name: >-
+            "{{ state_attr(player2, 'friendly_name') }}"
+    - conditions: "{{ playing }}"
+      sequence:
+      - service: media_extractor.play_media
+        data:
+          entity_id: "{{ player2 }}"
+          media_content_id: "{{ media_content }}"
+          media_content_type: "{{ media_type }}"
 '1557170594134':
   alias: Praten
   sequence:
@@ -8,13 +78,11 @@
   - delay: 00:00:02
   - data:
       message: Mama, Evie en Jules zijn lief!
-    entity_id: media_player.home_midni_woonkamer
+    entity_id: media_player.home_mini_woonkamer
     service: tts.google_translate_say
 weerscript:
   alias: weer
   sequence:
-  - delay:
-      minutes: 5
   - service: media_player.volume_set
     data:
       entity_id: media_player.eetkamer_speakers
@@ -83,6 +151,18 @@ agendascript:
         {% endif %}
         {% if -1 < (as_timestamp(state_attr('calendar.erikennathalie_silverentand_net', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
           Activiteit vandaag is {{ state_attr('calendar.erikennathalie_silverentand_net', 'message') }}.
+        {% endif %}
+        {% if -1 < (as_timestamp(state_attr('calendar.nathaliehouben11_gmail_com', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+          Activiteit vandaag voor Nathalie is {{ state_attr('calendar.nathaliehouben11_gmail_com', 'message') }}.
+        {% endif %}
+        {% if -1 < (as_timestamp(state_attr('calendar.esilverentand_gmail_com', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+          Activiteit vandaag voor Erik is {{ state_attr('calendar.esilverentand_gmail_com', 'message') }}.
+        {% endif %}
+        {% if -1 < (as_timestamp(state_attr('calendar.evie', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+          Activiteit vandaag voor Evie is {{ state_attr('calendar.evie', 'message') }}.
+        {% endif %}
+        {% if -1 < (as_timestamp(state_attr('calendar.jules', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+          Activiteit vandaag voor Jules is {{ state_attr('calendar.jules', 'message') }}.
         {% endif %}
       language: nl
       cache: false

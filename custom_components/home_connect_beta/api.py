@@ -7,7 +7,7 @@ import homeconnect
 from homeconnect.api import HomeConnectError
 
 from homeassistant import config_entries, core
-from homeassistant.const import DEVICE_CLASS_TIMESTAMP, TIME_SECONDS, UNIT_PERCENTAGE
+from homeassistant.const import DEVICE_CLASS_TIMESTAMP, PERCENTAGE, TIME_SECONDS
 from homeassistant.helpers import config_entry_oauth2_flow
 from homeassistant.helpers.dispatcher import dispatcher_send
 
@@ -56,6 +56,8 @@ class ConfigEntryAuth(homeconnect.HomeConnectAPI):
                 device = Dryer(self.hass, app)
             elif app.type == "Washer":
                 device = Washer(self.hass, app)
+            elif app.type == "WasherDryer":
+                device = WasherDryer(self.hass, app)
             elif app.type == "Dishwasher":
                 device = Dishwasher(self.hass, app)
             elif app.type == "FridgeFreezer":
@@ -87,6 +89,7 @@ class HomeConnectDevice:
         """Initialize the device class."""
         self.hass = hass
         self.appliance = appliance
+        self.entities = []
 
     def initialize(self):
         """Fetch the info needed to initialize the device."""
@@ -140,7 +143,7 @@ class DeviceWithPrograms(HomeConnectDevice):
         sensors = {
             "Remaining Program Time": (None, None, DEVICE_CLASS_TIMESTAMP, 1),
             "Duration": (TIME_SECONDS, "mdi:update", None, 1),
-            "Program Progress": (UNIT_PERCENTAGE, "mdi:progress-clock", None, 1),
+            "Program Progress": (PERCENTAGE, "mdi:progress-clock", None, 1),
         }
         return [
             {
@@ -168,10 +171,78 @@ class DeviceWithDoor(HomeConnectDevice):
         }
 
 
+class DeviceWithLight(HomeConnectDevice):
+    """Device that has lighting."""
+
+    def get_light_entity(self):
+        """Get a dictionary with info about the lighting."""
+        return {
+            "device": self,
+            "desc": "Light",
+        }
+
+
 class Dryer(DeviceWithDoor, DeviceWithPrograms):
     """Dryer class."""
 
     PROGRAMS = [
+        {"name": "LaundryCare.Dryer.Program.Cotton"},
+        {"name": "LaundryCare.Dryer.Program.Synthetic"},
+        {"name": "LaundryCare.Dryer.Program.Mix"},
+        {"name": "LaundryCare.Dryer.Program.Blankets"},
+        {"name": "LaundryCare.Dryer.Program.BusinessShirts"},
+        {"name": "LaundryCare.Dryer.Program.DownFeathers"},
+        {"name": "LaundryCare.Dryer.Program.Hygiene"},
+        {"name": "LaundryCare.Dryer.Program.Jeans"},
+        {"name": "LaundryCare.Dryer.Program.Outdoor"},
+        {"name": "LaundryCare.Dryer.Program.SyntheticRefresh"},
+        {"name": "LaundryCare.Dryer.Program.Towels"},
+        {"name": "LaundryCare.Dryer.Program.Delicates"},
+        {"name": "LaundryCare.Dryer.Program.Super40"},
+        {"name": "LaundryCare.Dryer.Program.Shirts15"},
+        {"name": "LaundryCare.Dryer.Program.Pillow"},
+        {"name": "LaundryCare.Dryer.Program.AntiShrink"},
+    ]
+
+    def get_entity_info(self):
+        """Get a dictionary with infos about the associated entities."""
+        door_entity = self.get_door_entity()
+        program_sensors = self.get_program_sensors()
+        program_switches = self.get_program_switches()
+        return {
+            "binary_sensor": [door_entity],
+            "switch": program_switches,
+            "sensor": program_sensors,
+        }
+
+
+
+
+class WasherDryer(DeviceWithDoor, DeviceWithPrograms):
+    """Washer class."""
+
+    PROGRAMS = [
+        {"name": "LaundryCare.Washer.Program.Cotton"},
+        {"name": "LaundryCare.Washer.Program.Cotton.CottonEco"},
+        {"name": "LaundryCare.Washer.Program.EasyCare"},
+        {"name": "LaundryCare.Washer.Program.Mix"},
+        {"name": "LaundryCare.Washer.Program.DelicatesSilk"},
+        {"name": "LaundryCare.Washer.Program.Wool"},
+        {"name": "LaundryCare.Washer.Program.Sensitive"},
+        {"name": "LaundryCare.Washer.Program.Auto30"},
+        {"name": "LaundryCare.Washer.Program.Auto40"},
+        {"name": "LaundryCare.Washer.Program.Auto60"},
+        {"name": "LaundryCare.Washer.Program.Chiffon"},
+        {"name": "LaundryCare.Washer.Program.Curtains"},
+        {"name": "LaundryCare.Washer.Program.DarkWash"},
+        {"name": "LaundryCare.Washer.Program.Dessous"},
+        {"name": "LaundryCare.Washer.Program.Monsoon"},
+        {"name": "LaundryCare.Washer.Program.Outdoor"},
+        {"name": "LaundryCare.Washer.Program.PlushToy"},
+        {"name": "LaundryCare.Washer.Program.ShirtsBlouses"},
+        {"name": "LaundryCare.Washer.Program.SportFitness"},
+        {"name": "LaundryCare.Washer.Program.Towels"},
+        {"name": "LaundryCare.Washer.Program.WaterProof"},
         {"name": "LaundryCare.Dryer.Program.Cotton"},
         {"name": "LaundryCare.Dryer.Program.Synthetic"},
         {"name": "LaundryCare.Dryer.Program.Mix"},
@@ -251,6 +322,15 @@ class Oven(DeviceWithDoor, DeviceWithPrograms):
         {"name": "Cooking.Oven.Program.HeatingMode.TopBottomHeating"},
         {"name": "Cooking.Oven.Program.HeatingMode.PizzaSetting"},
         {"name": "Cooking.Oven.Program.Microwave.600Watt"},
+        {"name": "Cooking.Oven.Program.HeatingMode.SlowCook"},
+        {"name": "Cooking.Oven.Program.HeatingMode.HotAirEco"},
+        {"name": "Cooking.Oven.Program.HeatingMode.TopBottomHeatingEco"},
+        {"name": "Cooking.Oven.Program.HeatingMode.HotAirGrilling"},
+        {"name": "Cooking.Oven.Program.HeatingMode.IntensiveHeat"},
+        {"name": "Cooking.Oven.Program.HeatingMode.BottomHeating"},
+        {"name": "Cooking.Oven.Program.HeatingMode.PreheatOvenware"},
+        {"name": "Cooking.Oven.Program.HeatingMode.Desiccation"},
+        {"name": "Cooking.Oven.Program.HeatingMode.KeepWarm"},
     ]
 
     power_off_state = BSH_POWER_STANDBY
@@ -324,6 +404,21 @@ class CoffeeMaker(DeviceWithPrograms):
         {"name": "ConsumerProducts.CoffeeMaker.Program.Beverage.WarmMilk"},
         {"name": "ConsumerProducts.CoffeeMaker.Program.Beverage.Ristretto"},
         {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.Cortado"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.CafeCortado"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.WienerMelange"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.KleinerBrauner"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.GrosserBrauner"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.Verlaengerter"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.VerlaengerterBraun"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.CafeConLeche"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.CafeAuLait"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.Doppio"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.Kaapi"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.KoffieVerkeerd"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.Garoto"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.RedEye"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.BlackEye"},
+        {"name": "ConsumerProducts.CoffeeMaker.Program.CoffeeWorld.DeadEye"},
     ]
 
     power_off_state = BSH_POWER_STANDBY
@@ -335,7 +430,7 @@ class CoffeeMaker(DeviceWithPrograms):
         return {"switch": program_switches, "sensor": program_sensors}
 
 
-class Hood(DeviceWithPrograms):
+class Hood(DeviceWithLight, DeviceWithPrograms):
     """Hood class."""
 
     PROGRAMS = [
@@ -346,9 +441,14 @@ class Hood(DeviceWithPrograms):
 
     def get_entity_info(self):
         """Get a dictionary with infos about the associated entities."""
+        light_entity = self.get_light_entity()
         program_sensors = self.get_program_sensors()
         program_switches = self.get_program_switches()
-        return {"switch": program_switches, "sensor": program_sensors}
+        return {
+            "switch": program_switches,
+            "sensor": program_sensors,
+            "light" : [light_entity],
+        }
 
 
 class FridgeFreezer(DeviceWithDoor):

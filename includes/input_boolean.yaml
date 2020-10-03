@@ -74,3 +74,6 @@ wakeup_hal_weekend:
 ochtendmuziek:
   name: "Ochtendmuziek aan"
   icon: mdi:spotify
+test:
+  name: Testknop
+  icon: mdi:test-tube
