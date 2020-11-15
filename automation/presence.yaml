@@ -29,7 +29,15 @@
       entity_id: alarm_control_panel.thuis_alarm
     service: alarm_control_panel.alarm_arm_away
   - service: media_player.media_pause
-    entity_id: media_player.all
+    entity_id:
+      - media_player.spotify_erik_silverentand
+      - media_player.android_tv_woonkamer
+      - media_player.werkkamer_mini
+      - media_player.ouderslaapkamer_mini
+      - media_player.keukenspeaker
+      - media_player.eetkamer_speakers
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.ochtendmuziek
 - id: Erik_away_buiten_on
   alias: alarm buitencamera aan
   trigger:
@@ -301,11 +309,21 @@
   action:
     - service: media_player.volume_set
       data:
-        entity_id: media_player.home_mini_woonkamer
-        volume_level: 0.6
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'off') %}
+            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
+          {% else %}
+            media_player.home_mini_woonkamer
+          {% endif %}
+        volume_level: 0.5
     - service: tts.google_translate_say
-      entity_id: media_player.home_mini_woonkamer
-      data_template:
+      data:
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'off') %}
+            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
+          {% else %}
+            media_player.home_mini_woonkamer
+          {% endif %}
         message: >-
           {% if states('group.all_persons') == 'home' %}
             {% if (trigger.event) == 'leave' %}
@@ -316,7 +334,7 @@
           {% endif %}
         language: 'nl'
         cache: false
-    - service_template: >
+    - service: >-
         {% if (trigger.zone) == 'zone.werk_erik' %}
           notify.mobile_app_sm_g973f
         {% else %}
@@ -324,11 +342,11 @@
         {% endif %}
       data_template:
         message: >-
-            {% if (trigger.event) == 'leave' %}
-              {{ state_attr(trigger.entity_id, 'friendly_name') }} is onderweg naar huis!
-            {% else %}
-              {{ state_attr(trigger.entity_id, 'friendly_name') }} is op het werk aangekomen
-            {% endif %}
+          {% if (trigger.event) == 'leave' %}
+            {{ state_attr(trigger.entity_id, 'friendly_name') }} is onderweg naar huis!
+          {% else %}
+            {{ state_attr(trigger.entity_id, 'friendly_name') }} is op het werk aangekomen
+          {% endif %}
         title: 'Reisupdate'
         data:
           sticky: 'true'

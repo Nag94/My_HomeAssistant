@@ -34,6 +34,8 @@ panel_iframe:
 
 logger:
   default: error
+  logs:
+    homeassistant.core: info
 
 influxdb:
   host: a0d7b954-influxdb
@@ -52,16 +54,16 @@ breaking_changes:
 
 python_script:
 
-browser_mod:
-  devices:
-    1210b5b0 c3dfacb5:
-      name: Erikmobiel
-    c59ef2c8-790839dc:
-      name: werklaptop
-    492405d1-efc10bc8:
-      name: Nathmobiel
-    7c41798c-f582fe21:
-      name: thuislaptop
+# browser_mod:
+# devices:
+#   1210b5b0 c3dfacb5:
+#     name: Erikmobiel
+#   c59ef2c8-790839dc:
+#     name: werklaptop
+#     492405d1-efc10bc8:
+#       name: Nathmobiel
+#   7c41798c-f582fe21:
+#     name: thuislaptop
 
 google_assistant:
   project_id: amazing-limiter-212613
@@ -94,10 +96,10 @@ tts:
     service_name: google_translate_say
 
 # RFXtrx
-rfxtrx:
-  device: '/dev/serial/by-id/usb-RFXCOM_RFXtrx433_A12IPPXJ-if00-port0'
-  debug: true
-  automatic_add: true
+# rfxtrx:
+#   device: '/dev/serial/by-id/usb-RFXCOM_RFXtrx433_A12IPPXJ-if00-port0'
+#   debug: true
+#   automatic_add: true
 
 ifttt:
   key: !secret ifttt_key
@@ -118,23 +120,6 @@ rest_command:
     method: post
     url: !secret genie_off
     content_type: application/json
-
-media_player:
-  - platform: yamaha
-    host: !secret yamaha
-  - platform: bluesound
-    hosts:
-      - host: !secret mp_eetkamer
-      - host: !secret mp_keuken
-  - platform: philips_android_tv
-    name: "TV Woonkamer"
-    host: !secret tv_woonkamer
-    mac: !secret tv_mac
-    username: !secret tv_username
-    password: !secret tv_password
-  - platform: androidtv
-    name: "Android TV  Woonkamer"
-    host: !secret tv_woonkamer
 
 spotify:
   client_id: !secret spotify_id
@@ -165,29 +150,11 @@ camera:
 
 stream:
 
-# panel_custom:
-#   - name: gallery
-#     sidebar_title: CCTV
-#     sidebar_icon: mdi:cctv
-#     config:
-#       title: Beveiligingscamera's
-#       tabs:
-#         - name: Oprit
-#           entity_id: sensor.oprit
-#           file_name_format: "oprit_%YYY%m%d-%H%M%S"
-#           caption_format: "%m/%d %H:%M"
-#           maximum_files: 10
-#         - name: Woonkamer
-#           entity_id: sensor.woonkamer
-#           file_name_format: "woonkamer_%YYY%m%d-%H%M%S"
-#           caption_format: "%m/%d %H:%M"
-#           maximum_files: 10
-
 shell_command:
   remove_video: find /config/www/video/* -mtime +3 -exec rm {} \;
-        
-zwave:
-  usb_path: '/dev/serial/by-id/usb-0658_0200-if00'
+
+#zwave:
+#  usb_path: '/dev/serial/by-id/usb-0658_0200-if00'
 
 utility_meter:
   daily_energy_offpeak:
@@ -214,35 +181,9 @@ google:
   client_secret: !secret google_client_secret
   track_new_calendar: false
 
-home_connect_beta:
+home_connect:
   client_id: !secret homeconnect_client_id
   client_secret: !secret homeconnect_client_secret
-
-fan:
-  - platform: xiaomi_miio_fan
-    name: ventilator
-    host: 192.168.1.45
-    token: !secret fan1_token
-  - platform: mqtt
-    name: "Ventilator mqtt"
-    state_topic: "mifanpower/state"
-    command_topic: "mifanpower"
-    oscillation_state_topic: "mifanrotate/state"
-    oscillation_command_topic: "mifanrotate"
-    speed_state_topic: "mifanfanspeed/state"
-    speed_command_topic: "mifanfanspeed"
-    qos: 0
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_oscillation_on: "ON"
-    payload_oscillation_off: "OFF"
-    payload_low_speed: "LOW"
-    payload_medium_speed: "MEDIUM"
-    payload_high_speed: "HIGH"
-    speeds:
-      - low
-      - medium
-      - high
 
 weather:
   - platform: darksky
@@ -258,6 +199,8 @@ weather:
 airvisual:
   api_key: !secret airvisual_key
 
+fan: !include includes/fan.yaml
+media_player: !include includes/mediaplayers.yaml
 group: !include includes/groups.yaml
 automation: !include_dir_merge_list automation
 recorder: !include includes/recorder.yaml

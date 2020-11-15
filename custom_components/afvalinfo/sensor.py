@@ -60,6 +60,7 @@ from .const.const import (
     CONF_DATE_FORMAT,
     CONF_TIMESPAN_IN_DAYS,
     CONF_LOCALE,
+    CONF_ID,
     SENSOR_PREFIX,
     ATTR_LAST_UPDATE,
     ATTR_HIDDEN,
@@ -115,6 +116,7 @@ from .location.hoekschewaard import HoekscheWaardAfval
 from .location.katwijk import KatwijkAfval
 from .location.uden import UdenAfval
 from .location.westerwolde import WesterwoldeAfval
+from .location.montferland import MontferlandAfval
 
 from .sensortomorrow import AfvalInfoTomorrowSensor
 from .sensortoday import AfvalInfoTodaySensor
@@ -137,6 +139,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_DATE_FORMAT, default = "%d-%m-%Y"): cv.string,
         vol.Optional(CONF_TIMESPAN_IN_DAYS, default="365"): cv.string,
         vol.Optional(CONF_LOCALE, default = "en"): cv.string,
+        vol.Optional(CONF_ID, default = ""): cv.string,
     }
 )
 
@@ -152,6 +155,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     date_format = config.get(CONF_DATE_FORMAT).strip()
     timespan_in_days = config.get(CONF_TIMESPAN_IN_DAYS)
     locale = config.get(CONF_LOCALE)
+    id_name = config.get(CONF_ID)
 
     try:
         resourcesMinusTodayAndTomorrow = config[CONF_RESOURCES].copy()
@@ -172,15 +176,15 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
         #if sensor_type not in SENSOR_TYPES:
         if sensor_type.title().lower() != "trash_type_today" and sensor_type.title().lower() != "trash_type_tomorrow":
-            entities.append(AfvalinfoSensor(data, sensor_type, date_format, timespan_in_days, locale))
+            entities.append(AfvalinfoSensor(data, sensor_type, date_format, timespan_in_days, locale, id_name))
 
         #Add sensor -trash_type_today
         if sensor_type.title().lower() == "trash_type_today":
-            today = AfvalInfoTodaySensor(data, sensor_type, entities)
+            today = AfvalInfoTodaySensor(data, sensor_type, entities, id_name)
             entities.append(today)
         #Add sensor -trash_type_tomorrow
         if sensor_type.title().lower() == "trash_type_tomorrow":
-            tomorrow = AfvalInfoTomorrowSensor(data, sensor_type, entities)
+            tomorrow = AfvalInfoTomorrowSensor(data, sensor_type, entities, id_name)
             entities.append(tomorrow)
 
     add_entities(entities)
@@ -303,7 +307,7 @@ class AfvalinfoData(object):
             self.data = HvcAfval().get_data(
                 self.location, self.postcode, self.street_number, self.resources
             )
-        irado = ["capelle aan den ijssel", "schiedam", "vlaardingen"]
+        irado = ["capelle aan den ijssel", "rotterdam rozenburg", "schiedam", "vlaardingen"]
         if self.location in irado:
             self.data = IradoAfval().get_data(
                 self.location, self.postcode, self.street_number, self.resources
@@ -318,7 +322,7 @@ class AfvalinfoData(object):
             self.data = MiddenDrentheAfval().get_data(
                 self.location, self.postcode, self.street_number, self.resources
             )
-        mijnafvalwijzer = ["aa en hunze", "alphen-chaam", "assen", "altena", "amstelveen", "baarle-nassau", "barneveld", "beek", "beekdaelen", "bergeijk", "bergen op zoom", "bernheze", "best", "bladel", "borger-odoorn", "boxtel", "breda", "brielle", "castricum", "de ronde venen", "de wolden", "de bilt",
+        mijnafvalwijzer = ["aa en hunze", "alphen-chaam", "assen", "altena", "amstelveen", "baarle-nassau", "barneveld", "beek", "bergeijk", "bergen op zoom", "bernheze", "best", "bladel", "borger-odoorn", "boxtel", "breda", "brielle", "castricum", "de ronde venen", "de wolden", "de bilt",
         "doetinchem", "dongen", "dronten", "duiven", "eersel", "eindhoven", "elburg", "ermelo", "etten-leur", "geertruidenberg", "geldrop-mierlo", "gilze en rijen", "goirle", "halderberge", "harderwijk", "heerhugowaard", "heiloo", "hilvarenbeek", "horst aan de maas", "houten", "kampen", "krimpen aan den ijssel",
         "langedijk", "lansingerland", "leiden", "leiderdorp", "leudal", "leusden", "lingewaard", "loon op zand", "lopik", "maasgouw", "meierijstad", " midden-groningen", "moerdijk", "nijkerk", "noordenveld", "nunspeet", "oirschot", "oldambt", "oldebroek", "oosterhout", "oss", "oude ijsselstreek", "oude pekela",
         "putten", "oudewater", "overbetuwe", "rheden", "rhenen", "rijssen-holten", "roerdalen", "roermond", "roosendaal", "rotterdam", "rucphen", "scherpenzeel", "sint-michielsgestel", "sittard-geleen", "smallingerland", "stadskanaal", "stein", "stichtse vecht", "teylingen", "tilburg", "tynaarlo", "uitgeest",
@@ -327,6 +331,11 @@ class AfvalinfoData(object):
             self.data = MijnAfvalWijzerAfval().get_data(
                 self.location, self.postcode, self.street_number, self.resources
             )
+        '''montferland = ["montferland"]
+        if self.location in montferland:
+            self.data = MontferlandAfval().get_data(
+                self.location, self.postcode, self.street_number, self.resources
+            )'''
         omrin = ["achtkarspelen", "ameland", "appingedam", "dantumadeel f", "harlingen", "heerenveen", "het hogeland", "leeuwarden", "noardeast fryslan", "ooststellingwerf", "opsterland", "terschelling", "tietjerksteradeel", "waadhoeke", "weststellingwerf"]
         if self.location in omrin:
             self.data = OmrinAfval().get_data(
@@ -342,7 +351,7 @@ class AfvalinfoData(object):
             self.data = PurmerendAfval().get_data(
                 self.location, self.postcode, self.street_number, self.resources
             )
-        rd4 = ["brunssum", "eijsden-margraten", "gulpen-wittem", "heerlen", "kerkrade", "landgraaf", "maastricht", "meerssen", "simpelveld", "vaals", "valkenburg aan de geul", "voerendaal"]
+        rd4 = ["beekdaelen", "brunssum", "eijsden-margraten", "gulpen-wittem", "heerlen", "kerkrade", "landgraaf", "maastricht", "meerssen", "simpelveld", "vaals", "valkenburg aan de geul", "voerendaal"]
         if self.location in rd4:
             self.data = Rd4Afval().get_data(
                 self.location, self.postcode, self.street_number, self.resources
@@ -436,13 +445,13 @@ class AfvalinfoData(object):
             )
 
 class AfvalinfoSensor(Entity):
-    def __init__(self, data, sensor_type, date_format, timespan_in_days, locale):
+    def __init__(self, data, sensor_type, date_format, timespan_in_days, locale, id_name):
         self.data = data
         self.type = sensor_type
         self.date_format = date_format
         self.timespan_in_days = timespan_in_days
         self.locale = locale
-        self._name = SENSOR_PREFIX + SENSOR_TYPES[sensor_type][0]
+        self._name = SENSOR_PREFIX + (id_name + " " if len(id_name) > 0  else "") + SENSOR_TYPES[sensor_type][0]
         self._icon = SENSOR_TYPES[sensor_type][1]
         self._hidden = False
         self._state = None

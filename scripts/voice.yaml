@@ -2,10 +2,9 @@ mediaplayer_say:
   alias: TTS met pauzeren en hervatten van muziek
   sequence:
   - variables:
-      spotify: >-
-        {{ is_state_attr(player2, 'source', 'Spotify')  }}
+      spotify: true
       playing: >-
-        {{ state_attr(player2, 'source') != 'Spotify' }}
+        {{ state_attr(player2, 'app_name') != 'Spotify' and state_attr(player2, 'source') != 'Spotify' }}
       media_content: >-
         {% if state_attr(player2, 'friendly_name') == state_attr('media_player.spotify_erik_silverentand', 'source') %}
           {{ state_attr('media_player.spotify_erik_silverentand', 'media_content_id') }}
@@ -32,7 +31,7 @@ mediaplayer_say:
   - service: media_player.volume_set
     data:
       entity_id: "{{ player2 }}"
-      volume_level: 0.6
+      volume_level: 0.4
   - delay: 00:00:02
   - service: tts.google_translate_say
     data:
@@ -40,34 +39,33 @@ mediaplayer_say:
       message: "{{ google_say }}"
       cache: false
       language: "nl"
-  - delay: 00:00:08
+  - delay: 00:00:04
   - service: media_player.turn_on
     data:
       entity_id: "{{ player2 }}"
-  - delay: 00:00:03
+  - delay: 00:00:08
   -  service: media_player.volume_set
      data:
        entity_id: "{{ player2 }}"
        volume_level: "{{ volume_level }}"
-  - choose:
-    - conditions: "{{ idle }}"
-      sequence:
-      - service: media_player.turn_off
-        data:
-          entity_id: "{{ player2 }}"
-    - conditions: "{{ spotify }}"
-      sequence:
-      - service: spotcast.start
-        data:
-          device_name: >-
-            "{{ state_attr(player2, 'friendly_name') }}"
-    - conditions: "{{ playing }}"
-      sequence:
-      - service: media_extractor.play_media
-        data:
-          entity_id: "{{ player2 }}"
-          media_content_id: "{{ media_content }}"
-          media_content_type: "{{ media_type }}"
+  - service: spotcast.start
+    data:
+      entity_id: "{{ player2 }}"
+      uri: "{{ state_attr('media_player.spotify_erik_silverentand', 'media_content_id') }}"
+    # - conditions: "{{ playing }}"
+    #   sequence:
+    #   - service: media_extractor.play_media
+    #     data:
+    #       entity_id: "{{ player2 }}"
+    #       media_content_id: "{{ media_content }}"
+    #       media_content_type: "{{ media_type }}"
+    # - conditions: "{{ idle }}"
+    #   sequence:
+    #   - service: media_player.turn_off
+    #     data:
+    #       entity_id: "{{ player2 }}"
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.testknop
 '1557170594134':
   alias: Praten
   sequence:
@@ -118,13 +116,13 @@ weerscript:
         {% elif states('sensor.weather_precip_probability') | int <= 50 %} groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.
         {% elif states('sensor.weather_precip_probability') | int > 75 %} heel groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.
         {% endif %}
-        De luchtkwaliteit is momenteel {% if states('sensor.u_s_air_quality_index')|int <= 50 %} gezond
-        {% elif 50 < states('sensor.u_s_air_quality_index')|int <= 100 %} gemiddeld
-        {% elif 100 < states('sensor.u_s_air_quality_index')|int <= 150 %} ongezond voor kwetsbare mensen
-        {% elif 150 < states('sensor.u_s_air_quality_index')|int <= 200 %} ongezond
-        {% elif 200 < states('sensor.u_s_air_quality_index')|int <= 300 %} erg ongezond
-        {% elif states('sensor.u_s_air_quality_index')|int > 300 %} erg ongezond
-        {% endif %} met een waarde van {{ states('sensor.u_s_air_quality_index') }}
+        # De luchtkwaliteit is momenteel {% if states('sensor.u_s_air_quality_index')|int <= 50 %} gezond
+        # {% elif 50 < states('sensor.u_s_air_quality_index')|int <= 100 %} gemiddeld
+        # {% elif 100 < states('sensor.u_s_air_quality_index')|int <= 150 %} ongezond voor kwetsbare mensen
+        # {% elif 150 < states('sensor.u_s_air_quality_index')|int <= 200 %} ongezond
+        # {% elif 200 < states('sensor.u_s_air_quality_index')|int <= 300 %} erg ongezond
+        # {% elif states('sensor.u_s_air_quality_index')|int > 300 %} erg ongezond
+        # {% endif %} met een waarde van {{ states('sensor.u_s_air_quality_index') }}
       language: nl
       cache: false
 
@@ -140,30 +138,30 @@ agendascript:
     entity_id: media_player.eetkamer_speakers
     data_template:
       message: >
-        {% if -1 < (as_timestamp(state_attr('calendar.contacts', 'start_time')) - as_timestamp(now()))/86400 < 0.7%}
+        {% if -1 < (as_timestamp(state_attr('calendar.contacts', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7%}
           {{ state_attr('calendar.contacts', 'message') }}
         {% endif %}
-        {% if -1 < (as_timestamp(state_attr('calendar.gezin', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+        {% if -1 < (as_timestamp(state_attr('calendar.gezin', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
           Activiteit vandaag is {{ state_attr('calendar.gezin', 'message') }}.
         {% endif %}
-        {% if -1 < (as_timestamp(state_attr('calendar.onze_agenda', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+        {% if -1 < (as_timestamp(state_attr('calendar.onze_agenda', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
           Activiteit vandaag is {{ state_attr('calendar.onze_agenda', 'message') }}.
         {% endif %}
-        {% if -1 < (as_timestamp(state_attr('calendar.erikennathalie_silverentand_net', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+        {% if -1 < (as_timestamp(state_attr('calendar.erikennathalie_silverentand_net', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
           Activiteit vandaag is {{ state_attr('calendar.erikennathalie_silverentand_net', 'message') }}.
         {% endif %}
-        {% if -1 < (as_timestamp(state_attr('calendar.nathaliehouben11_gmail_com', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+        {% if -1 < (as_timestamp(state_attr('calendar.nathaliehouben11_gmail_com', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
           Activiteit vandaag voor Nathalie is {{ state_attr('calendar.nathaliehouben11_gmail_com', 'message') }}.
         {% endif %}
-        {% if -1 < (as_timestamp(state_attr('calendar.esilverentand_gmail_com', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+        {% if -1 < (as_timestamp(state_attr('calendar.esilverentand_gmail_com', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
           Activiteit vandaag voor Erik is {{ state_attr('calendar.esilverentand_gmail_com', 'message') }}.
         {% endif %}
-        {% if -1 < (as_timestamp(state_attr('calendar.evie', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+        {% if -1 < (as_timestamp(state_attr('calendar.evie', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
           Activiteit vandaag voor Evie is {{ state_attr('calendar.evie', 'message') }}.
         {% endif %}
-        {% if -1 < (as_timestamp(state_attr('calendar.jules', 'start_time')) - as_timestamp(now()))/86400 < 0.7 %}
+        {% if -1 < (as_timestamp(state_attr('calendar.jules', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
           Activiteit vandaag voor Jules is {{ state_attr('calendar.jules', 'message') }}.
-        {% endif %}
+        {% endif %} 
       language: nl
       cache: false
 afvalscript:
@@ -178,46 +176,46 @@ afvalscript:
     entity_id: media_player.eetkamer_speakers
     data_template:
       message: >
-       {% if state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') == 0 %}
+        {% if state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int == 0 %}
           Vandaag wordt de groene bak opgehaald, 
-        {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') == 1 %}
+        {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int == 1 %}
           Morgen wordt de groene bak opgehaald, 
-        {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') < 7 %}
+        {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int < 7 %}
           {{ states('sensor.afvalinfo_gft').split(" ")[0] }} wordt de groene bak opgehaald, 
-        {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') < 14 %}
+        {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int < 14 %}
           {{ states('sensor.afvalinfo_gft') }} wordt de groene bak opgehaald, 
         {% else %}
           {{ states('sensor.afvalinfo_gft').split(" ")[1] + " " + states('sensor.afvalinfo_gft').split(" ")[2] }} wordt de groene bak geleegd, 
         {% endif %}
-        {% if state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') == 0 %}
+        {% if state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int == 0 %}
           vandaag worden de PMD-zakken opgehaald, 
-        {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') == 1 %}
+        {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int == 1 %}
           morgen worden de PMD-zakken opgehaald, 
-        {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') < 7 %}
+        {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int < 7 %}
           {{ states('sensor.afvalinfo_pbd').split(" ")[0] }} worden de PMD-zakken opgehaald, 
-        {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') < 14 %}
+        {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int < 14 %}
           {{ states('sensor.afvalinfo_pbd') }} worden de PMD-zakken opgehaald, 
         {% else %}
           {{ states('sensor.afvalinfo_pbd').split(" ")[1] + " " + states('sensor.afvalinfo_pbd').split(" ")[2] }} worden de PMD-zakken opgehaald, 
         {% endif %}
-        {% if state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') == 0 %}
+        {% if state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int == 0 %}
           vandaag wordt de grijze bak opgehaald, 
-        {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') == 1 %}
+        {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int == 1 %}
           morgen wordt de grijze bak opgehaald, 
-        {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') < 7 %}
+        {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int < 7 %}
           {{ states('sensor.afvalinfo_restafval').split(" ")[0] }} wordt de grijze bak opgehaald, 
-        {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') < 14 %}
+        {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int < 14 %}
           {{ states('sensor.afvalinfo_restafval') }} wordt de grijze bak opgehaald, 
         {% else %}
           {{ states('sensor.afvalinfo_restafval').split(" ")[1] + " " + states('sensor.afvalinfo_restafval').split(" ")[2] }} wordt de grijze bak geleegd, 
         {% endif %}
-        {% if state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') == 0 %}
+        {% if state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int == 0 %}
           en vandaag wordt het oud papier opgehaald.
-        {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') == 1 %}
+        {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int == 1 %}
           en morgen wordt het oud papier opgehaald.
-        {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') < 7 %}
+        {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int < 7 %}
           en {{ states('sensor.afvalinfo_papier').split(" ")[0] }} wordt het oud papier opgehaald.
-        {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') < 14 %}
+        {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int < 14 %}
           en {{ states('sensor.afvalinfo_papier') }} wordt het oud papier opgehaald.
         {% else %}
           en {{ states('sensor.afvalinfo_papier').split(" ")[1] + " " + states('sensor.afvalinfo_papier').split(" ")[2] }} wordt het oud papier opgehaald.
@@ -237,23 +235,23 @@ nieuwsscript:
     data_template:
       message: >-
         Hier is het recente nieuws uit Veldhoven:
-        {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title")[1].split("link")[0] }}.
-        {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title")[3].split("link")[0] }}.
-        {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title")[5].split("link")[0] }}.
-        {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title")[7].split("link")[0] }}.
-        {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title")[9].split("link")[0] }}.
+          {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[1].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[2].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title': ")[3].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[4].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[5].split(", 'link")[0] }}.
         Verder heb ik nog algemeen nieuws:
-        {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[1].split("link")[0] }}.
-        {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[2].split("link")[0] }}.
-        {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[3].split("link")[0] }}.
-        {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[4].split("link")[0] }}.
-        {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[5].split("link")[0] }}.
+          {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[1].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[2].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[3].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[4].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[5].split(", 'link")[0] }}.
         En voor de liefhebber heb ik ook nog nieuws over PSV:
-        {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title")[1].split("link")[0] }}.
-        {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title")[3].split("link")[0] }}.
-        {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title")[5].split("link")[0] }}.
-        {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title")[7].split("link")[0] }}.
-        {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title")[9].split("link")[0] }}.
-        Dat was ie weer! Een fijne dag vandaag!
+          {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[1].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[3].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[5].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[7].split(", 'link")[0] }}.
+          {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[9].split(", 'link")[0] }}.
+          Dat was ie weer! Een fijne dag vandaag!
       language: nl
       cache: false

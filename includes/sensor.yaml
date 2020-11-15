@@ -8,6 +8,7 @@
   scan_interval: 20
   latitude: 51.426948
   longitude: 5.423349
+#  nolocation: true
 
 - platform: dsmr
   port: /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AD3Z7YJM-if00-port0
@@ -142,10 +143,10 @@
 - platform: template
   sensors:
     erik_status:
-      value_template: '{{ states.input_select.erik_status_dropdown.state }}'
+      value_template: '{{ states("input_select.erik_status_dropdown") }}'
       friendly_name: 'Erik'
     nathalie_status:
-      value_template: '{{ states.input_select.nathalie_status_dropdown.state }}'
+      value_template: '{{ states("input_select.nathalie_status_dropdown") }}'
       friendly_name: 'Nathalie'
     devices:
       friendly_name: personen thuis
@@ -159,6 +160,22 @@
             not_home
           {% endif %}
         {% endif %}
+
+- platform: template
+  sensors:
+    lampen_aan:
+      friendly_name: Aantal lampen aan
+      value_template: >-
+        {% for state in states
+           if ( 'light' in state.entity_id 
+                and state.domain in ['light','switch']
+                and state.state == 'on' ) -%}
+           {% if loop.last -%}
+             {{ loop.index }}
+           {%- endif %}
+        {% else %}
+          0
+        {%- endfor %}
 
 - platform: afvalinfo
   resources:
@@ -222,40 +239,40 @@
 #### PIR
 - platform: template
   sensors:
-      neo_coolcam_pir1:
-        friendly_name: Beweging
-        value_template: >-
-          {{ is_state('zwave.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2', 'on') }}
-        icon_template: >-
-          {% if is_state('zwave.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2', 'on') %}
-            mdi:run-fast
-          {% else %}
-            mdi:walk
-          {% endif %}
-      average_lux:
-        friendly_name: Gemiddeld daglicht
-        icon_template: mdi:brightness-6
-        value_template: >-
-           {% set value_woonkamer = float((states.sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_luminance.state) | int) %}
-           {% set value_beneden = float((states.sensor.hal_sensor_beneden_light_level.state) | int) %}
-           {% set value_boven = float((states.sensor.hal_sensor_boven_light_level.state) | int) %}
-           {{ ((value_woonkamer + value_boven + value_beneden)/3) | round(2) }}
+    average_lux:
+      friendly_name: Gemiddeld daglicht
+      icon_template: mdi:brightness-6
+      unit_of_measurement: Lux
+      value_template: >-
+         {% set value_woonkamer = float(states("sensor.notification_sensor_illuminance") | int) %}
+         {% set value_beneden = float(states("sensor.hal_sensor_beneden_light_level") | int) %}
+         {% set value_boven = float(states("sensor.hal_sensor_boven_light_level") | int) %}
+         {{ ((value_woonkamer + value_boven + value_beneden)/3) | round(2) }}
+    average_lux_xiaomi:
+      friendly_name: Gemiddeld daglicht Xiaomi
+      icon_template: mdi:brightness-6
+      unit_of_measurement: Lux
+      value_template: >-
+         {% set value_woonkamer_voor = float(states("sensor.woonkamer_voor") | int) %}
+         {% set value_keuken = float(states("sensor.bijkeuken") | int) %}
+         {% set value_hal = float(states("sensor.hal") | int) %}
+         {{ ((value_woonkamer_voor + value_keuken + value_hal)/3) | round(2) }}
 
 ################ Energy monitor switches
 - platform: template
   sensors:
     droger_watts:
-      friendly_name_template: "{{ states.switch.droger.name}} Huidig Verbruik"
-      value_template: '{{ states.switch.droger.attributes["current_power_w"] | float }}'
+      friendly_name_template: '{{ state_attr("switch.droger", "friendly_name") }} Huidig Verbruik'
+      value_template: '{{ state_attr("switch.droger", "current_power_w") | float }}'
       unit_of_measurement: 'W'
     wasmachine_watts:
-      friendly_name_template: "{{ states.switch.wasmachine.name}} Huidig Verbruik"
-      value_template: '{{ states.switch.wasmachine.attributes["current_power_w"] | float }}'
+      friendly_name_template: '{{ state_attr("switch.wasmachine", "friendly_name") }} Huidig Verbruik'
+      value_template: '{{ state_attr("switch.wasmachine", "current_power_w") | float }}'
       unit_of_measurement: 'W'
     wasmachine_current:
       friendly_name: 'Wasmachine Verbruik <4 Watt'
       value_template: >-
-        {% if states.switch.wasmachine.attributes["current_power_w"] | replace(" W", "") | float <4 %}
+        {% if state_attr("switch.wasmachine", "current_power_w") | replace(" W", "") | float <4 %}
           Klaar
         {% else %}
           Draait
@@ -263,7 +280,7 @@
     droger_current:
       friendly_name: 'Droger Verbruik <5 Watt'
       value_template: >-
-        {% if states.switch.droger.attributes["current_power_w"] | replace(" W", "") | float <5 %}
+        {% if state_attr("switch.droger", "current_power_w") | replace(" W", "") | float <5 %}
           Klaar
         {% else %}
           Draait
@@ -563,7 +580,7 @@
     energy_kwh_to_watt:
       friendly_name: 'Actueel Watt'
       unit_of_measurement: 'Watt'
-      value_template: "{{ (states.sensor.power_consumption_phase_l1.state | float * 1000) | round(0) }}"
+      value_template: "{{ (states('sensor.power_consumption_phase_l1') | float * 1000) | round(0) }}"
     # #Gemiddeld
     # average_gas_day:
     #   unit_of_measurement: 'm3'

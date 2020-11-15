@@ -22,7 +22,7 @@ sirene_doorbell_sound_on:
     data:
       entity_id: script.sound_siren_in_doorbell_mode
   - service: switch.turn_on
-    entity_id: switch.shenzhen_neo_electronics_co_ltd_siren_alarm_switch
+    entity_id: switch.siren_alarm_switch
 ################################
 ##### Deurbel test #############
 ################################

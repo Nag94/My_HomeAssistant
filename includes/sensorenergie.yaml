@@ -6,7 +6,7 @@
   sensors:
     aantal_verbruiksdagen:
       friendly_name: "Aantal verbruiksdagen"
-      value_template: '{{ (((as_timestamp(now())-states.input_datetime.datum_eindafrekening.attributes.timestamp)) | int /60/1440) | round(0) }}'
+      value_template: '{{ ((as_timestamp(now())-state_attr("input_datetime.datum_eindafrekening", "timestamp")) | int /60/1440) | round(0) }}'
       unit_of_measurement: 'dagen'
       entity_id: input_datetime.datum_eindafrekening,sensor.time
 # Elektra verbruik

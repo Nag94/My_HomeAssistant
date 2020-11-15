@@ -22,6 +22,54 @@
     max: 100
     step: 1
 
+  high_lux_eetkamer:
+    name: High Lux Eetkamer
+    icon: mdi:gauge
+#    initial: 100
+    min: 0
+    max: 250
+    step: 5
+
+  low_lux_eetkamer:
+    name: Low Lux Eetkamer
+    icon: mdi:gauge
+#    initial: 40
+    min: 0
+    max: 250
+    step: 5
+
+  high_lux_woonkamer:
+    name: High Lux Woonkamer
+    icon: mdi:gauge
+#    initial: 100
+    min: 0
+    max: 5000
+    step: 20
+
+  low_lux_woonkamer:
+    name: Low Lux Woonkamer
+    icon: mdi:gauge
+#    initial: 40
+    min: 0
+    max: 5000
+    step: 20
+
+  high_lux_hal:
+    name: High Lux Hal
+    icon: mdi:gauge
+#    initial: 100
+    min: 0
+    max: 5000
+    step: 20
+
+  low_lux_hal:
+    name: Low Lux Hal
+    icon: mdi:gauge
+#    initial: 40
+    min: 0
+    max: 5000
+    step: 20
+
   high_lux_buiten:
     name: High Lux Buiten
     icon: mdi:gauge

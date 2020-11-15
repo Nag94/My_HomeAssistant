@@ -77,3 +77,37 @@ ochtendmuziek:
 test:
   name: Testknop
   icon: mdi:test-tube
+
+############################
+####### media players ######
+############################
+chromecast_woonkamer:
+  name: "Woonkamer (Chromecast Ultra)"
+  icon: mdi:google-chrome
+chromecast_ouderslaapkamer:
+  name: "Ouderslaapkamer (Chromecast)"
+  icon: mdi:google-chrome
+home_mini_woonkamer:
+  name: "Woonkamer (Home Mini)"
+  icon: mdi:google-home
+home_mini_werkkamer:  
+  name: "Werkkamer (Nest Mini)"
+  icon: mdi:google-home
+home_mini_ouderslaapkamer:  
+  name: "Ouderslaapkamer (Nest Mini)"
+  icon: mdi:google-home
+nest_hub_keuken:  
+  name: "Keuken (Nest Hub)"
+  icon: mdi:monitor
+chromecast_audio_eetkamer:  
+  name: "Eetkamer (Chromecast audio)"
+  icon: mdi:google-chrome
+bluesound_eetkamer:  
+  name: "Eetkamer (Bluesound)"
+  icon: mdi:cast-audio
+bluesound_keuken:  
+  name: "Keuken (Bluesound)"
+  icon: mdi:cast-audio
+chromecast_tv:
+  name: "TV (Chromecast)"
+  icon: mdi:google-chrome

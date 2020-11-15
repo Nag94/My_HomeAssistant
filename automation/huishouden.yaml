@@ -1,4 +1,6 @@
-############ Wasmachine / droger ###########3
+############################################
+############ Wasmachine / droger ###########
+############################################
 - alias: "Notify when the washing machine cycle is complete"
   trigger:
     - platform: state
@@ -17,11 +19,21 @@
   action:
     - service: media_player.volume_set
       data:
-        entity_id: media_player.home_mini_woonkamer
-        volume_level: 0.6
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'off') %}
+            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
+          {% else %}
+            media_player.home_mini_woonkamer
+          {% endif %}
+        volume_level: 0.5
     - service: tts.google_translate_say
-      entity_id: media_player.home_mini_woonkamer
-      data_template:
+      data:
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'off') %}
+            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
+          {% else %}
+            media_player.home_mini_woonkamer
+          {% endif %}
         message: >-
           De was is schoon! Haal de was maar uit de wasmachine.
         language: 'nl'
@@ -51,11 +63,21 @@
   action:
     - service: media_player.volume_set
       data:
-        entity_id: media_player.home_mini_woonkamer
-        volume_level: 0.6
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'off') %}
+            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
+          {% else %}
+            media_player.home_mini_woonkamer
+          {% endif %}
+        volume_level: 0.5
     - service: tts.google_translate_say
-      entity_id: media_player.home_mini_woonkamer
-      data_template:
+      data:
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'off') %}
+            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
+          {% else %}
+            media_player.home_mini_woonkamer
+          {% endif %}
         message: >-
           De was is droog! Haal de was maar uit de droger.
         language: 'nl'
@@ -67,7 +89,9 @@
     - delay:
         minutes: 10
     - service: html5.dismiss
+########################
 ### Vaatwasser ##########
+#########################
 - alias: Notify when the dishwasher cycle is complete
   trigger:
     - platform: state
@@ -86,11 +110,21 @@
   action:
     - service: media_player.volume_set
       data:
-        entity_id: media_player.home_mini_woonkamer
-        volume_level: 0.6
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'off') %}
+            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
+          {% else %}
+            media_player.home_mini_woonkamer
+          {% endif %}
+        volume_level: 0.5
     - service: tts.google_translate_say
-      entity_id: media_player.home_mini_woonkamer
-      data_template:
+      data:
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'off') %}
+            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
+          {% else %}
+            media_player.home_mini_woonkamer
+          {% endif %}
         message: >-
           De vaat is schoon! Ruim de vaatwasser maar uit.
         language: 'nl'
@@ -102,7 +136,9 @@
     - delay:
         minutes: 10
     - service: html5.dismiss
-### Koffie!!!
+#####################
+### Koffie!!! #######
+####################
 - alias: Espressomachine aan
   trigger:
     - platform: state
@@ -140,11 +176,26 @@
     - platform: state
       entity_id: input_boolean.vakantiestand
       to: 'on'
+    - platform: template
+      value_template: "{{ is_state('binary_sensor.workday_sensor', 'on') and now().strftime('%H:%M') > '09:00' }}"
   action:
     - delay:
         hours: 1
     - service: switch.turn_off
-      entity_id: switch.koffie
+      entity_id: switch.espressomachine_switch
+####################################
+############### TV #################
+####################################
+- alias: TV uit na lange pauze
+  trigger:
+    platform: state
+    entity_id: media_player.android_tv_woonkamer
+    to: 'paused'
+    for:
+      minutes: 30
+  action:
+    - service: media_player.turn_off
+      entity_id: media_player.android_tv_woonkamer
 ####################################
 ############ Muziek ################
 ####################################
@@ -158,6 +209,8 @@
       entity_id: >
         {% if is_state("input_select.afspeelmedium", "Woonkamer (Chromecast)") %} media_player.woonkamer_ultra
         {% elif is_state("input_select.afspeelmedium", "Woonkamer (Home Mini)") %} media_player.home_mini_woonkamer
+        {% elif is_state("input_select.afspeelmedium", "Werkkamer") %} media_player.werkkamer_mini
+        {% elif is_state("input_select.afspeelmedium", "Ouderslaapkamer") %} media_player.ouderslaapkamer_mini  
         {% elif is_state("input_select.afspeelmedium", "Eetkamer") %} media_player.eetkamer
         {% elif is_state("input_select.afspeelmedium", "Keukenspeaker") %} media_player.keuken_speaker_2
         {% elif is_state("input_select.afspeelmedium", "Nest Hub Keuken") %} media_player.keuken_hub
@@ -165,8 +218,11 @@
       volume_level: '{{  states.input_number.volume_radio.state  }}'
 - alias: Weekendmuziek
   trigger:
-    - entity_id: binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor
+    - entity_id: binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4
       platform: state
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.motion_schuifpui
       to: 'on'
     - platform: state
       entity_id: input_boolean.ochtendmuziek
@@ -181,7 +237,7 @@
       state: 'off'
     - condition: template
       value_template: >-
-        {% if trigger.entity_id == 'binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor' %}
+        {% if trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4' or trigger.entity_id == 'binary_sensor.motion_schuifpui' %}
           {{ is_state('binary_sensor.workday_sensor', 'off') and is_state('input_boolean.ochtendmuziek', 'off') }}
         {% else %}
           {{ is_state('binary_sensor.workday_sensor', 'off') or is_state('binary_sensor.workday_sensor', 'on') }}
@@ -220,10 +276,10 @@
 - alias: brief in de bus
   trigger:
     - platform: state
-      entity_id: binary_sensor.vibration_4
+      entity_id: binary_sensor.vibration_brievenbus
       to: 'on'
     - platform: state
-      entity_id: binary_sensor.vibration_2
+      entity_id: binary_sensor.vibration_brievenbus_2
       to: 'on'
   condition: []
   action:
@@ -231,11 +287,21 @@
       entity_id: input_boolean.brievenbus
     - service: media_player.volume_set
       data:
-        entity_id: media_player.home_mini_woonkamer
-        volume_level: 0.6
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'off') %}
+            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
+          {% else %}
+            media_player.home_mini_woonkamer
+          {% endif %}
+        volume_level: 0.5
     - service: tts.google_translate_say
-      entity_id: media_player.home_mini_woonkamer
-      data_template:
+      data:
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'off') %}
+            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
+          {% else %}
+            media_player.home_mini_woonkamer
+          {% endif %}
         message: 'Er zit iets in de brievenbus!'
         language: 'nl'
         cache: false
@@ -269,7 +335,7 @@
 - alias: genie uit als de schuifpui open is
   trigger:
     - platform: state
-      entity_id: binary_sensor.openclose_6
+      entity_id: binary_sensor.schuifpui
       to: 'on'
   condition:
     - condition: state
@@ -281,7 +347,7 @@
 - alias: Genie aan als schuifpui dicht gaat
   trigger:
     - platform: state
-      entity_id: binary_sensor.openclose_6
+      entity_id: binary_sensor.schuifpui
       to: 'off'
   condition:
     condition: or
@@ -303,7 +369,7 @@
       at: '06:30:00'
   condition:
     - condition: state
-      entity_id: binary_sensor.openclose_6
+      entity_id: binary_sensor.schuifpui
       state: 'off'
   action:
     - service: switch.turn_on

@@ -1,6 +1,12 @@
 timer_lamp_beneden:
   duration: '00:05:00'
 
+timer_lamp_eetkamer:
+  duration: '00:05:00'
+
+timer_lamp_woonkamer:
+  duration: '00:05:00'
+
 timer_hal:
   duration: '00:02:00'
   

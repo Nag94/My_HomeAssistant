@@ -25,8 +25,11 @@
 - alias: Google Home - Goedemorgen Werkdagen
   trigger:
     - platform: state  
-      entity_id: binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor
+      entity_id: binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4
       to: 'on'
+    - entity_id: sensor.woonkamer_remote
+      platform: state
+      to: 1_click_up
   condition:
     - condition: time
       after: '06:00:00'
@@ -55,32 +58,26 @@
     - service: input_boolean.turn_on
       data:
         entity_id: input_boolean.ochtendgebed
-- alias: Keep Google Home Alive
+##############################################
+########## Home mini's ####################
+#######################################
+- id: '1602073411856'
+  alias: Houd de home minis wakker
+  description: ''
   trigger:
-    platform: time_pattern
+  - platform: time_pattern
     minutes: "/2"
-  condition:
-    - condition: template
-      value_template: '{{ states.media_player.home_mini_woonkamer.state != "playing"}}'
+  condition: []
   action:
-    service: media_player.play_media
-    entity_id:
-      - media_player.home_mini_woonkamer
-    data:
-      media_content_id: 'https://silverentand.duckdns.org/local/1sec.mp3'
-      media_content_type: music
-######### IFTTT ###########
-- alias: Recieve information from IFTTT
-  trigger:
-    platform: event
-    event_type: ifttt_webhook_received
-    event_data:
-      action: call_service_general
-  action:
-    service_template: '{{ trigger.event.data.service }}'
-    data_template:
-      entity_id: '{{ trigger.event.data.entity_id }}'
-      message: '{{ trigger.event.data.message }}'
+    - service: media_player.play_media
+      data_template:
+        media_content_id: https://silverentand.duckdns.org/local/1sec.mp3
+        media_content_type: music
+        entity_id: >-
+          media_player.dummy
+          {% if states("media_player.werkkamer_mini") != "playing" %}, media_player.werkkamer_mini{% endif %}
+          {% if states("media_player.ouderslaapkamer_mini") != "playing" %}, media_player.ouderslaapkamer_mini{% endif %}
+          {% if states("media_player.home_mini_woonkamer") != "playing" %}, media_player.home_mini_woonkamer{% endif %}
 ############################
 ###### update Hassio #######
 ############################
@@ -120,7 +117,7 @@
     platform: state
     entity_id: sensor.veldhoven_e_o
   action:
-    - service_template: notify.mobile_app_phone_erik
+    - service: notify.mobile_app_phone_erik
       data_template:
         title: "P2000 Bericht"
         message: >
@@ -150,5 +147,5 @@
     entity_id: script.mediaplayer_say
     data:
       variables:
-        player2: 'media_player.eetkamer_speakers'
+        player2: 'media_player.werkkamer_mini'
         google_say: 'als je dit hoort werkt het'

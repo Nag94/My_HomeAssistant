@@ -10,6 +10,14 @@
   mac: 34:EA:34:9D:1C:50
 #  friendly_name: "Haard"
 
+- platform: philips_ambilight+hue
+  name: Ambilight+Hue
+  host: !secret tv_woonkamer
+  username: !secret tv_username
+  password: !secret tv_password
+  id: 2131230783
+  scan_interval: 5
+
 - platform: template
   switches:
     genie:
@@ -19,10 +27,8 @@
         service: rest_command.genie_on
       turn_off:
         service: rest_command.genie_off
-        
-- platform: philips_ambilight+hue
-  name: Ambilight+Hue
-  host: !secret tv_woonkamer
-  username: !secret tv_username
-  password: !secret tv_password
-  scan_interval: 5
+
+- platform: wake_on_lan
+  name: TV woonkamer aanzetten
+  mac: !secret tv_mac
+  broadcast_address: !secret tv_woonkamer

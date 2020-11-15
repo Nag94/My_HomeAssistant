@@ -1,0 +1,33 @@
+- platform: yamaha
+  host: !secret yamaha
+- platform: bluesound
+  hosts:
+    - host: !secret mp_eetkamer
+    - host: !secret mp_keuken
+- platform: philips_android_tv
+  name: "TV Woonkamer"
+  host: !secret tv_woonkamer
+  mac: !secret tv_mac
+  username: !secret tv_username
+  password: !secret tv_password
+- platform: androidtv
+  name: "Android TV  Woonkamer"
+  host: !secret tv_woonkamer
+- platform: universal
+  name: "Alle mediaspelers"
+  children:
+    - media_player.home_mini_woonkamer
+    - media_player.ouderslaapkamer_mini
+    - media_player.werkkamer_mini
+    - media_player.65oled854_12
+    - media_player.android_tv_woonkamer
+    - media_player.eetkamer
+    - media_player.eetkamer_speakers
+    - media_player.keuken_hub
+    - media_player.keuken_speaker
+    - media_player.keuken_speaker_2
+    - media_player.ouderslaapkamer
+    - media_player.spotify_erik_silverentand
+    - media_player.tv_woonkamer
+    - media_player.woonkamer_ultra
+    - media_player.yamaha_receiver

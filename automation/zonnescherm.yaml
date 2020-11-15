@@ -34,7 +34,7 @@
       entity_id: sensor.sunlight_pct
       above: 30
     - condition: numeric_state
-      entity_id: sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_temperature
+      entity_id: sensor.temperature_eetkamer
       above: 19
     - condition: template
       value_template: "{{ now().month > 3 }}"
@@ -49,7 +49,7 @@
   action:
     - service: cover.set_cover_position
       data:
-        entity_id: cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level
+        entity_id: cover.motor_control_class_b_level
         position: 0
     - delay:
         seconds: 10
@@ -126,7 +126,7 @@
         seconds: 10
     - service: cover.set_cover_position
       data:
-        entity_id: cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level
+        entity_id: cover.motor_control_class_b_level
         position: 100
     - delay:
         minutes: 10
@@ -134,7 +134,7 @@
 - alias: schakelaar om bij uitklappen zonnescherm
   trigger:
     - platform: state
-      entity_id: cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level
+      entity_id: cover.motor_control_class_b_level
       to: 'closed'
   condition:
     - condition: state
@@ -146,7 +146,7 @@
 - alias: schakelaar om bij inklappen zonnescherm
   trigger:
     - platform: state
-      entity_id: cover.shenzhen_neo_electronics_co_ltd_unknown_type_0200_id_102c_level
+      entity_id: cover.motor_control_class_b_level
       to: 'open'
   condition:
     - condition: state

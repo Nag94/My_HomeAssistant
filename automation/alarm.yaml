@@ -1,16 +1,16 @@
 - alias: waarschuwing als de deur open gaat en het alarm is aan
   trigger:
     - platform: state
-      entity_id: binary_sensor.openclose_3
+      entity_id: binary_sensor.voordeur
       to: 'on'
     - platform: state
-      entity_id: binary_sensor.openclose_5
+      entity_id: binary_sensor.schuifpui
       to: 'on'
     - platform: state
-      entity_id: binary_sensor.openclose_6
+      entity_id: binary_sensor.achterdeur
       to: 'on'
     - platform: state
-      entity_id: binary_sensor.openclose_8
+      entity_id: binary_sensor.garagedeur
       to: 'on'
     - platform: state
       entity_id: binary_sensor.balkondeur_ouderslaapkamer
@@ -84,7 +84,7 @@
       entity_id: script.flash_beneden
   - service: script.turn_on
     data:
-      entity_id: script.sirene_alarm_sound_on
+      entity_id: script.siren_alarm_sound_on
   - service: script.turn_on
     data:
       entity_id: script.alarm_bericht
@@ -216,7 +216,7 @@
       entity_id: script.flash_loop
   - service: switch.turn_off
     data:
-      entity_id: switch.shenzhen_neo_electronics_co_ltd_siren_alarm_switch
+      entity_id: switch.siren_alarm_switch
   - service: ifttt.trigger
     data:
       event: camera_off
@@ -227,9 +227,19 @@
     data_template:
       entity_id: >
         {% if is_state('input_boolean.nachtstand', 'on') %}
-          script.nachtlicht_aan
+          script.nachtlicht_eetkamer_aan
         {% elif is_state('binary_sensor.low_lux_input', 'on') %}
-          script.daglicht_aan
+          script.daglicht_eetkamer_aan
+        {% else %}
+          script.noop
+        {% endif %}
+  - service: script.turn_on
+    data_template:
+      entity_id: >
+        {% if is_state('input_boolean.nachtstand', 'on') %}
+          script.nachtlicht_woonkamer_aan
+        {% elif is_state('binary_sensor.low_lux_input', 'on') %}
+          script.daglicht_woonkamer_aan
         {% else %}
           script.noop
         {% endif %}
@@ -251,7 +261,7 @@
       entity_id: script.flash_loop
   - service: switch.turn_off
     data:
-      entity_id: switch.shenzhen_neo_electronics_co_ltd_siren_alarm_switch
+      entity_id: switch.siren_alarm_switch
   - service: script.turn_off
     data:
       entity_id: script.fire_alarm
@@ -287,32 +297,32 @@
   trigger:
     - platform: state
       entity_id:
-        - binary_sensor.openclose_3
-        - binary_sensor.openclose_5
-        - binary_sensor.openclose_6
-        - binary_sensor.openclose_8
+        - binary_sensor.voordeur
+        - binary_sensor.achterdeur
+        - binary_sensor.schuifpui
+        - binary_sensor.garagedeur
         - binary_sensor.hal_sensor_beneden_motion
         - binary_sensor.hal_sensor_boven_motion
-        - binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor
-        - binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor_2
-        - binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor_3
+        - binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4
+        - binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_2
+        - binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_3
       to: 'on'
   condition:
     - condition: template
       value_template: >-
-        {% if trigger.entity_id == 'binary_sensor.openclose_3' %}
+        {% if trigger.entity_id == 'binary_sensor.voordeur' %}
           {{ is_state('input_boolean.voordeur', 'on') }}
-        {% elif trigger.entity_id == 'binary_sensor.openclose_5' %}
+        {% elif trigger.entity_id == 'binary_sensor.achterdeur' %}
           {{ is_state('input_boolean.achterdeur', 'on') }}
-        {% elif trigger.entity_id == 'binary_sensor.openclose_8' %}
+        {% elif trigger.entity_id == 'binary_sensor.garagedeur' %}
           {{ is_state('input_boolean.deur_garage', 'on') }}
-        {% elif trigger.entity_id == 'binary_sensor.openclose_6' %}
+        {% elif trigger.entity_id == 'binary_sensor.schuifpui' %}
           {{ is_state('input_boolean.schuifpui', 'on') }}
-        {% elif trigger.entity_id == 'binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor' %}
+        {% elif trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4' %}
           {{ is_state('input_boolean.pir_woonkamer', 'on') }}
-        {% elif trigger.entity_id == 'binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor_2' %}
+        {% elif trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_2' %}
           {{ is_state('input_boolean.pir_toilet', 'on') }}
-        {% elif trigger.entity_id == 'binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor_3' %}
+        {% elif trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_3' %}
           {{ is_state('input_boolean.pir_garage', 'on') }}
         {% elif trigger.entity_id == 'binary_sensor.hal_sensor_beneden_motion' %}
           {{ is_state('input_boolean.pir_hal_beneden', 'on') }}
@@ -344,11 +354,11 @@
 - id: '1559067716859'
   alias: brandalarm triggered
   trigger:
-  - entity_id: binary_sensor.heiman_technology_co_ltd_smart_smoke_sensor_hs1sa_z_sensor
+  - entity_id: binary_sensor.smart_smoke_sensor_hs1sa_z_sensor
     from: 'off'
     platform: state
     to: 'on'
-  - entity_id: binary_sensor.heiman_technology_co_ltd_smart_smoke_sensor_hs1sa_z_sensor_2
+  - entity_id: binary_sensor.smart_smoke_sensor_hs1sa_z_sensor_2
     from: 'off'
     platform: state
     to: 'on'
@@ -410,7 +420,13 @@
 - alias: motion detection woonkamer
   trigger:
     - platform: state
-      entity_id: binary_sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_sensor
+      entity_id: binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.motion_schuifpui
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.motion_sensor_woonkamer
       to: 'on'
   condition:
     - condition: state

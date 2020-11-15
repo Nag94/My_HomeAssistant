@@ -1,0 +1,24 @@
+- platform: xiaomi_miio_fan
+  name: ventilator
+  host: 192.168.1.45
+  token: !secret fan1_token
+- platform: mqtt
+  name: "Ventilator mqtt"
+  state_topic: "mifanpower/state"
+  command_topic: "mifanpower"
+  oscillation_state_topic: "mifanrotate/state"
+  oscillation_command_topic: "mifanrotate"
+  speed_state_topic: "mifanfanspeed/state"
+  speed_command_topic: "mifanfanspeed"
+  qos: 0
+  payload_on: "ON"
+  payload_off: "OFF"
+  payload_oscillation_on: "ON"
+  payload_oscillation_off: "OFF"
+  payload_low_speed: "LOW"
+  payload_medium_speed: "MEDIUM"
+  payload_high_speed: "HIGH"
+  speeds:
+    - low
+    - medium
+    - high
