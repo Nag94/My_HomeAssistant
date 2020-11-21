@@ -138,9 +138,19 @@
   - service: input_boolean.turn_on
     data:
       entity_id: input_boolean.alarm_switch
+  - service: media_player.turn_on
+    entity_id: media_player.keuken_hub
+  - delay: '00:00:01'
   - service: cast.show_lovelace_view
     data:
       entity_id: media_player.keuken_hub
+      dashboard_path: lovelace
+      view_path: '3'
+  - delay: '00:00:05'
+  - service: cast.show_lovelace_view
+    data:
+      entity_id: media_player.keuken_hub
+      dashboard_path: lovelace
       view_path: '3'
   - delay:
       minutes: 10
@@ -319,6 +329,10 @@
         {% elif trigger.entity_id == 'binary_sensor.schuifpui' %}
           {{ is_state('input_boolean.schuifpui', 'on') }}
         {% elif trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4' %}
+          {{ is_state('input_boolean.pir_eetkamer', 'on') }}
+        {% elif trigger.entity_id == 'binary_sensor.eetkamer' %}
+          {{ is_state('input_boolean.pir_eetkamer', 'on') }}
+        {% elif trigger.entity_id == 'binary_sensor.motion_sensor_woonkamer' %}
           {{ is_state('input_boolean.pir_woonkamer', 'on') }}
         {% elif trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_2' %}
           {{ is_state('input_boolean.pir_toilet', 'on') }}

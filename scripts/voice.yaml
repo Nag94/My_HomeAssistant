@@ -116,13 +116,13 @@ weerscript:
         {% elif states('sensor.weather_precip_probability') | int <= 50 %} groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.
         {% elif states('sensor.weather_precip_probability') | int > 75 %} heel groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.
         {% endif %}
-        # De luchtkwaliteit is momenteel {% if states('sensor.u_s_air_quality_index')|int <= 50 %} gezond
-        # {% elif 50 < states('sensor.u_s_air_quality_index')|int <= 100 %} gemiddeld
-        # {% elif 100 < states('sensor.u_s_air_quality_index')|int <= 150 %} ongezond voor kwetsbare mensen
-        # {% elif 150 < states('sensor.u_s_air_quality_index')|int <= 200 %} ongezond
-        # {% elif 200 < states('sensor.u_s_air_quality_index')|int <= 300 %} erg ongezond
-        # {% elif states('sensor.u_s_air_quality_index')|int > 300 %} erg ongezond
-        # {% endif %} met een waarde van {{ states('sensor.u_s_air_quality_index') }}
+        De luchtkwaliteit is momenteel {% if states('sensor.u_s_air_quality_index')|int <= 50 %} gezond
+        {% elif 50 < states('sensor.u_s_air_quality_index')|int <= 100 %} gemiddeld
+        {% elif 100 < states('sensor.u_s_air_quality_index')|int <= 150 %} ongezond voor kwetsbare mensen
+        {% elif 150 < states('sensor.u_s_air_quality_index')|int <= 200 %} ongezond
+        {% elif 200 < states('sensor.u_s_air_quality_index')|int <= 300 %} erg ongezond
+        {% elif states('sensor.u_s_air_quality_index')|int > 300 %} erg ongezond
+        {% endif %} met een waarde van {{ states('sensor.u_s_air_quality_index') }}
       language: nl
       cache: false
 

@@ -360,7 +360,7 @@
   trigger:
     - platform: numeric_state
       entity_id: sensor.woonkamer_voor
-      above: 500
+      above: 700
   condition:
     - condition: state
       entity_id: media_player.tv_woonkamer
@@ -368,13 +368,13 @@
   action:
     - service: light.turn_off
       data:
-        entity_id: light.woonkamer_ambilight
+        entity_id: light.woonkamer_tv_ambilight
 - id: ambilight_aan_licht
   alias: Ambilight aan door licht
   trigger:
     - platform: numeric_state
       entity_id: sensor.woonkamer_voor
-      below: 450
+      below: 550
   condition:
     - condition: state
       entity_id: media_player.tv_woonkamer
@@ -382,7 +382,7 @@
   action:
     - service: light.turn_on
       data:
-        entity_id: light.woonkamer_ambilight
+        entity_id: light.woonkamer_tv_ambilight
         effect: Standard
 - id: ambilight_uit_check
   alias: Ambilight aan als het donker wordt
@@ -396,14 +396,14 @@
       state: 'on'
     - condition: numeric_state
       entity_id: sensor.woonkamer_voor
-      below: 450
+      below: 550
     - condition: state
-      entity_id: light.woonkamer_ambilight
+      entity_id: light.woonkamer_tv_ambilight
       state: 'off'
   action:
     - service: light.turn_on
       data:
-        entity_id: light.woonkamer_ambilight
+        entity_id: light.woonkamer_tv_ambilight
         effect: Standard
 - id: ambilight_aan_check
   alias: Ambilight uit als het licht wordt
@@ -417,14 +417,14 @@
       state: 'on'
     - condition: numeric_state
       entity_id: sensor.woonkamer_voor
-      above: 500
+      above: 700
     - condition: state
-      entity_id: light.woonkamer_ambilight
+      entity_id: light.woonkamer_tv_ambilight
       state: 'on'
   action:
     - service: light.turn_off
       data:
-        entity_id: light.woonkamer_ambilight
+        entity_id: light.woonkamer_tv_ambilight
 - id: ambilight_uit_tv
   alias: Ambilight uit door tv
   trigger:
@@ -433,12 +433,12 @@
       to: 'off'
   condition:
     - condition: state
-      entity_id: light.woonkamer_ambilight
+      entity_id: light.woonkamer_tv_ambilight
       state: 'on'
   action:
     - service: light.turn_off
       data:
-        entity_id: light.woonkamer_ambilight
+        entity_id: light.woonkamer_tv_ambilight
 ################################
 ######## Nachtstand ############
 ################################
@@ -1006,7 +1006,8 @@
           {% else %}
             light.turn_off
           {% endif %}
-      entity_id: light.tasmota
+      data:
+        entity_id: light.tasmota
 - alias: pir_floodlight_on_day
   condition:
   - condition: sun

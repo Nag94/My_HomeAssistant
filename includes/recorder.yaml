@@ -1,5 +1,4 @@
 db_url: !secret mariadb
-purge_keep_days: 7
 include:
   domains:
     - sensor
@@ -14,3 +13,16 @@ exclude:
     - script
     - sun
     - zone
+    - light
+    - automation
+    - updater
+  entities:
+    - sensor.time
+    - sensor.date
+    - sensor.date_time
+  entity_globs:
+    - sensor.in2023_*
+    - sensor.hp_*
+    - sensor.adguard_*
+  event_types:
+    - call_service

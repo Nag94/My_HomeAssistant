@@ -45,7 +45,7 @@ play_media:
           {% elif is_state("input_select.radio_station", "NPO 3FM") %} https://icecast.omroep.nl/3fm-bb-mp3
           {% elif is_state("input_select.radio_station", "NPO Radio 4") %} https://icecast.omroep.nl/radio4-bb-mp3
           {% elif is_state("input_select.radio_station", "NPO Radio 5") %} https://icecast.omroep.nl/radio5-bb-mp3
-          {% elif is_state("input_select.radio_station", "Kink") %} http://playerservices.streamtheworld.com/api/livestream-redirect/KINK.mp3
+          {% elif is_state("input_select.radio_station", "Kink FM") %} https://21293.live.streamtheworld.com/KINK.mp3
           {% elif is_state("input_select.radio_station", "Studio Brussel") %} http://icecast.vrtcdn.be/stubru-high.mp3
           {% elif is_state("input_select.radio_station", "Sky Radio") %} https://19993.live.streamtheworld.com/SKYRADIO.mp3
           {% elif is_state("input_select.radio_station", "Veronica") %} https://20873.live.streamtheworld.com/VERONICA.mp3
