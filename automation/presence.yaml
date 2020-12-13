@@ -310,20 +310,28 @@
     - service: media_player.volume_set
       data:
         entity_id: >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
-          {% else %}
-            media_player.home_mini_woonkamer
-          {% endif %}
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
         volume_level: 0.5
-    - service: tts.google_translate_say
+    - service: tts.google_home_say
       data:
         entity_id: >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
-          {% else %}
-            media_player.home_mini_woonkamer
-          {% endif %}
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
         message: >-
           {% if states('group.all_persons') == 'home' %}
             {% if (trigger.event) == 'leave' %}

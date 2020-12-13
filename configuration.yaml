@@ -87,6 +87,16 @@ notify:
 
 # Text to speech
 tts:
+  - platform: google_cloud
+    service_name: google_home_say  
+    key_file: amazing-limiter-212613-40c1df606f05.json
+    language: nl-NL
+    gender: female
+    voice: nl-NL-Wavenet-D
+    text_type: ssml
+#    encoding: linear16
+    speed: 1
+    pitch: -2.0
   - platform: google_translate
     cache: true
     cache_dir: /tmp/tts
@@ -94,12 +104,6 @@ tts:
     base_url: !secret tts_base_url
     language: 'nl'
     service_name: google_translate_say
-
-# RFXtrx
-# rfxtrx:
-#   device: '/dev/serial/by-id/usb-RFXCOM_RFXtrx433_A12IPPXJ-if00-port0'
-#   debug: true
-#   automatic_add: true
 
 ifttt:
   key: !secret ifttt_key

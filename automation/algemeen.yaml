@@ -88,6 +88,63 @@
           {% if states("media_player.werkkamer_mini") != "playing" %}, media_player.werkkamer_mini{% endif %}
           {% if states("media_player.ouderslaapkamer_mini") != "playing" %}, media_player.ouderslaapkamer_mini{% endif %}
           {% if states("media_player.home_mini_woonkamer") != "playing" %}, media_player.home_mini_woonkamer{% endif %}
+- alias: Mediaspelers uit door nacht
+  trigger:
+    - platform: state
+      entity_id: input_boolean.nachtstand
+      to: 'on'
+    - platform: state
+      entity_id: input_boolean.vakantiestand
+      to: 'on'
+    - platform: state
+      entity_id: input_boolean.notify_home
+      to: 'on'
+  condition: []
+  action:
+    - service: input_boolean.turn_off
+      entity_id:
+        - input_boolean.65oled854_12
+        - input_boolean.android_tv_woonkamer
+        - input_boolean.eetkamer_speakers
+        - input_boolean.keuken_hub
+        - input_boolean.keuken_speaker
+        - input_boolean.ouderslaapkamer_mini
+        - input_boolean.werkkamer_mini
+        - input_boolean.ouderslaapkamer
+        - input_boolean.eetkamer
+        - input_boolean.woonkamer_ultra
+- alias: Mediaspelers uit door nacht
+  trigger:
+    - platform: state
+      entity_id: input_boolean.nachtstand
+      to: 'off'
+    - platform: state
+      entity_id: input_boolean.vakantiestand
+      to: 'off'
+    - platform: state
+      entity_id: input_boolean.notify_home
+      to: 'off'
+  condition:
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: 'off'
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: group.all_persons
+        state: home
+      - condition: state
+        entity_id: person.erik
+        state: home
+      - condition: state
+        entity_id: person.nathalie
+        state: home
+  action:
+    - service: input_boolean.turn_on
+      entity_id:
+        - input_boolean.home_mini_woonkamer
+        - input_boolean.ouderslaapkamer_mini
+        - input_boolean.werkkamer_mini
 ############################
 ###### update Hassio #######
 ############################

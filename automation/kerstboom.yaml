@@ -22,16 +22,16 @@
       entity_id: person.nathalie
       state: home
   action:
-  - service: switch.turn_on
-    entity_id: switch.kerstboom
+  - service: light.turn_on
+    entity_id: light.plug1
 - alias: Kerstboom uit
   trigger:
   - platform: state
     entity_id: input_boolean.nachtstand
     to: 'on'
   action:
-  - service: switch.turn_off
-    entity_id: switch.kerstboom
+  - service: light.turn_off
+    entity_id: light.plug1
 - alias: Kerstboom aan via dimmer
   trigger:
   - entity_id: sensor.woonkamer_schakelaar
@@ -44,8 +44,8 @@
   action:
   - data:
       entity_id:
-      - switch.kerstboom
-    service: switch.turn_on
+      - light.plug1
+    service: light.turn_on
 - alias: Kerstboom uit via dimmer
   trigger:
   - entity_id: sensor.woonkamer_schakelaar
@@ -56,9 +56,9 @@
     entity_id: light.beneden
     state: 'on'
   action:
-  - service: switch.turn_off
+  - service: light.turn_off
     data:
-      entity_id: switch.kerstboom
+      entity_id: light.plug1
 - alias: kerstboom uit met bovendimmer
   trigger:
   - entity_id: sensor.ouderslaapkamer_schakelaar
@@ -67,5 +67,5 @@
   action:
   - data:
       entity_id:
-      - switch.kerstboom
-    service: switch.turn_off
+      - light.plug1
+    service: light.turn_off

@@ -25,11 +25,12 @@
     - light.eettafel_2
     - light.schilderij
     - light.schuifpui
+    - light.plug1
 - platform: group
   name: hal_wandlamp
   entities:
-    - light.color_temperature_light_3
-    - light.color_temperature_light_4
+    - light.hal_wandlamp_1
+    - light.hal_wandlamp_2
 - platform: group
   name: buiten
   entities:
@@ -40,8 +41,8 @@
 - platform: group
   name: hall_all
   entities:
-    - light.color_temperature_light_3
-    - light.color_temperature_light_4
+    - light.hal_wandlamp_1
+    - light.hal_wandlamp_2
     - light.hal
 - platform: group
   name: tuinverlichting

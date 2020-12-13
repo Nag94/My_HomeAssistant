@@ -27,12 +27,12 @@
       data:
         entity_id: media_player.eetkamer_speakers
         volume_level: 0.6
-    - service: tts.google_translate_say
-      entity_id: media_player.eetkamer_speakers
+    - service: tts.google_home_say
+      entity_id: media_player.keuken_hub
       data_template:
         message: 'Pas op! Het alarm gaat zo af!'
-        language: 'nl'
-        cache: false
+#        language: 'nl'
+#        cache: false
 #    - service: camera.record
 #      data_template:
 #        entity_id: camera.woonkamer
@@ -181,7 +181,7 @@
       - light.kamer_evie
       - light.kamer_jules
       - light.yoga_kamer
-      - light.flux_liefde
+      - light.liefde
       - light.tuinverlichting
     service: light.turn_off
   - service: notify.html5
@@ -226,7 +226,7 @@
       entity_id: script.flash_loop
   - service: switch.turn_off
     data:
-      entity_id: switch.siren_alarm_switch
+      entity_id: switch.siren_alarm_switch_2
   - service: ifttt.trigger
     data:
       event: camera_off
@@ -311,6 +311,8 @@
         - binary_sensor.achterdeur
         - binary_sensor.schuifpui
         - binary_sensor.garagedeur
+        - binary_sensor.pir_eetkamer
+        - binary_sensor.pir_woonkamer
         - binary_sensor.hal_sensor_beneden_motion
         - binary_sensor.hal_sensor_boven_motion
         - binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4

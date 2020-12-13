@@ -20,23 +20,33 @@
     - service: media_player.volume_set
       data:
         entity_id: >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
-          {% else %}
-            media_player.home_mini_woonkamer
-          {% endif %}
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
         volume_level: 0.5
-    - service: tts.google_translate_say
+    - service: tts.google_home_say
       data:
         entity_id: >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
-          {% else %}
-            media_player.home_mini_woonkamer
-          {% endif %}
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
         message: >-
-          De was is schoon! Haal de was maar uit de wasmachine.
-        language: 'nl'
+          <speak>
+            De was is schoon!<break time="300ms"/> Haal de was maar uit de wasmachine.
+          </speak>
+#        language: 'nl'
         cache: false
     - service: notify.html5
       data:
@@ -64,23 +74,33 @@
     - service: media_player.volume_set
       data:
         entity_id: >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
-          {% else %}
-            media_player.home_mini_woonkamer
-          {% endif %}
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
         volume_level: 0.5
-    - service: tts.google_translate_say
+    - service: tts.google_home_say
       data:
         entity_id: >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
-          {% else %}
-            media_player.home_mini_woonkamer
-          {% endif %}
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
         message: >-
-          De was is droog! Haal de was maar uit de droger.
-        language: 'nl'
+          <speak>
+            De was is droog!<break time="300ms"/> Haal de was maar uit de droger.
+          </speak>
+#        language: 'nl'
         cache: false
     - service: notify.html5
       data:
@@ -111,23 +131,33 @@
     - service: media_player.volume_set
       data:
         entity_id: >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
-          {% else %}
-            media_player.home_mini_woonkamer
-          {% endif %}
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
         volume_level: 0.5
-    - service: tts.google_translate_say
+    - service: tts.google_home_say
       data:
         entity_id: >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
-          {% else %}
-            media_player.home_mini_woonkamer
-          {% endif %}
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
         message: >-
-          De vaat is schoon! Ruim de vaatwasser maar uit.
-        language: 'nl'
+          <speak>
+            De vaat is schoon!<break time="300ms"/> Ruim de vaatwasser maar uit.
+          </speak>
+#        language: 'nl'
         cache: false
     - service: notify.html5
       data:
@@ -288,22 +318,33 @@
     - service: media_player.volume_set
       data:
         entity_id: >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
-          {% else %}
-            media_player.home_mini_woonkamer
-          {% endif %}
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
         volume_level: 0.5
-    - service: tts.google_translate_say
+    - service: tts.google_home_say
       data:
         entity_id: >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            media_player.home_mini_woonkamer, media_player.ouderslaapkamer_mini, media_player.werkkamer_mini
-          {% else %}
-            media_player.home_mini_woonkamer
-          {% endif %}
-        message: 'Er zit iets in de brievenbus!'
-        language: 'nl'
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
+        message: >
+          <speak>
+            Er zit iets in de brievenbus!
+          </speak>
+#        language: 'nl'
         cache: false
     - service: notify.html5
       data:
@@ -413,3 +454,42 @@
            {% if state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') == 0 %}
               - Oud papier
            {% endif %}
+
+- alias: test mediaplayers
+  trigger:
+    - platform: state
+      entity_id: input_boolean.test
+      to: 'on'
+  condition: []
+  action:
+    - service: media_player.volume_set
+      data:
+        entity_id: >-
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
+        volume_level: 0.5
+    - service: tts.google_home_say
+      data:
+        entity_id: >-
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
+        message: >
+          <speak>
+            De test is geslaagd!
+          </speak>
+#        language: 'nl'
+        cache: false

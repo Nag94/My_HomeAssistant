@@ -174,12 +174,12 @@
       platform: 'state'
       to_state: 'home'
     - entity_id: 'device_tracker.google_maps_111003784876807104536'
-      prob_given_true: 0.9
+      prob_given_true: 0.7
       prob_given_false: 0.2
       platform: 'state'
       to_state: 'home'
     - entity_id: 'device_tracker.sm_g973f'
-      prob_given_true: 0.7
+      prob_given_true: 0.8
       prob_given_false: 0.3
       platform: 'state'
       to_state: 'home'
@@ -194,7 +194,7 @@
       platform: 'state'
       to_state: 'home'
     - entity_id: 'device_tracker.google_maps_110538620571626781876'
-      prob_given_true: 0.9
+      prob_given_true: 0.7
       prob_given_false: 0.2
       platform: 'state'
       to_state: 'home'
@@ -228,9 +228,9 @@
       prob_given_false: 0.3
       platform: 'state'
       to_state: 'home'
-    - entity_id: 'device_tracker.hue_samsung_sm_g935f'
-      prob_given_true: 0.5
-      prob_given_false: 0.5
+    - entity_id: 'device_tracker.in2023'
+      prob_given_true: 0.8
+      prob_given_false: 0.2
       platform: 'state'
       to_state: 'home'
     - entity_id: 'device_tracker.sm_g973f'
@@ -239,12 +239,12 @@
       platform: 'state'
       to_state: 'home'
     - entity_id: 'device_tracker.google_maps_110538620571626781876'
-      prob_given_true: 0.8
+      prob_given_true: 0.7
       prob_given_false: 0.2
       platform: 'state'
       to_state: 'home'
     - entity_id: 'device_tracker.google_maps_111003784876807104536'
-      prob_given_true: 0.8
+      prob_given_true: 0.7
       prob_given_false: 0.2
       platform: 'state'
       to_state: 'home'

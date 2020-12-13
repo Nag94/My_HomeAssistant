@@ -81,33 +81,36 @@ test:
 ############################
 ####### media players ######
 ############################
-chromecast_woonkamer:
+woonkamer_ultra:
   name: "Woonkamer (Chromecast Ultra)"
   icon: mdi:google-chrome
-chromecast_ouderslaapkamer:
+ouderslaapkamer:
   name: "Ouderslaapkamer (Chromecast)"
   icon: mdi:google-chrome
 home_mini_woonkamer:
   name: "Woonkamer (Home Mini)"
   icon: mdi:google-home
-home_mini_werkkamer:  
+werkkamer_mini:  
   name: "Werkkamer (Nest Mini)"
   icon: mdi:google-home
-home_mini_ouderslaapkamer:  
+ouderslaapkamer_mini:  
   name: "Ouderslaapkamer (Nest Mini)"
   icon: mdi:google-home
-nest_hub_keuken:  
+keuken_hub:  
   name: "Keuken (Nest Hub)"
   icon: mdi:monitor
-chromecast_audio_eetkamer:  
+eetkamer:  
   name: "Eetkamer (Chromecast audio)"
   icon: mdi:google-chrome
-bluesound_eetkamer:  
+eetkamer_speakers:  
   name: "Eetkamer (Bluesound)"
   icon: mdi:cast-audio
-bluesound_keuken:  
+keuken_speaker:  
   name: "Keuken (Bluesound)"
   icon: mdi:cast-audio
-chromecast_tv:
+65oled854_12:
   name: "TV (Chromecast)"
+  icon: mdi:google-chrome
+android_tv_woonkamer:
+  name: "TV"
   icon: mdi:google-chrome

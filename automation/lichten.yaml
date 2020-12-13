@@ -384,6 +384,8 @@
       data:
         entity_id: light.woonkamer_tv_ambilight
         effect: Standard
+    - service: switch.turn_on
+      entity_id: switch.ambilight_hue
 - id: ambilight_uit_check
   alias: Ambilight aan als het donker wordt
   trigger:
@@ -391,9 +393,6 @@
       entity_id: media_player.tv_woonkamer
       to: 'on'
   condition:
-    - condition: state
-      entity_id: media_player.tv_woonkamer
-      state: 'on'
     - condition: numeric_state
       entity_id: sensor.woonkamer_voor
       below: 550
@@ -405,6 +404,8 @@
       data:
         entity_id: light.woonkamer_tv_ambilight
         effect: Standard
+    - service: switch.turn_on
+      entity_id: switch.ambilight_hue
 - id: ambilight_aan_check
   alias: Ambilight uit als het licht wordt
   trigger:
@@ -412,9 +413,6 @@
       entity_id: media_player.tv_woonkamer
       to: 'on'
   condition:
-    - condition: state
-      entity_id: media_player.tv_woonkamer
-      state: 'on'
     - condition: numeric_state
       entity_id: sensor.woonkamer_voor
       above: 700
@@ -425,6 +423,11 @@
     - service: light.turn_off
       data:
         entity_id: light.woonkamer_tv_ambilight
+    - delay: '00:00:10'
+    - service: light.turn_off
+      entity_id:
+        - light.tv1
+        - light.tv2
 - id: ambilight_uit_tv
   alias: Ambilight uit door tv
   trigger:
@@ -990,24 +993,38 @@
     event_data:
       entity_id: timer.timer_buiten
   action:
-    - service: light.turn_on
-      data:
-        entity_id: light.garage_floodlight
-        brightness: 20
-        rgb_color:
-          - 226
-          - 188
-          - 117
-        transition: 5
-    - delay: '00:00:20'
-    - service: template >-
-          {% if is_state('input_boolean.nachtstand', 'off') %}
-            light.turn_on
-          {% else %}
-            light.turn_off
-          {% endif %}
-      data:
-        entity_id: light.tasmota
+    choose:
+      - conditions:
+          condition: state
+          entity_id: input_boolean.nachtstand
+          state: 'on'
+        sequence:
+          - service: light.toggle
+            data:
+              entity_id: light.garage_floodlight
+              brightness: 20
+              rgb_color:
+                - 226
+                - 188
+                - 117
+              transition: 5
+          - delay: '00:00:20'
+          - service: light.turn_off
+            entity_id: light.tasmota
+      - conditions:
+          condition: state
+          entity_id: input_boolean.nachtstand
+          state: 'off'
+        sequence:
+          - service: light.toggle
+            data:
+              entity_id: light.garage_floodlight
+              brightness: 20
+              rgb_color:
+                - 226
+                - 188
+                - 117
+              transition: 5
 - alias: pir_floodlight_on_day
   condition:
   - condition: sun
