@@ -56,7 +56,7 @@ sirene_alarm_sound_on:
     data:
       entity_id: script.sound_siren_in_alarm_mode
   - service: switch.turn_on
-    entity_id: switch.siren_alarm_switch_2
+    entity_id: switch.siren_alarm_switch
 fire_alarm:
   alias: Fire Alarm
   sequence:

@@ -454,7 +454,9 @@
            {% if state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') == 0 %}
               - Oud papier
            {% endif %}
-
+########################################
+############## Test ####################
+######################################
 - alias: test mediaplayers
   trigger:
     - platform: state

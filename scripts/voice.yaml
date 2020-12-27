@@ -123,7 +123,7 @@ weerscript:
           {% elif 150 < states('sensor.u_s_air_quality_index')|int <= 200 %} ongezond,
           {% elif 200 < states('sensor.u_s_air_quality_index')|int <= 300 %} erg ongezond,
           {% elif states('sensor.u_s_air_quality_index')|int > 300 %} erg ongezond,
-          {% endif %} met een waarde van {{ states('sensor.u_s_air_quality_index') }}
+          {% endif %} met een waarde van {{ states('sensor.u_s_air_quality_index') }}</s></p><break time="200ms"/><break strength="weak"/>
         </speak>
 #      language: nl
       cache: false

@@ -183,7 +183,7 @@ nachtlicht_eetkamer_aan:
   alias: Licht aan in de nacht eetkamer
   sequence:
   - service: timer.cancel
-    entity_id: timer.timer_lamp_beneden
+    entity_id: timer.timer_lamp_eetkamer
   - service: light.turn_on
     data:
       entity_id:

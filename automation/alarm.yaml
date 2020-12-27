@@ -226,7 +226,7 @@
       entity_id: script.flash_loop
   - service: switch.turn_off
     data:
-      entity_id: switch.siren_alarm_switch_2
+      entity_id: switch.siren_alarm_switch
   - service: ifttt.trigger
     data:
       event: camera_off
@@ -420,6 +420,17 @@
 ######################################################
 ########## Motion Detection ##########################
 ######################################################
+- id: '1607948466665'
+  alias: Send a camera snapshot when motion is detected
+  description: 'Snapshot opritcamera naar telefoon Erik'
+  use_blueprint:
+    path: vorion/send-camera-snapshot-notification-on-motion.yaml
+    input:
+      delay: '0'
+      motion_sensor: binary_sensor.motion_sensor_buiten_motion
+      camera: camera.oprit
+      notify_device: 5ea63a4119c7446786cdc45b6d644fe4
+      notification_title: Beweging gezien op de oprit!
 - alias: motion detection oprit
   trigger:
     - platform: state

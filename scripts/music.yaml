@@ -1,5 +1,8 @@
 play_spotify_morning:
   sequence:
+  - service: bluesound.unjoin
+    entity_id: media_player.keuken_speaker
+  - delay: 00:05:00
   - data:
       entity_id: media_player.eetkamer_speakers
       source: Spotify
