@@ -24,7 +24,8 @@ flash_beneden:
   - service: homeassistant.turn_on
     data:
       entity_id:
-      - light.lampen_beneden
+      - light.living
+      - light.eetkamer_keuken
       - light.garage_floodlight
       rgb_color:
       - 255

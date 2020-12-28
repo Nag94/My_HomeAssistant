@@ -263,7 +263,7 @@ nieuwsscript:
             {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[5].split(", 'link")[0] }}.</s><s>
             {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[7].split(", 'link")[0] }}.</s><s>
             {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[9].split(", 'link")[0] }}.</s></p><break time="200ms"/><break strength="weak"/>
-            <p><s>Dat was ie weer! Een fijne dag vandaag!</s></p>
-          </speak>
+          <p><s>Dat was ie weer! Een fijne dag vandaag!</s></p>
+        </speak>
 #      language: nl
       cache: false
