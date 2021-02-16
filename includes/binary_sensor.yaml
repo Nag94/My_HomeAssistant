@@ -157,10 +157,10 @@
   country: NL
 
 - platform: rest
-  resource: https://rituals.sense-company.com/api/account/hubs/eyJpdiI6IlExTFZ6VFNiOXZycUhoeWtvZFJOa1E9PSIsInZhbHVlIjoiOUhMMlVkaEdEalF2UFwvR3Y5N2JiOUNiZGZsUDluUmZvUXNkaCttZGtQUG89IiwibWFjIjoiYTBkZDI1MGUzZmEzOWFhMWExZWY5NzMzYmUyMWEwMDMzNGYxNGZiYzY4OWI3NjY5MjkzMTBlODgwZDVmYmEyZCJ9
+  resource: !secret genie_resource
   method: GET
   name: Genie Status
-  value_template: '{{ value_json.0.hub.attributes.fanc == "1" }}'
+  value_template: '{{ value_json.hub.attributes.fanc == "1" }}'
 
 ### Bayesian trackers ###
 - platform: bayesian

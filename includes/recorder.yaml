@@ -1,28 +1,38 @@
 db_url: !secret mariadb
 include:
   domains:
-    - sensor
-    - switch
-    - light
-exclude:
-  domains:
-    - calendar
-    - group
-    - media_player
-    - remote
-    - script
-    - sun
-    - zone
-    - light
-    - automation
-    - updater
+    - device_tracker
+    - person
   entities:
-    - sensor.time
-    - sensor.date
-    - sensor.date_time
-  entity_globs:
-    - sensor.in2023_*
-    - sensor.hp_*
-    - sensor.adguard_*
-  event_types:
-    - call_service
+    - binary_sensor.azimuth_input
+    - binary_sensor.genie_status
+    - binary_sensor.hal_sensor_beneden_motion
+    - binary_sensor.hal_sensor_boven_motion
+    - binary_sensor.motion_sensor_buiten_motion
+    - binary_sensor.wolkendek_input
+    - sensor.temperature_eetkamer
+    - sensor.150nw_bw_pages_printed
+    - sensor.150nw_color_pages_printed
+    - sensor.150nw_total_pages_printed
+    - sensor.adguard_dns_queries_blocked_ratio
+    - sensor.adguard_dns_queries
+    - sensor.adguard_parental_control_blocked
+    - sensor.adguard_safe_browsing_blocked
+    - sensor.afvalinfo_gft
+    - sensor.afvalinfo_pbd
+    - sensor.afvalinfo_restafval
+    - sensor.afvalinfo_papier
+    - sensor.afvalinfo_today
+    - sensor.azimuth
+    - sensor.buienalarm_temperature
+    - sensor.hal_sensor_beneden_light_level
+    - sensor.hal_sensor_boven_light_level
+    - sensor.sunlight_pct
+    - sensor.hal_sensor_boven_temperature
+    - sensor.motion_sensor_buiten_light_level
+    - sensor.zonhoek
+    - switch.espressomachine_switch
+    - switch.genie
+    - switch.kerstboom
+    - switch.tuinslinger_achter_switch
+    - switch.ventilator_kachel_switch

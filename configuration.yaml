@@ -124,6 +124,18 @@ rest_command:
     method: post
     url: !secret genie_off
     content_type: application/json
+  genie_low:
+    method: post
+    url: !secret genie_low
+    content_type: application/json
+  genie_med:
+    method: post
+    url: !secret genie_med
+    content_type: application/json
+  genie_high:
+    method: post
+    url: !secret genie_high
+    content_type: application/json
 
 spotify:
   client_id: !secret spotify_id

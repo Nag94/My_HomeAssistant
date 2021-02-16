@@ -1,290 +1,290 @@
 - id: Erik_away
   alias: Check if Erik is away
   trigger:
-  - platform: template
-    value_template: '{{ states("person.erik") != "home" and states("person.nathalie") != "home" }}'
-#  - entity_id: group.all_persons
-#    for: 00:02:30
-#    from: 'home'
-#    platform: state
-#    to: 'not_home'
+    - platform: template
+      value_template: '{{ states("person.erik") != "home" and states("person.nathalie") != "home" }}'
+  #  - entity_id: group.all_persons
+  #    for: 00:02:30
+  #    from: 'home'
+  #    platform: state
+  #    to: 'not_home'
   condition:
-  - condition: state
-    entity_id: input_boolean.notify_home
-    state: 'off'
-#  - condition: or
-#    conditions:
-#      - condition: state
-#        entity_id: device_tracker.google_maps_esilverentand_gmail_com
-#        state: not_home
-#      - condition: state
-#        entity_id: device_tracker.google_maps_111003784876807104536
-#        state: not_home
+    - condition: state
+      entity_id: input_boolean.notify_home
+      state: "off"
+  #  - condition: or
+  #    conditions:
+  #      - condition: state
+  #        entity_id: device_tracker.google_maps_esilverentand_gmail_com
+  #        state: not_home
+  #      - condition: state
+  #        entity_id: device_tracker.google_maps_111003784876807104536
+  #        state: not_home
   action:
-  - data:
-      event: camera_on
-    service: ifttt.trigger
-  - data:
-      code: 1603
-      entity_id: alarm_control_panel.thuis_alarm
-    service: alarm_control_panel.alarm_arm_away
-  - service: media_player.media_pause
-    entity_id:
-      - media_player.spotify_erik_silverentand
-      - media_player.android_tv_woonkamer
-      - media_player.werkkamer_mini
-      - media_player.ouderslaapkamer_mini
-      - media_player.keukenspeaker
-      - media_player.eetkamer_speakers
-  - service: input_boolean.turn_off
-    entity_id: input_boolean.ochtendmuziek
+    - data:
+        event: camera_on
+      service: ifttt.trigger
+    - data:
+        code: 1603
+        entity_id: alarm_control_panel.thuis_alarm
+      service: alarm_control_panel.alarm_arm_away
+    - service: media_player.media_pause
+      entity_id:
+        - media_player.spotify_erik_silverentand
+        - media_player.android_tv_woonkamer
+        - media_player.werkkamer_mini
+        - media_player.ouderslaapkamer_mini
+        - media_player.keukenspeaker
+        - media_player.eetkamer_speakers
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.ochtendmuziek
 - id: Erik_away_buiten_on
   alias: alarm buitencamera aan
   trigger:
-  - platform: state
-    entity_id: sensor.erik_status
-    from: Thuis
-    to: Net vertrokken
-  - platform: time
-    at: '19:30:00'
+    - platform: state
+      entity_id: sensor.erik_status
+      from: Thuis
+      to: Net vertrokken
+    - platform: time
+      at: "19:30:00"
   action:
-  - service: ifttt.trigger
-    data:
-      event: alarm_buiten_on
+    - service: ifttt.trigger
+      data:
+        event: alarm_buiten_on
 - id: Erik_away_buiten_off
   alias: alarm buitencamera uit
   trigger:
-  - platform: state
-    entity_id: sensor.erik_status
-    to: Thuis
-    for: 00:05:00
-  - platform: time
-    at: '09:00:00'
+    - platform: state
+      entity_id: sensor.erik_status
+      to: Thuis
+      for: 00:05:00
+    - platform: time
+      at: "09:00:00"
   condition:
-  - condition: state
-    entity_id: group.all_persons
-    state: 'home'
+    - condition: state
+      entity_id: group.all_persons
+      state: "home"
   action:
-  - service: ifttt.trigger
-    data:
-      event: alarm_buiten_off
+    - service: ifttt.trigger
+      data:
+        event: alarm_buiten_off
 - id: Guest_out_camera
   alias: Alarm aan door Gastenmodus uit
   trigger:
-  - entity_id: input_boolean.notify_home
-    platform: state
-    to: 'off'
+    - entity_id: input_boolean.notify_home
+      platform: state
+      to: "off"
   condition:
-  - condition: state
-    entity_id: group.all_persons
-    state: 'not_home'
+    - condition: state
+      entity_id: group.all_persons
+      state: "not_home"
   action:
-  - data:
-      entity_id: input_boolean.camera_switch
-    service: input_boolean.turn_on
-  - data:
-      code: 1603
-      entity_id: alarm_control_panel.thuis_alarm
-    service: alarm_control_panel.alarm_arm_away
+    - data:
+        entity_id: input_boolean.camera_switch
+      service: input_boolean.turn_on
+    - data:
+        code: 1603
+        entity_id: alarm_control_panel.thuis_alarm
+      service: alarm_control_panel.alarm_arm_away
 - id: Guest_on_camera
   alias: Alarm uit door Gastenmodus aan
   trigger:
-  - entity_id: input_boolean.notify_home
-    platform: state
-    to: 'on'
+    - entity_id: input_boolean.notify_home
+      platform: state
+      to: "on"
   condition:
-  - condition: state
-    entity_id: alarm_control_panel.thuis_alarm
-    state: armed_away
-  action:
-  - data:
-      entity_id: input_boolean.camera_switch
-    service: input_boolean.turn_off
-  - data:
+    - condition: state
       entity_id: alarm_control_panel.thuis_alarm
-      code: 1603
-    service: alarm_control_panel.alarm_disarm
+      state: armed_away
+  action:
+    - data:
+        entity_id: input_boolean.camera_switch
+      service: input_boolean.turn_off
+    - data:
+        entity_id: alarm_control_panel.thuis_alarm
+        code: 1603
+      service: alarm_control_panel.alarm_disarm
 - id: Erik_home
   alias: Check if Erik is home
   trigger:
-  - entity_id: group.all_persons
-    platform: state
-    to: 'home'
-  - entity_id: person.erik
-    platform: state
-    to: home
-  - entity_id: person.nathalie
-    platform: state
-    to: home
+    - entity_id: group.all_persons
+      platform: state
+      to: "home"
+    - entity_id: person.erik
+      platform: state
+      to: home
+    - entity_id: person.nathalie
+      platform: state
+      to: home
   action:
-  - service: input_boolean.turn_off
-    data:
-      entity_id: input_boolean.notify_home
-  - data:
-      event: camera_off
-    service: ifttt.trigger
-  - service: input_boolean.turn_off
-    data:
-      entity_id: input_boolean.camera_switch
-  - data:
-      entity_id: alarm_control_panel.thuis_alarm
-      code: 1603
-    service: alarm_control_panel.alarm_disarm
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.notify_home
+    - data:
+        event: camera_off
+      service: ifttt.trigger
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.camera_switch
+    - data:
+        entity_id: alarm_control_panel.thuis_alarm
+        code: 1603
+      service: alarm_control_panel.alarm_disarm
 - alias: Mark person as just arrived
   trigger:
-  - platform: state
-    entity_id: person.erik
-    to: 'home'
-  - platform: state
-    entity_id: person.nathalie
-    to: 'home'
+    - platform: state
+      entity_id: person.erik
+      to: "home"
+    - platform: state
+      entity_id: person.nathalie
+      to: "home"
   action:
-  - service: input_select.select_option
-    data_template:
-      entity_id: >-
-        {% if trigger.entity_id == 'person.erik' %}
-          input_select.erik_status_dropdown
-        {% else %}
-          input_select.nathalie_status_dropdown
-        {% endif %}
-      option: >-
-        "{% if trigger.entity_id == 'person.erik' %}
-           {% if states('input_select.erik_status_dropdown') == 'Net vertrokken' %}
-             'Thuis'
-           {% else %}
-             'Net thuis aangekomen'
-           {% endif %}
-         {% else %}
-           {% if states('input_select.nathalie_status_dropdown') == 'Net vertrokken' %}
-             'Thuis'
-           {% else %}
-             'Net thuis aangekomen'
-           {% endif %}
-         {% endif %}
+    - service: input_select.select_option
+      data:
+        entity_id: >-
+          {% if trigger.entity_id == 'person.erik' %}
+            input_select.erik_status_dropdown
+          {% else %}
+            input_select.nathalie_status_dropdown
+          {% endif %}
+        option: >-
+          {% if trigger.entity_id == 'person.erik' %}
+            {% if states('input_select.erik_status_dropdown') == 'Net vertrokken' %}
+              'Thuis'
+            {% else %}
+              'Net thuis aangekomen'
+            {% endif %}
+          {% else %}
+            {% if states('input_select.nathalie_status_dropdown') == 'Net vertrokken' %}
+              'Thuis'
+            {% else %}
+              'Net thuis aangekomen'
+            {% endif %}
+          {% endif %}
   id: f4d0db06b4664705bdef61a31161c5b3
 - alias: Mark person as home
   trigger:
-  - platform: state
-    entity_id: input_select.erik_status_dropdown
-    to: 'Net thuis aangekomen'
-    for:
-      minutes: 5
-  - platform: state
-    entity_id: input_select.nathalie_status_dropdown
-    to: 'Net thuis aangekomen'
-    for:
-      minutes: 5
+    - platform: state
+      entity_id: input_select.erik_status_dropdown
+      to: "Net thuis aangekomen"
+      for:
+        minutes: 5
+    - platform: state
+      entity_id: input_select.nathalie_status_dropdown
+      to: "Net thuis aangekomen"
+      for:
+        minutes: 5
   action:
-  - service: input_select.select_option
-    data_template:
-      entity_id: >-
-        {% if trigger.entity_id == 'input_select.erik_status_dropdown' %}
-          input_select.erik_status_dropdown
-        {% else %}
-          input_select.nathalie_status_dropdown
-        {% endif %}
-      option: 'Thuis'
+    - service: input_select.select_option
+      data:
+        entity_id: >-
+          {% if trigger.entity_id == 'input_select.erik_status_dropdown' %}
+            input_select.erik_status_dropdown
+          {% else %}
+            input_select.nathalie_status_dropdown
+          {% endif %}
+        option: "Thuis"
   id: 14242f62ba2247bba9ac61d4f5bf4484
 - alias: Mark person as just left
   trigger:
-  - platform: state
-    entity_id: person.erik
-    to: 'not_home'
-  - platform: state
-    entity_id: person.nathalie
-    to: 'not_home'
+    - platform: state
+      entity_id: person.erik
+      to: "not_home"
+    - platform: state
+      entity_id: person.nathalie
+      to: "not_home"
   action:
-  - service: input_select.select_option
-    data_template:
-      entity_id: >-
-        {% if trigger.entity_id == 'person.erik' %}
-          input_select.erik_status_dropdown
-        {% else %}
-          input_select.nathalie_status_dropdown
-        {% endif %}
-      option: 'Net vertrokken'
+    - service: input_select.select_option
+      data:
+        entity_id: >-
+          {% if trigger.entity_id == 'person.erik' %}
+            input_select.erik_status_dropdown
+          {% else %}
+            input_select.nathalie_status_dropdown
+          {% endif %}
+        option: "Net vertrokken"
   id: 20459e8b38954e1baaf8bb0be05c72b7
 - alias: Mark person as away
   trigger:
-  - platform: state
-    entity_id: input_select.erik_status_dropdown
-    to: 'Net vertrokken'
-    for:
-      minutes: 5
-  - platform: state
-    entity_id: input_select.nathalie_status_dropdown
-    to: 'Net vertrokken'
-    for:
-      minutes: 5
+    - platform: state
+      entity_id: input_select.erik_status_dropdown
+      to: "Net vertrokken"
+      for:
+        minutes: 5
+    - platform: state
+      entity_id: input_select.nathalie_status_dropdown
+      to: "Net vertrokken"
+      for:
+        minutes: 5
   action:
-  - service: input_select.select_option
-    data_template:
-      entity_id: >-
-        {% if trigger.entity_id == 'person.erik' %}
-          input_select.erik_status_dropdown
-        {% else %}
-          input_select.nathalie_status_dropdown
-        {% endif %}
-      option: 'Afwezig'
+    - service: input_select.select_option
+      data:
+        entity_id: >-
+          {% if trigger.entity_id == 'person.erik' %}
+            input_select.erik_status_dropdown
+          {% else %}
+            input_select.nathalie_status_dropdown
+          {% endif %}
+        option: "Afwezig"
   id: 14225715828e420aafc0b8c52b3ba0ee
 - alias: Mark person as extended away
   trigger:
-  - platform: state
-    entity_id: input_select.erik_status_dropdown
-    to: 'Afwezig'
-    for:
-      hours: 24
-  - platform: state
-    entity_id: input_select.nathalie_status_dropdown
-    to: 'Afwezig'
-    for:
-      hours: 24
+    - platform: state
+      entity_id: input_select.erik_status_dropdown
+      to: "Afwezig"
+      for:
+        hours: 24
+    - platform: state
+      entity_id: input_select.nathalie_status_dropdown
+      to: "Afwezig"
+      for:
+        hours: 24
   action:
-  - service: input_select.select_option
-    data_template:
-      entity_id: >-
-        {% if trigger.entity_id == 'person.erik' %}
-          input_select.erik_status_dropdown
-        {% else %}
-          input_select.nathalie_status_dropdown
-        {% endif %}
-      option: 'Langdurig afwezig'
+    - service: input_select.select_option
+      data:
+        entity_id: >-
+          {% if trigger.entity_id == 'person.erik' %}
+            input_select.erik_status_dropdown
+          {% else %}
+            input_select.nathalie_status_dropdown
+          {% endif %}
+        option: "Langdurig afwezig"
   id: 033f7229dd0644f9bbf22d131c4db9f6
-- id: '1562669502936'
+- id: "1562669502936"
   alias: Vakantiestand aan
   trigger:
-  - entity_id: input_select.erik_status_dropdown
-    platform: state
-    to: 'Langdurig afwezig'
-  - entity_id: input_select.nathalie_status_dropdown
-    platform: state
-    to: 'Langdurig afwezig'
+    - entity_id: input_select.erik_status_dropdown
+      platform: state
+      to: "Langdurig afwezig"
+    - entity_id: input_select.nathalie_status_dropdown
+      platform: state
+      to: "Langdurig afwezig"
   condition:
     condition: not
     conditions:
       - condition: state
         entity_id: group.all_persons
-        state: 'home'
+        state: "home"
   action:
-  - data:
-      entity_id: input_boolean.vakantiestand
-    service: input_boolean.turn_on
-- id: '1562669775268'
+    - data:
+        entity_id: input_boolean.vakantiestand
+      service: input_boolean.turn_on
+- id: "1562669775268"
   alias: Vakantiestand uit
   trigger:
-  - entity_id: input_select.erik_status_dropdown
-    from: 'Langdurig afwezig'
-    platform: state
-    to: 'Net thuis aangekomen'
-  - entity_id: input_select.nathalie_status_dropdown
-    from: 'Langdurig afwezig'
-    platform: state
-    to: 'Net thuis aangekomen'
+    - entity_id: input_select.erik_status_dropdown
+      from: "Langdurig afwezig"
+      platform: state
+      to: "Net thuis aangekomen"
+    - entity_id: input_select.nathalie_status_dropdown
+      from: "Langdurig afwezig"
+      platform: state
+      to: "Net thuis aangekomen"
   condition: []
   action:
-  - data:
-      entity_id: input_boolean_vakantiestand
-    service: input_boolean.turn_off
+    - data:
+        entity_id: input_boolean_vakantiestand
+      service: input_boolean.turn_off
 #################################################
 ############### Reizen ##########################
 #################################################
@@ -340,7 +340,7 @@
               {{ state_attr(trigger.entity_id, 'friendly_name') }} is op het werk aangekomen
             {% endif %}
           {% endif %}
-        language: 'nl'
+        #        language: 'nl'
         cache: false
     - service: >-
         {% if (trigger.zone) == 'zone.werk_erik' %}
@@ -355,6 +355,6 @@
           {% else %}
             {{ state_attr(trigger.entity_id, 'friendly_name') }} is op het werk aangekomen
           {% endif %}
-        title: 'Reisupdate'
+        title: "Reisupdate"
         data:
-          sticky: 'true'
+          sticky: "true"

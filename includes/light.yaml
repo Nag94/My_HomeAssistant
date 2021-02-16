@@ -35,8 +35,8 @@
   entities:
     - light.garagelamp
     - light.garage_floodlight
-    - light.tasmota
-    - light.tasmota_2
+    - light.voordeurlamp
+    - light.opritlampen
 - platform: group
   name: hall_all
   entities:

@@ -120,25 +120,37 @@
   resource: !secret genie_resource
   method: GET
   name: Genie Geur Status
-  value_template: '{{ value_json.0.hub.sensors.fillc.title }}'
+  value_template: '{{ value_json.hub.sensors.fillc.title }}'
 
 - platform: rest
   resource: !secret genie_resource
   method: GET
   name: Genie Batterij Status
-  value_template: '{{ value_json.0.hub.sensors.battc.title }}'
+  value_template: '{{ value_json.hub.sensors.battc.title }}'
 
 - platform: rest
   resource: !secret genie_resource
   method: GET
   name: Genie Wifi Status
-  value_template: '{{ value_json.0.hub.sensors.wific.title }}'
+  value_template: '{{ value_json.hub.sensors.wific.title }}'
   
 - platform: rest
   resource: !secret genie_resource
   method: GET
   name: Genie Geur
-  value_template: '{{ value_json.0.hub.sensors.rfidc.title }}'
+  value_template: '{{ value_json.hub.sensors.rfidc.title }}'
+
+- platform: rest
+  resource: !secret genie_resource
+  method: GET
+  name: Genie Sterkte
+  value_template: '{{ value_json.hub.attributes.speedc }}'
+
+- platform: rest
+  resource: !secret genie_resource
+  method: GET
+  name: Genie Kamergrootte
+  value_template: '{{ value_json.hub.attributes.roomc }}'
 
 - platform: template
   sensors:

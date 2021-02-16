@@ -168,6 +168,7 @@ agendascript:
         </speak>
 #      language: nl
       cache: false
+
 afvalscript:
   alias: Afval bericht
   sequence:
@@ -264,6 +265,27 @@ nieuwsscript:
             {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[7].split(", 'link")[0] }}.</s><s>
             {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[9].split(", 'link")[0] }}.</s></p><break time="200ms"/><break strength="weak"/>
           <p><s>Dat was ie weer! Een fijne dag vandaag!</s></p>
+        </speak>
+#      language: nl
+      cache: false
+
+weeralarmscript:
+  alias: Weeralarm melding
+  sequence:
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.eetkamer_speakers
+      volume_level: 0.5
+  - delay: 00:00:05
+  - service: tts.google_home_say
+    entity_id: media_player.eetkamer_speakers
+    data_template:
+      message: >-
+        <speak>
+          {% if states('sensor.knmi_waarschuwing') != 'Code groen' %}
+            <p><s>Er geldt vandaag {{ states('sensor.knmi_waarschuwing')}}.</s></p><break time="200ms"/><break strength="weak"/>
+            <p><s>De reden is:</s><break time="260ms"/><break strength="strong"/><s>{{ states('sensor.knmi_alert_description') }}.</s></p><break time="200ms"/><break strength="weak"/>
+          {% endif %}
         </speak>
 #      language: nl
       cache: false

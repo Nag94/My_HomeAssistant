@@ -176,8 +176,8 @@
       to: 'off'
     - platform: time
       at: '06:45:00'
-    - platform: time
-      at: '19:00:00'
+    # - platform: time
+    #   at: '19:00:00'
   condition:
     - condition: state
       entity_id: input_boolean.vakantiestand
@@ -296,6 +296,11 @@
       entity_id: input_boolean.ochtendmuziek
       from: 'on'
       to: 'off'
+    - device_id: 0435dbb6373049949c44c04f3de67525
+      domain: hue
+      platform: device
+      subtype: turn_off
+      type: remote_button_short_release
   condition: []
   action:
     - service: media_player.media_pause
@@ -425,6 +430,68 @@
   action:
     - service: switch.turn_off
       entity_id: switch.genie
+
+- alias: Genie Set strength slider
+  id: 'genie-slider-sterkte'
+  trigger:
+    platform: state
+    entity_id: sensor.genie_sterkte
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: sensor.genie_sterkte
+              state: '1'
+          sequence:
+            - service: input_number.set_value
+              data_template:
+                entity_id: input_number.genie_speed
+                value: '1.0'
+        - conditions:
+            - condition: state
+              entity_id: sensor.genie_sterkte
+              state: '2'
+          sequence:
+            - service: input_number.set_value
+              data_template:
+                entity_id: input_number.genie_speed
+                value: '2.0'
+        - conditions:
+            - condition: state
+              entity_id: sensor.genie_sterkte
+              state: '3'
+          sequence:
+            - service: input_number.set_value
+              data_template:
+                entity_id: input_number.genie_speed
+                value: '3.0'
+
+- alias: Genie Strength slider low
+  id: 'genie-slider-sterkte-verzet'
+  trigger:
+    - platform: state
+      entity_id: input_number.genie_speed
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_number.genie_speed
+              state: '1.0'
+          sequence:
+            - service: rest_command.genie_low
+        - conditions:
+            - condition: state
+              entity_id: input_number.genie_speed
+              state: '2.0'
+          sequence:
+            - service: rest_command.genie_med
+        - conditions:
+            - condition: state
+              entity_id: input_number.genie_speed
+              state: '3.0'
+          sequence:
+            - service: rest_command.genie_high
+
 #####################################
 ############## afval ################
 #####################################
