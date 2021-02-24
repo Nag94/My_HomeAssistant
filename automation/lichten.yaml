@@ -4,7 +4,7 @@
 - id: "1557898795923"
   alias: licht aan in eetkamer bij beweging
   trigger:
-    - entity_id: binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_home_security_motion_detected_4
+    - entity_id: binary_sensor.pir_motion_sensor_with_temperature_sensor_any
       from: "off"
       platform: state
       to: "on"
@@ -513,11 +513,11 @@
         entity_id:
           "{% if is_state('input_boolean.notify_home', 'on' ) or is_state('group.all_persons',\
           \ 'home') %}\n  input_boolean.camera_switch\n{% endif %}"
-    - service: switch.turn_on
+    - service: light.turn_on
       data_template:
         entity_id:
           "{% if is_state('binary_sensor.low_lux_input', 'on' ) and is_state('group.all_persons',\
-          \ 'home') %}\n  switch.tuinverlichting\n{% endif %}"
+          \ 'home') %}\n  light.tuinverlichting\n{% endif %}"
   id: "fd0c63b0a0a94672a6da52a8c5b03385"
 - alias: Acties door nachtschakelaar aan
   trigger:
@@ -1115,7 +1115,7 @@
       state: "on"
   trigger:
     - platform: state
-      entity_id: binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_3
+      entity_id: binary_sensor.pir_motion_sensor_garage
       to: "on"
     - platform: state
       entity_id: binary_sensor.garagedeur
@@ -1130,7 +1130,7 @@
 - alias: pir_toilet_on
   trigger:
     - platform: state
-      entity_id: binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_home_security_motion_detected_2
+      entity_id: binary_sensor.pir_motion_toilet
       from: "off"
       to: "on"
     - platform: state

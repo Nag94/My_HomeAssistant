@@ -5,8 +5,8 @@
   trigger:
     - platform: state
       entity_id: sensor.wasmachine_current
-      from: 'Draait'
-      to: 'Klaar'
+      from: "Draait"
+      to: "Klaar"
       for:
         seconds: 90
   condition:
@@ -46,7 +46,7 @@
           <speak>
             De was is schoon!<break time="300ms"/> Haal de was maar uit de wasmachine.
           </speak>
-#        language: 'nl'
+        #        language: 'nl'
         cache: false
     - service: notify.html5
       data:
@@ -59,8 +59,8 @@
   trigger:
     platform: state
     entity_id: sensor.droger_current
-    from: 'Draait'
-    to: 'Klaar'
+    from: "Draait"
+    to: "Klaar"
     for:
       minutes: 2
   condition:
@@ -100,7 +100,7 @@
           <speak>
             De was is droog!<break time="300ms"/> Haal de was maar uit de droger.
           </speak>
-#        language: 'nl'
+        #        language: 'nl'
         cache: false
     - service: notify.html5
       data:
@@ -116,7 +116,7 @@
   trigger:
     - platform: state
       entity_id: sensor.vaatwasser_program_progress
-      to: '100'
+      to: "100"
     - platform: template
       value_template: >-
         {{ as_timestamp(states('sensor.vaatwasser_remaining_program_time')) == (as_timestamp(utcnow())) }}
@@ -157,7 +157,7 @@
           <speak>
             De vaat is schoon!<break time="300ms"/> Ruim de vaatwasser maar uit.
           </speak>
-#        language: 'nl'
+        #        language: 'nl'
         cache: false
     - service: notify.html5
       data:
@@ -173,26 +173,26 @@
   trigger:
     - platform: state
       entity_id: input_boolean.nachtstand
-      to: 'off'
+      to: "off"
     - platform: time
-      at: '06:45:00'
+      at: "06:45:00"
     # - platform: time
     #   at: '19:00:00'
   condition:
     - condition: state
       entity_id: input_boolean.vakantiestand
-      state: 'off'
+      state: "off"
     - condition: or
       conditions:
-      - condition: state
-        entity_id: group.all_persons
-        state: home
-      - condition: state
-        entity_id: person.erik
-        state: home
-      - condition: state
-        entity_id: person.nathalie
-        state: home
+        - condition: state
+          entity_id: group.all_persons
+          state: home
+        - condition: state
+          entity_id: person.erik
+          state: home
+        - condition: state
+          entity_id: person.nathalie
+          state: home
   action:
     - service: switch.turn_on
       entity_id: switch.espressomachine_switch
@@ -202,10 +202,10 @@
       value_template: '{{ states("person.erik") != "home" and states("person.nathalie") != "home" and states("group.all_persons") == "not_home" }}'
     - platform: state
       entity_id: input_boolean.nachtstand
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: input_boolean.vakantiestand
-      to: 'on'
+      to: "on"
     - platform: template
       value_template: "{{ is_state('binary_sensor.workday_sensor', 'on') and now().strftime('%H:%M') > '09:00' }}"
   action:
@@ -220,7 +220,7 @@
   trigger:
     platform: state
     entity_id: media_player.android_tv_woonkamer
-    to: 'paused'
+    to: "paused"
     for:
       minutes: 30
   action:
@@ -245,26 +245,26 @@
         {% elif is_state("input_select.afspeelmedium", "Keukenspeaker") %} media_player.keuken_speaker_2
         {% elif is_state("input_select.afspeelmedium", "Nest Hub Keuken") %} media_player.keuken_hub
         {% endif %}
-      volume_level: '{{  states.input_number.volume_radio.state  }}'
+      volume_level: "{{  states.input_number.volume_radio.state  }}"
 - alias: Weekendmuziek
   trigger:
     - entity_id: binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4
       platform: state
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: binary_sensor.motion_schuifpui
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: input_boolean.ochtendmuziek
-      from: 'off'
-      to: 'on'
+      from: "off"
+      to: "on"
   condition:
     - condition: state
       entity_id: input_boolean.vakantiestand
-      state: 'off'
+      state: "off"
     - condition: state
       entity_id: input_boolean.nachtstand
-      state: 'off'
+      state: "off"
     - condition: template
       value_template: >-
         {% if trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4' or trigger.entity_id == 'binary_sensor.motion_schuifpui' %}
@@ -274,15 +274,15 @@
         {% endif %}
     - condition: or
       conditions:
-      - condition: state
-        entity_id: group.all_persons
-        state: home
-      - condition: state
-        entity_id: person.erik
-        state: home
-      - condition: state
-        entity_id: person.nathalie
-        state: home
+        - condition: state
+          entity_id: group.all_persons
+          state: home
+        - condition: state
+          entity_id: person.erik
+          state: home
+        - condition: state
+          entity_id: person.nathalie
+          state: home
   action:
     - service: bluesound.unjoin
       entity_id: media_player.keuken_speaker_2
@@ -294,8 +294,8 @@
   trigger:
     - platform: state
       entity_id: input_boolean.ochtendmuziek
-      from: 'on'
-      to: 'off'
+      from: "on"
+      to: "off"
     - device_id: 0435dbb6373049949c44c04f3de67525
       domain: hue
       platform: device
@@ -312,10 +312,10 @@
   trigger:
     - platform: state
       entity_id: binary_sensor.vibration_brievenbus
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: binary_sensor.vibration_brievenbus_2
-      to: 'on'
+      to: "on"
   condition: []
   action:
     - service: input_boolean.turn_on
@@ -349,18 +349,18 @@
           <speak>
             Er zit iets in de brievenbus!
           </speak>
-#        language: 'nl'
+        #        language: 'nl'
         cache: false
     - service: notify.html5
       data:
-        message: 'Er zit iets in de brievenbus!'
-        title: 'Brievenalert'
+        message: "Er zit iets in de brievenbus!"
+        title: "Brievenalert"
     - service: notify.all_mobile
       data:
-        message: 'Er zit iets in de brievenbus!'
-        title: 'Brievenalert'
+        message: "Er zit iets in de brievenbus!"
+        title: "Brievenalert"
         data:
-          sticky: 'false'
+          sticky: "false"
     - delay:
         minutes: 10
     - service: html5.dismiss
@@ -371,7 +371,7 @@
   condition:
     - condition: state
       entity_id: input_boolean.brievenbus
-      state: 'on'
+      state: "on"
   action:
     - service: input_boolean.turn_off
       entity_id: input_boolean.brievenbus
@@ -382,11 +382,11 @@
   trigger:
     - platform: state
       entity_id: binary_sensor.schuifpui
-      to: 'on'
+      to: "on"
   condition:
     - condition: state
       entity_id: switch.genie
-      state: 'on'
+      state: "on"
   action:
     - service: switch.turn_off
       entity_id: switch.genie
@@ -394,45 +394,45 @@
   trigger:
     - platform: state
       entity_id: binary_sensor.schuifpui
-      to: 'off'
+      to: "off"
   condition:
     condition: or
     conditions:
       - condition: time
-        after: '20:00:00'
-        before: '21:00:00'
+        after: "20:00:00"
+        before: "21:00:00"
       - condition: time
-        after: '06:30:00'
-        before: '07:00:00'
+        after: "06:30:00"
+        before: "07:00:00"
   action:
     - service: switch.turn_on
       entity_id: switch.genie
 - alias: genie aan
   trigger:
     - platform: time
-      at: '20:00:00'
+      at: "20:00:00"
     - platform: time
-      at: '06:30:00'
+      at: "06:30:00"
   condition:
     - condition: state
       entity_id: binary_sensor.schuifpui
-      state: 'off'
+      state: "off"
   action:
     - service: switch.turn_on
       entity_id: switch.genie
 - alias: genie uit
   trigger:
     - platform: time
-      at: '21:00:00'
+      at: "21:00:00"
     - platform: time
-      at: '07:00:00'      
+      at: "07:00:00"
   condition: []
   action:
     - service: switch.turn_off
       entity_id: switch.genie
 
 - alias: Genie Set strength slider
-  id: 'genie-slider-sterkte'
+  id: "genie-slider-sterkte"
   trigger:
     platform: state
     entity_id: sensor.genie_sterkte
@@ -441,33 +441,33 @@
         - conditions:
             - condition: state
               entity_id: sensor.genie_sterkte
-              state: '1'
+              state: "1"
           sequence:
             - service: input_number.set_value
               data_template:
                 entity_id: input_number.genie_speed
-                value: '1.0'
+                value: "1.0"
         - conditions:
             - condition: state
               entity_id: sensor.genie_sterkte
-              state: '2'
+              state: "2"
           sequence:
             - service: input_number.set_value
               data_template:
                 entity_id: input_number.genie_speed
-                value: '2.0'
+                value: "2.0"
         - conditions:
             - condition: state
               entity_id: sensor.genie_sterkte
-              state: '3'
+              state: "3"
           sequence:
             - service: input_number.set_value
               data_template:
                 entity_id: input_number.genie_speed
-                value: '3.0'
+                value: "3.0"
 
 - alias: Genie Strength slider low
-  id: 'genie-slider-sterkte-verzet'
+  id: "genie-slider-sterkte-verzet"
   trigger:
     - platform: state
       entity_id: input_number.genie_speed
@@ -476,29 +476,29 @@
         - conditions:
             - condition: state
               entity_id: input_number.genie_speed
-              state: '1.0'
+              state: "1.0"
           sequence:
             - service: rest_command.genie_low
         - conditions:
             - condition: state
               entity_id: input_number.genie_speed
-              state: '2.0'
+              state: "2.0"
           sequence:
             - service: rest_command.genie_med
         - conditions:
             - condition: state
               entity_id: input_number.genie_speed
-              state: '3.0'
+              state: "3.0"
           sequence:
             - service: rest_command.genie_high
 
 #####################################
 ############## afval ################
 #####################################
-- alias: 'Bakken aan de straat'
+- alias: "Bakken aan de straat"
   trigger:
     - platform: time
-      at: '06:00:00'
+      at: "06:00:00"
   condition:
     - condition: template
       value_template: >
@@ -509,26 +509,106 @@
       data_template:
         title: Bakken aan de straat
         message: >-
-           {% if state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') == 0 %}
-              - Groene bak
-           {% endif %}
-           {% if state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') == 0 %}
-              - PMD Zakken
-           {% endif %}
-           {% if state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') == 0 %}
-              - Grijze bak
-           {% endif %}
-           {% if state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') == 0 %}
-              - Oud papier
-           {% endif %}
+          {% if state_attr('sensor.afvalinfo_gft', 'days_until_collection_date') == 0 %}
+            - Groene bak
+          {% endif %}
+          {% if state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date') == 0 %}
+            - PMD Zakken
+          {% endif %}
+          {% if state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date') == 0 %}
+            - Grijze bak
+          {% endif %}
+          {% if state_attr('sensor.afvalinfo_papier', 'days_until_collection_date') == 0 %}
+            - Oud papier
+          {% endif %}
+########################################
+########### PICNIC #####################
+########################################
+- alias: Picnic in 30 mins
+  description: "Picnic komt eraan"
+  trigger:
+    - platform: template
+      value_template: >-
+        {% if states("sensor.picnic_delivery") != "unknown" or "unavailable" %} 
+          {{as_timestamp(state_attr('sensor.picnic_delivery', 'delivery').window_start)
+          - as_timestamp(states('sensor.date') + " " + states('sensor.time'))
+          - 1800 < 0}}
+        {% endif %}
+  condition: []
+  action:
+    - service: tts.google_home_say
+      data:
+        entity_id: >-
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
+        message: >-
+          <speak>
+            Picnic komt eraan!<break time="300ms"/> Over ongeveer een half uurtje staan ze voor de deur.
+          </speak>
+        #        language: 'nl'
+        cache: false
+    - service: notify.html5
+      data:
+        message: De Picnic komt eraan!
+        title: Picnic
+    - delay:
+        minutes: 5
+    - service: html5.dismiss
+  mode: single
+
+- alias: Picnic bestelwindow dicht
+  description: "Picnic snel bestellen"
+  trigger:
+    - platform: template
+      value_template: >-
+        {% if states("sensor.picnic_delivery") != "unknown" or "unavailable" %} 
+          {{as_timestamp(state_attr('sensor.picnic_delivery', 'delivery').cut_off_time)
+          - as_timestamp(states('sensor.date') + " " + states('sensor.time'))
+          - 3600 < 0}}
+        {% endif %}
+  condition: []
+  action:
+    - service: tts.google_home_say
+      data:
+        entity_id: >-
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
+        message: >-
+          <speak>
+            Bestel nog snel je laatste Picnic boodschappen!<break time="300ms"/> Over een uur kan het niet meer.
+          </speak>
+        #        language: 'nl'
+        cache: false
+    - service: notify.html5
+      data:
+        message: Nog een uur om producten aan je Picnic winkelmand toe te voegen!
+        title: Picnic
+    - delay:
+        minutes: 5
+    - service: html5.dismiss
+  mode: single
 ########################################
 ############## Test ####################
 ######################################
 - alias: test mediaplayers
   trigger:
     - platform: state
-      entity_id: input_boolean.test
-      to: 'on'
+      entity_id: input_boolean.test2
+      to: "on"
   condition: []
   action:
     - service: media_player.volume_set
@@ -560,5 +640,5 @@
           <speak>
             De test is geslaagd!
           </speak>
-#        language: 'nl'
+        #        language: 'nl'
         cache: false

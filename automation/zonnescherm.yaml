@@ -5,31 +5,31 @@
   condition:
     - condition: state
       entity_id: group.all_persons
-      state: 'home'
+      state: "home"
     - condition: state
       entity_id: input_boolean.vakantiestand
-      state: 'off'
+      state: "off"
     - condition: state
       entity_id: input_boolean.zonwering_open
-      state: 'on'
+      state: "on"
     - condition: state
       entity_id: binary_sensor.azimuth_input
-      state: 'on'
+      state: "on"
     - condition: state
       entity_id: binary_sensor.zonhoek_low_input
-      state: 'off'  
+      state: "off"
     - condition: numeric_state
       entity_id: sensor.eindhoven_wind_gust
       below: 40
-#    - condition: numeric_state
-#      entity_id: sensor.buienalarm_next_rain_forecast
-#      above: 15 # No rain the next 15 min
-#      below: 0
+    #    - condition: numeric_state
+    #      entity_id: sensor.buienalarm_next_rain_forecast
+    #      above: 15 # No rain the next 15 min
+    #      below: 0
     - condition: template
       value_template: "{{ states('sensor.buienalarm_next_rain_forecast')|int < 0 or states('sensor.buienalarm_next_rain_forecast')|int > 15 }}"
     - condition: state
       entity_id: binary_sensor.low_irradiance_input
-      state: 'on'
+      state: "on"
     - condition: numeric_state
       entity_id: sensor.sunlight_pct
       above: 30
@@ -37,19 +37,19 @@
       entity_id: sensor.temperature_eetkamer
       above: 19
     - condition: template
-      value_template: "{{ now().month > 3 }}"
+      value_template: "{{ now().month > 2 }}"
     - condition: template
       value_template: "{{ now().month < 10 }}"
     - condition: state
       entity_id: input_boolean.disable_automatic_sunscreens
-      state: 'on'
+      state: "on"
     - condition: state
       entity_id: input_boolean.vakantiestand
-      state: 'off'
+      state: "off"
   action:
     - service: cover.set_cover_position
       data:
-        entity_id: cover.motor_control_class_b_level
+        entity_id: cover.neo_coolcam_roller_shutter_curtain_switch
         position: 0
     - delay:
         seconds: 10
@@ -70,21 +70,21 @@
   trigger:
     - platform: state
       entity_id: binary_sensor.azimuth_input
-      to: 'off'
+      to: "off"
     - platform: state
       entity_id: binary_sensor.zonhoek_low_input
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: sun.sun
-      to: 'below_horizon'
+      to: "below_horizon"
     - platform: state
       entity_id: binary_sensor.lichtwaarde_input
-      to: 'off'
+      to: "off"
       for:
         minutes: 10
     - platform: state
       entity_id: binary_sensor.low_irradiance_input
-      to: 'off'
+      to: "off"
       for:
         minutes: 30
     - platform: numeric_state
@@ -97,10 +97,10 @@
   condition:
     - condition: state
       entity_id: input_boolean.zonwering_open
-      state: 'off'
+      state: "off"
     - condition: state
       entity_id: input_boolean.disable_automatic_sunscreens
-      state: 'on'
+      state: "on"
   action:
     - service: input_boolean.turn_on
       entity_id: input_boolean.zonwering_open
@@ -112,7 +112,7 @@
       entity_id: media_player.eetkamer_speakers
       data_template:
         message: "Het zonnescherm gaat sluiten. Reden: {{ state_attr(trigger.entity_id, 'friendly_name') }}"
-        language: 'nl'
+        language: "nl"
         cache: false
     - service: notify.html5
       data:
@@ -126,7 +126,7 @@
         seconds: 10
     - service: cover.set_cover_position
       data:
-        entity_id: cover.motor_control_class_b_level
+        entity_id: cover.neo_coolcam_roller_shutter_curtain_switch
         position: 100
     - delay:
         minutes: 10
@@ -134,24 +134,24 @@
 - alias: schakelaar om bij uitklappen zonnescherm
   trigger:
     - platform: state
-      entity_id: cover.motor_control_class_b_level
-      to: 'closed'
+      entity_id: cover.neo_coolcam_roller_shutter_curtain_switch
+      to: "closed"
   condition:
     - condition: state
       entity_id: input_boolean.zonwering_open
-      state: 'on'
+      state: "on"
   action:
     service: input_boolean.turn_off
     entity_id: input_boolean.zonwering_open
 - alias: schakelaar om bij inklappen zonnescherm
   trigger:
     - platform: state
-      entity_id: cover.motor_control_class_b_level
-      to: 'open'
+      entity_id: cover.neo_coolcam_roller_shutter_curtain_switch
+      to: "open"
   condition:
     - condition: state
       entity_id: input_boolean.zonwering_open
-      state: 'off'
+      state: "off"
   action:
     service: input_boolean.turn_on
     entity_id: input_boolean.zonwering_open

@@ -88,13 +88,13 @@ notify:
 # Text to speech
 tts:
   - platform: google_cloud
-    service_name: google_home_say  
+    service_name: google_home_say
     key_file: amazing-limiter-212613-40c1df606f05.json
     language: nl-NL
     gender: female
     voice: nl-NL-Wavenet-D
     text_type: ssml
-#    encoding: linear16
+    #    encoding: linear16
     speed: 1
     pitch: -2.0
   - platform: google_translate
@@ -102,7 +102,7 @@ tts:
     cache_dir: /tmp/tts
     time_memory: 300
     base_url: !secret tts_base_url
-    language: 'nl'
+    language: "nl"
     service_name: google_translate_say
 
 ifttt:
@@ -152,25 +152,22 @@ camera:
   - platform: ffmpeg
     name: "Woonkamer"
     input: !secret cam_woonkamer
-#  - platform: ezviz
-#    username: !secret ezviz_un
-#    password: !secret ezviz_pw
-#    cameras:
-#      178211475:
-#        username: !secret ezviz_gen_un
-#        password: !secret ezviz_gen_oprit
-#      C35158510:
-#        username: !secret ezviz_gen_un
-#        password: !secret ezviz_gen_woonkamer
+  #  - platform: ezviz
+  #    username: !secret ezviz_un
+  #    password: !secret ezviz_pw
+  #    cameras:
+  #      178211475:
+  #        username: !secret ezviz_gen_un
+  #        password: !secret ezviz_gen_oprit
+  #      C35158510:
+  #        username: !secret ezviz_gen_un
+  #        password: !secret ezviz_gen_woonkamer
   - platform: buienradar
 
 stream:
 
 shell_command:
   remove_video: find /config/www/video/* -mtime +3 -exec rm {} \;
-
-#zwave:
-#  usb_path: '/dev/serial/by-id/usb-0658_0200-if00'
 
 utility_meter:
   daily_energy_offpeak:
@@ -179,9 +176,9 @@ utility_meter:
   daily_energy_peak:
     source: sensor.energy_consumption_tarif_2
     cycle: daily
-#  daily_gas:
-#    source: sensor.gas_consumption
-#    cycle: daily
+  #  daily_gas:
+  #    source: sensor.gas_consumption
+  #    cycle: daily
   monthly_energy_offpeak:
     source: sensor.energy_consumption_tarif_1
     cycle: monthly
@@ -206,7 +203,7 @@ weather:
     api_key: !secret darksky_api
     mode: daily
   - platform: buienradar
-    name: 'Eindhoven'
+    name: "Eindhoven"
     # Force 'Meetstation Eindhoven' to be used:
     latitude: 51.45
     longitude: 5.42

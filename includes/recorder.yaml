@@ -30,6 +30,7 @@ include:
     - sensor.sunlight_pct
     - sensor.hal_sensor_boven_temperature
     - sensor.motion_sensor_buiten_light_level
+    - sensor.motion_sensor_buiten_temperature
     - sensor.zonhoek
     - switch.espressomachine_switch
     - switch.genie

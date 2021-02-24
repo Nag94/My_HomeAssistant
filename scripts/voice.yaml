@@ -1,291 +1,291 @@
 mediaplayer_say:
   alias: TTS met pauzeren en hervatten van muziek
   sequence:
-  - variables:
-      spotify: true
-      playing: >-
-        {{ state_attr(player2, 'app_name') != 'Spotify' and state_attr(player2, 'source') != 'Spotify' }}
-      media_content: >-
-        {% if state_attr(player2, 'friendly_name') == state_attr('media_player.spotify_erik_silverentand', 'source') %}
-          {{ state_attr('media_player.spotify_erik_silverentand', 'media_content_id') }}
-        {% else %}
-          {{ state_attr(player2, 'media_content_id') }}
-        {% endif %}
-      media_type: >-
-        {{ state_attr(player2, 'media_content_type') }}
-      volume_level: >-
-        {{ state_attr(player2, 'volume_level')|float }}
-      idle: >-
-        {{ states(player2) == 'idle' or states(player2) == 'paused' }}
-  - choose:
-    - conditions: "{{ idle }}"
-      sequence:
-      - service: media_player.turn_on
-        data:
-          entity_id: "{{ player2 }}"
-      - delay: 00:00:04
-  - service: media_player.media_pause
-    data:
-      entity_id: "{{ player2 }}"
-  - delay: 00:00:02
-  - service: media_player.volume_set
-    data:
-      entity_id: "{{ player2 }}"
-      volume_level: 0.4
-  - delay: 00:00:02
-  - service: tts.google_translate_say
-    data:
-      entity_id: "{{ player2 }}"
-      message: "{{ google_say }}"
-      cache: false
-      language: "nl"
-  - delay: 00:00:04
-  - service: media_player.turn_on
-    data:
-      entity_id: "{{ player2 }}"
-  - delay: 00:00:08
-  -  service: media_player.volume_set
-     data:
-       entity_id: "{{ player2 }}"
-       volume_level: "{{ volume_level }}"
-  - service: spotcast.start
-    data:
-      entity_id: "{{ player2 }}"
-      uri: "{{ state_attr('media_player.spotify_erik_silverentand', 'media_content_id') }}"
-    # - conditions: "{{ playing }}"
-    #   sequence:
-    #   - service: media_extractor.play_media
-    #     data:
-    #       entity_id: "{{ player2 }}"
-    #       media_content_id: "{{ media_content }}"
-    #       media_content_type: "{{ media_type }}"
-    # - conditions: "{{ idle }}"
-    #   sequence:
-    #   - service: media_player.turn_off
-    #     data:
-    #       entity_id: "{{ player2 }}"
-  - service: input_boolean.turn_off
-    entity_id: input_boolean.testknop
-'1557170594134':
+    - variables:
+        spotify: true
+        playing: >-
+          {{ state_attr(player2, 'app_name') != 'Spotify' and state_attr(player2, 'source') != 'Spotify' }}
+        media_content: >-
+          {% if state_attr(player2, 'friendly_name') == state_attr('media_player.spotify_erik_silverentand', 'source') %}
+            {{ state_attr('media_player.spotify_erik_silverentand', 'media_content_id') }}
+          {% else %}
+            {{ state_attr(player2, 'media_content_id') }}
+          {% endif %}
+        media_type: >-
+          {{ state_attr(player2, 'media_content_type') }}
+        volume_level: >-
+          {{ state_attr(player2, 'volume_level')|float }}
+        idle: >-
+          {{ states(player2) == 'idle' or states(player2) == 'paused' }}
+    - choose:
+        - conditions: "{{ idle }}"
+          sequence:
+            - service: media_player.turn_on
+              data:
+                entity_id: "{{ player2 }}"
+            - delay: 00:00:04
+    - service: media_player.media_pause
+      data:
+        entity_id: "{{ player2 }}"
+    - delay: 00:00:02
+    - service: media_player.volume_set
+      data:
+        entity_id: "{{ player2 }}"
+        volume_level: 0.4
+    - delay: 00:00:02
+    - service: tts.google_translate_say
+      data:
+        entity_id: "{{ player2 }}"
+        message: "{{ google_say }}"
+        cache: false
+        language: "nl"
+    - delay: 00:00:04
+    - service: media_player.turn_on
+      data:
+        entity_id: "{{ player2 }}"
+    - delay: 00:00:08
+    - service: media_player.volume_set
+      data:
+        entity_id: "{{ player2 }}"
+        volume_level: "{{ volume_level }}"
+    - service: spotcast.start
+      data:
+        entity_id: "{{ player2 }}"
+        uri: "{{ state_attr('media_player.spotify_erik_silverentand', 'media_content_id') }}"
+      # - conditions: "{{ playing }}"
+      #   sequence:
+      #   - service: media_extractor.play_media
+      #     data:
+      #       entity_id: "{{ player2 }}"
+      #       media_content_id: "{{ media_content }}"
+      #       media_content_type: "{{ media_type }}"
+      # - conditions: "{{ idle }}"
+      #   sequence:
+      #   - service: media_player.turn_off
+      #     data:
+      #       entity_id: "{{ player2 }}"
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.testknop
+"1557170594134":
   alias: Praten
   sequence:
-  - data:
+    - data:
+        entity_id: media_player.home_mini_woonkamer
+        volume_level: 0.8
+      service: media_player.volume_set
+    - delay: 00:00:02
+    - data:
+        message: Mama, Evie en Jules zijn lief!
       entity_id: media_player.home_mini_woonkamer
-      volume_level: 0.8
-    service: media_player.volume_set
-  - delay: 00:00:02
-  - data:
-      message: Mama, Evie en Jules zijn lief!
-    entity_id: media_player.home_mini_woonkamer
-    service: tts.google_translate_say
+      service: tts.google_translate_say
 weerscript:
   alias: weer
   sequence:
-  - service: media_player.volume_set
-    data:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.eetkamer_speakers
+        volume_level: 0.5
+    - delay: 00:00:02
+    - service: tts.google_home_say
       entity_id: media_player.eetkamer_speakers
-      volume_level: 0.5
-  - delay: 00:00:02
-  - service: tts.google_home_say
-    entity_id: media_player.eetkamer_speakers
-    data_template:
-      message: >-
-        <speak>
-          <p><s>Goedemorgen.</s><s>Lekker geslapen?</s></p><break time="300ms"/><break strength="weak"/>
-          {% set day = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"] %}
-          {% set month = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"] %}
-          {% set day_of_week = day[now().weekday()] %}
-          {% set month = month[now().month - 1] %}
-          <p><s>Het is vandaag {{ day_of_week }} {{ now().day }} {{ month }}.</s><s> Het is momenteel
-          {% if states('sensor.eindhoven_temperature') | int < 0 %} erg koud met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden, let op het kan glad zijn.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif states('sensor.eindhoven_temperature') | int <= 10 %} koud met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif states('sensor.eindhoven_temperature') | int <= 15 %} fris met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif states('sensor.eindhoven_temperature') | int <= 20 %} lekker met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif states('sensor.eindhoven_temperature') | int > 20 %} warm met een temperatuur van {{states('sensor.eindhoven_temperature')|round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          <p><s>Het wordt vandaag
-          {% if state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max | int < 0 %} erg koud met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max | int < 10 %} koud met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max | int < 15 %} fris met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max | int <= 20 %} lekker met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max | int > 20 %} warm met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast') | selectattr('temperature') | map(attribute='temperature') | list | max |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          <p><s>De kans op regen is vandaag
-          {% if states('sensor.weather_precip_probability') | int <= 2 %} verwaarloosbaar.
-          {% elif states('sensor.weather_precip_probability') | int <= 10 %} heel erg klein met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif states('sensor.weather_precip_probability') | int <= 25 %} klein met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif states('sensor.weather_precip_probability') | int <= 50 %} groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif states('sensor.weather_precip_probability') | int > 75 %} heel groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          <p><s>De luchtkwaliteit is momenteel {% if states('sensor.u_s_air_quality_index')|int <= 50 %} gezond,
-          {% elif 50 < states('sensor.u_s_air_quality_index')|int <= 100 %} gemiddeld,
-          {% elif 100 < states('sensor.u_s_air_quality_index')|int <= 150 %} ongezond voor kwetsbare mensen,
-          {% elif 150 < states('sensor.u_s_air_quality_index')|int <= 200 %} ongezond,
-          {% elif 200 < states('sensor.u_s_air_quality_index')|int <= 300 %} erg ongezond,
-          {% elif states('sensor.u_s_air_quality_index')|int > 300 %} erg ongezond,
-          {% endif %} met een waarde van {{ states('sensor.u_s_air_quality_index') }}</s></p><break time="200ms"/><break strength="weak"/>
-        </speak>
-#      language: nl
-      cache: false
+      data_template:
+        message: >-
+          <speak>
+            <p><s>Goedemorgen.</s><s>Lekker geslapen?</s></p><break time="300ms"/><break strength="weak"/>
+            {% set day = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"] %}
+            {% set month = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"] %}
+            {% set day_of_week = day[now().weekday()] %}
+            {% set month = month[now().month - 1] %}
+            <p><s>Het is vandaag {{ day_of_week }} {{ now().day }} {{ month }}.</s><s> Het is momenteel
+            {% if states('sensor.motion_sensor_buiten_temperature') | int < 0 %} erg koud met een temperatuur van {{states('sensor.motion_sensor_buiten_temperature')|round}} graden, let op het kan glad zijn.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.motion_sensor_buiten_temperature') | int <= 10 %} koud met een temperatuur van {{states('sensor.motion_sensor_buiten_temperature')|round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.motion_sensor_buiten_temperature') | int <= 15 %} fris met een temperatuur van {{states('sensor.motion_sensor_buiten_temperature')|round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.motion_sensor_buiten_temperature') | int <= 20 %} lekker met een temperatuur van {{states('sensor.motion_sensor_buiten_temperature')|round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.motion_sensor_buiten_temperature') | int > 20 %} warm met een temperatuur van {{states('sensor.motion_sensor_buiten_temperature')|round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            <p><s>Het wordt vandaag
+            {% if state_attr('weather.eindhoven', 'forecast')[0].temperature | int < 0 %} erg koud met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast')[0].temperature |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif state_attr('weather.eindhoven', 'forecast')[0].temperature | int < 10 %} koud met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast')[0].temperature |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif state_attr('weather.eindhoven', 'forecast')[0].temperature | int < 15 %} fris met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast')[0].temperature |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif state_attr('weather.eindhoven', 'forecast')[0].temperature | int <= 20 %} lekker met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast')[0].temperature |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif state_attr('weather.eindhoven', 'forecast')[0].temperature | int > 20 %} warm met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast')[0].temperature |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            <p><s>De kans op regen is vandaag
+            {% if state_attr('weather.eindhoven', 'forecast')[0].precipitation | int <= 2 %} verwaarloosbaar.
+            {% elif state_attr('weather.eindhoven', 'forecast')[0].precipitation | int <= 10 %} heel erg klein met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif state_attr('weather.eindhoven', 'forecast')[0].precipitation | int <= 25 %} klein met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif state_attr('weather.eindhoven', 'forecast')[0].precipitation | int <= 50 %} groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif state_attr('weather.eindhoven', 'forecast')[0].precipitation | int > 75 %} heel groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            <p><s>De luchtkwaliteit is momenteel {% if states('sensor.u_s_air_quality_index')|int <= 50 %} gezond,
+            {% elif 50 < states('sensor.u_s_air_quality_index')|int <= 100 %} gemiddeld,
+            {% elif 100 < states('sensor.u_s_air_quality_index')|int <= 150 %} ongezond voor kwetsbare mensen,
+            {% elif 150 < states('sensor.u_s_air_quality_index')|int <= 200 %} ongezond,
+            {% elif 200 < states('sensor.u_s_air_quality_index')|int <= 300 %} erg ongezond,
+            {% elif states('sensor.u_s_air_quality_index')|int > 300 %} erg ongezond,
+            {% endif %} met een waarde van {{ states('sensor.u_s_air_quality_index') }}</s></p><break time="200ms"/><break strength="weak"/>
+          </speak>
+        #      language: nl
+        cache: false
 
 agendascript:
   alias: Evenementen van vandaag
   sequence:
-  - service: media_player.volume_set
-    data:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.eetkamer_speakers
+        volume_level: 0.5
+    - delay: 00:00:05
+    - service: tts.google_home_say
       entity_id: media_player.eetkamer_speakers
-      volume_level: 0.5
-  - delay: 00:00:05
-  - service: tts.google_home_say
-    entity_id: media_player.eetkamer_speakers
-    data_template:
-      message: >-
-        <speak>
-          {% if -1 < (as_timestamp(state_attr('calendar.contacts', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7%}
-            <p><s>{{ state_attr('calendar.contacts', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          {% if -1 < (as_timestamp(state_attr('calendar.gezin', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
-            <p><s>Activiteit vandaag is {{ state_attr('calendar.gezin', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          {% if -1 < (as_timestamp(state_attr('calendar.onze_agenda', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
-            <p><s>Activiteit vandaag is {{ state_attr('calendar.onze_agenda', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          {% if -1 < (as_timestamp(state_attr('calendar.erikennathalie_silverentand_net', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
-            <p><s>Activiteit vandaag is {{ state_attr('calendar.erikennathalie_silverentand_net', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          {% if -1 < (as_timestamp(state_attr('calendar.nathaliehouben11_gmail_com', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
-            <p><s>Activiteit vandaag voor Nathalie is {{ state_attr('calendar.nathaliehouben11_gmail_com', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          {% if -1 < (as_timestamp(state_attr('calendar.esilverentand_gmail_com', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
-            <p><s>Activiteit vandaag voor Erik is {{ state_attr('calendar.esilverentand_gmail_com', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          {% if -1 < (as_timestamp(state_attr('calendar.evie', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
-            <p><s>Activiteit vandaag voor Evie is {{ state_attr('calendar.evie', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          {% if -1 < (as_timestamp(state_attr('calendar.jules', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
-            <p><s>Activiteit vandaag voor Jules is {{ state_attr('calendar.jules', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-        </speak>
-#      language: nl
-      cache: false
+      data_template:
+        message: >-
+          <speak>
+            {% if -1 < (as_timestamp(state_attr('calendar.contacts', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7%}
+              <p><s>{{ state_attr('calendar.contacts', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            {% if -1 < (as_timestamp(state_attr('calendar.gezin', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
+              <p><s>Activiteit vandaag is {{ state_attr('calendar.gezin', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            {% if -1 < (as_timestamp(state_attr('calendar.onze_agenda', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
+              <p><s>Activiteit vandaag is {{ state_attr('calendar.onze_agenda', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            {% if -1 < (as_timestamp(state_attr('calendar.erikennathalie_silverentand_net', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
+              <p><s>Activiteit vandaag is {{ state_attr('calendar.erikennathalie_silverentand_net', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            {% if -1 < (as_timestamp(state_attr('calendar.nathaliehouben11_gmail_com', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
+              <p><s>Activiteit vandaag voor Nathalie is {{ state_attr('calendar.nathaliehouben11_gmail_com', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            {% if -1 < (as_timestamp(state_attr('calendar.esilverentand_gmail_com', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
+              <p><s>Activiteit vandaag voor Erik is {{ state_attr('calendar.esilverentand_gmail_com', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            {% if -1 < (as_timestamp(state_attr('calendar.evie', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
+              <p><s>Activiteit vandaag voor Evie is {{ state_attr('calendar.evie', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            {% if -1 < (as_timestamp(state_attr('calendar.jules', 'start_time'))|int - as_timestamp(now()))|int/86400 < 0.7 %}
+              <p><s>Activiteit vandaag voor Jules is {{ state_attr('calendar.jules', 'message') }}.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+          </speak>
+        #      language: nl
+        cache: false
 
 afvalscript:
   alias: Afval bericht
   sequence:
-  - service: media_player.volume_set
-    data:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.eetkamer_speakers
+        volume_level: 0.5
+    - delay: 00:00:05
+    - service: tts.google_home_say
       entity_id: media_player.eetkamer_speakers
-      volume_level: 0.5
-  - delay: 00:00:05
-  - service: tts.google_home_say
-    entity_id: media_player.eetkamer_speakers
-    data_template:
-      message: >-
-        <speak>
-          <p><s>
-          {% if state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int == 0 %}
-            Vandaag wordt de groene bak opgehaald, </s>
-          {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int == 1 %}
-            Morgen wordt de groene bak opgehaald, </s>
-          {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int < 7 %}
-            {{ states('sensor.afvalinfo_gft').split(" ")[0] }} wordt de groene bak opgehaald, </s>
-          {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int < 14 %}
-            {{ states('sensor.afvalinfo_gft') }} wordt de groene bak opgehaald, </s>
-          {% else %}
-            {{ states('sensor.afvalinfo_gft').split(" ")[1] + " " + states('sensor.afvalinfo_gft').split(" ")[2] }} wordt de groene bak geleegd, </s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-          <s>
-          {% if state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int == 0 %}
-            vandaag worden de <say-as interpret-as="characters">PMD</say-as>-zakken opgehaald, </s>
-          {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int == 1 %}
-            morgen worden de <say-as interpret-as="characters">PMD</say-as>-zakken opgehaald, </s>
-          {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int < 7 %}
-            {{ states('sensor.afvalinfo_pbd').split(" ")[0] }} worden de <say-as interpret-as="characters">PMD</say-as>-zakken opgehaald, </s>
-          {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int < 14 %}
-            {{ states('sensor.afvalinfo_pbd') }} worden de <say-as interpret-as="characters">PMD</say-as>-zakken opgehaald, </s>
-          {% else %}
-            {{ states('sensor.afvalinfo_pbd').split(" ")[1] + " " + states('sensor.afvalinfo_pbd').split(" ")[2] }} worden de <say-as interpret-as="characters">PMD</say-as>-zakken opgehaald, </s>
-          {% endif %}
-          <s>
-          {% if state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int == 0 %}
-            vandaag wordt de grijze bak opgehaald, </s>
-          {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int == 1 %}
-            morgen wordt de grijze bak opgehaald, </s>
-          {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int < 7 %}
-            {{ states('sensor.afvalinfo_restafval').split(" ")[0] }} wordt de grijze bak opgehaald, </s>
-          {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int < 14 %}
-            {{ states('sensor.afvalinfo_restafval') }} wordt de grijze bak opgehaald, </s>
-          {% else %}
-            {{ states('sensor.afvalinfo_restafval').split(" ")[1] + " " + states('sensor.afvalinfo_restafval').split(" ")[2] }} wordt de grijze bak geleegd, </s>
-          {% endif %}
-          <s>
-          {% if state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int == 0 %}
-            en vandaag wordt het oud papier opgehaald.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int == 1 %}
-            en morgen wordt het oud papier opgehaald.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int < 7 %}
-            en {{ states('sensor.afvalinfo_papier').split(" ")[0] }} wordt het oud papier opgehaald.</s></p><break time="200ms"/><break strength="weak"/>
-          {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int < 14 %}
-            en {{ states('sensor.afvalinfo_papier') }} wordt het oud papier opgehaald.</s></p><break time="200ms"/><break strength="weak"/>
-          {% else %}
-            en {{ states('sensor.afvalinfo_papier').split(" ")[1] + " " + states('sensor.afvalinfo_papier').split(" ")[2] }} wordt het oud papier opgehaald.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-        </speak>
-#      language: nl
-      cache: false
+      data_template:
+        message: >-
+          <speak>
+            <p><s>
+            {% if state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int == 0 %}
+              Vandaag wordt de groene bak opgehaald, </s>
+            {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int == 1 %}
+              Morgen wordt de groene bak opgehaald, </s>
+            {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int < 7 %}
+              {{ states('sensor.afvalinfo_gft').split(" ")[0] }} wordt de groene bak opgehaald, </s>
+            {% elif state_attr('sensor.afvalinfo_gft', 'days_until_collection_date')|int < 14 %}
+              {{ states('sensor.afvalinfo_gft') }} wordt de groene bak opgehaald, </s>
+            {% else %}
+              {{ states('sensor.afvalinfo_gft').split(" ")[1] + " " + states('sensor.afvalinfo_gft').split(" ")[2] }} wordt de groene bak geleegd, </s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+            <s>
+            {% if state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int == 0 %}
+              vandaag worden de <say-as interpret-as="characters">PMD</say-as>-zakken opgehaald, </s>
+            {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int == 1 %}
+              morgen worden de <say-as interpret-as="characters">PMD</say-as>-zakken opgehaald, </s>
+            {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int < 7 %}
+              {{ states('sensor.afvalinfo_pbd').split(" ")[0] }} worden de <say-as interpret-as="characters">PMD</say-as>-zakken opgehaald, </s>
+            {% elif state_attr('sensor.afvalinfo_pbd', 'days_until_collection_date')|int < 14 %}
+              {{ states('sensor.afvalinfo_pbd') }} worden de <say-as interpret-as="characters">PMD</say-as>-zakken opgehaald, </s>
+            {% else %}
+              {{ states('sensor.afvalinfo_pbd').split(" ")[1] + " " + states('sensor.afvalinfo_pbd').split(" ")[2] }} worden de <say-as interpret-as="characters">PMD</say-as>-zakken opgehaald, </s>
+            {% endif %}
+            <s>
+            {% if state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int == 0 %}
+              vandaag wordt de grijze bak opgehaald, </s>
+            {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int == 1 %}
+              morgen wordt de grijze bak opgehaald, </s>
+            {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int < 7 %}
+              {{ states('sensor.afvalinfo_restafval').split(" ")[0] }} wordt de grijze bak opgehaald, </s>
+            {% elif state_attr('sensor.afvalinfo_restafval', 'days_until_collection_date')|int < 14 %}
+              {{ states('sensor.afvalinfo_restafval') }} wordt de grijze bak opgehaald, </s>
+            {% else %}
+              {{ states('sensor.afvalinfo_restafval').split(" ")[1] + " " + states('sensor.afvalinfo_restafval').split(" ")[2] }} wordt de grijze bak geleegd, </s>
+            {% endif %}
+            <s>
+            {% if state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int == 0 %}
+              en vandaag wordt het oud papier opgehaald.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int == 1 %}
+              en morgen wordt het oud papier opgehaald.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int < 7 %}
+              en {{ states('sensor.afvalinfo_papier').split(" ")[0] }} wordt het oud papier opgehaald.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif state_attr('sensor.afvalinfo_papier', 'days_until_collection_date')|int < 14 %}
+              en {{ states('sensor.afvalinfo_papier') }} wordt het oud papier opgehaald.</s></p><break time="200ms"/><break strength="weak"/>
+            {% else %}
+              en {{ states('sensor.afvalinfo_papier').split(" ")[1] + " " + states('sensor.afvalinfo_papier').split(" ")[2] }} wordt het oud papier opgehaald.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+          </speak>
+        #      language: nl
+        cache: false
 nieuwsscript:
   alias: Nieuws van de dag
   sequence:
-  - service: media_player.volume_set
-    data:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.eetkamer_speakers
+        volume_level: 0.5
+    - delay: 00:00:05
+    - service: tts.google_home_say
       entity_id: media_player.eetkamer_speakers
-      volume_level: 0.5
-  - delay: 00:00:05
-  - service: tts.google_home_say
-    entity_id: media_player.eetkamer_speakers
-    data_template:
-      message: >-
-        <speak>
-          <p><s>Hier is het recente nieuws uit Veldhoven:</s><break time="200ms"/><s>
-            {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[1].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[2].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title': ")[3].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[4].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[5].split(", 'link")[0] }}.</s></p><break time="200ms"/><break strength="weak"/>
-          <p><s>Verder heb ik nog algemeen nieuws:</s><break time="200ms"/><s>
-            {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[1].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[2].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[3].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[4].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[5].split(", 'link")[0] }}.</s></p><break time="200ms"/><break strength="weak"/>
-          <p><s>En voor de liefhebber heb ik ook nog nieuws over PSV:</s><break time="200ms"/><s>
-            {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[1].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[3].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[5].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[7].split(", 'link")[0] }}.</s><s>
-            {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[9].split(", 'link")[0] }}.</s></p><break time="200ms"/><break strength="weak"/>
-          <p><s>Dat was ie weer! Een fijne dag vandaag!</s></p>
-        </speak>
-#      language: nl
-      cache: false
+      data_template:
+        message: >-
+          <speak>
+            <p><s>Hier is het recente nieuws uit Veldhoven:</s><break time="200ms"/><s>
+              {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[1].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[2].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title': ")[3].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[4].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.ed_veldhoven', 'entries') | string).split("title':")[5].split(", 'link")[0] }}.</s></p><break time="200ms"/><break strength="weak"/>
+            <p><s>Verder heb ik nog algemeen nieuws:</s><break time="200ms"/><s>
+              {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[1].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[2].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[3].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[4].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.nu_algemeen_nieuws', 'entries') | string).split("title':")[5].split(", 'link")[0] }}.</s></p><break time="200ms"/><break strength="weak"/>
+            <p><s>En voor de liefhebber heb ik ook nog nieuws over PSV:</s><break time="200ms"/><s>
+              {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[1].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[3].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[5].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[7].split(", 'link")[0] }}.</s><s>
+              {{ (state_attr('sensor.ed_psv', 'entries') | string).split("title':")[9].split(", 'link")[0] }}.</s></p><break time="200ms"/><break strength="weak"/>
+            <p><s>Dat was ie weer! Een fijne dag vandaag!</s></p>
+          </speak>
+        #      language: nl
+        cache: false
 
 weeralarmscript:
   alias: Weeralarm melding
   sequence:
-  - service: media_player.volume_set
-    data:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.eetkamer_speakers
+        volume_level: 0.5
+    - delay: 00:00:05
+    - service: tts.google_home_say
       entity_id: media_player.eetkamer_speakers
-      volume_level: 0.5
-  - delay: 00:00:05
-  - service: tts.google_home_say
-    entity_id: media_player.eetkamer_speakers
-    data_template:
-      message: >-
-        <speak>
-          {% if states('sensor.knmi_waarschuwing') != 'Code groen' %}
-            <p><s>Er geldt vandaag {{ states('sensor.knmi_waarschuwing')}}.</s></p><break time="200ms"/><break strength="weak"/>
-            <p><s>De reden is:</s><break time="260ms"/><break strength="strong"/><s>{{ states('sensor.knmi_alert_description') }}.</s></p><break time="200ms"/><break strength="weak"/>
-          {% endif %}
-        </speak>
-#      language: nl
-      cache: false
+      data_template:
+        message: >-
+          <speak>
+            {% if states('sensor.knmi_waarschuwing') != 'Code groen' %}
+              <p><s>Er geldt vandaag {{ states('sensor.knmi_waarschuwing')}}.</s></p><break time="200ms"/><break strength="weak"/>
+              <p><s>De reden is:</s><break time="260ms"/><break strength="strong"/><s>{{ states('sensor.knmi_alert_description') }}.</s></p><break time="200ms"/><break strength="weak"/>
+            {% endif %}
+          </speak>
+        #      language: nl
+        cache: false

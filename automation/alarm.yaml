@@ -2,22 +2,22 @@
   trigger:
     - platform: state
       entity_id: binary_sensor.voordeur
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: binary_sensor.schuifpui
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: binary_sensor.achterdeur
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: binary_sensor.garagedeur
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: binary_sensor.balkondeur_ouderslaapkamer
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: binary_sensor.balkondeur_voor
-      to: 'on'
+      to: "on"
   condition:
     - condition: state
       entity_id: alarm_control_panel.thuis_alarm
@@ -30,278 +30,278 @@
     - service: tts.google_home_say
       entity_id: media_player.keuken_hub
       data_template:
-        message: 'Pas op! Het alarm gaat zo af!'
-#        language: 'nl'
-#        cache: false
-#    - service: camera.record
-#      data_template:
-#        entity_id: camera.woonkamer
-#        lookback: 10
-#        filename: 'www/video/woonkamer_{{ now().strftime("%Y%m%d-%H%M%S") }}_alarm.mp4'
-#    - service: camera.record
-#      data_template:
-#        entity_id: camera.oprit
-#        filename: 'www/video/oprit_{{ now().strftime("%Y%m%d-%H%M%S") }}_alarm.mp4'
-#        lookback: 20
+        message: "Pas op! Het alarm gaat zo af!"
+    #        language: 'nl'
+    #        cache: false
+    #    - service: camera.record
+    #      data_template:
+    #        entity_id: camera.woonkamer
+    #        lookback: 10
+    #        filename: 'www/video/woonkamer_{{ now().strftime("%Y%m%d-%H%M%S") }}_alarm.mp4'
+    #    - service: camera.record
+    #      data_template:
+    #        entity_id: camera.oprit
+    #        filename: 'www/video/oprit_{{ now().strftime("%Y%m%d-%H%M%S") }}_alarm.mp4'
+    #        lookback: 20
     - service: notify.mobile_app_phone_erik
       data:
         message: "ALARM!! de {{ state_attr(trigger.entity_id, 'friendly_name') }} gaat open!"
-        title: 'ALARM!!!'
+        title: "ALARM!!!"
         data:
-          sticky: 'true'
-          color: 'red'
+          sticky: "true"
+          color: "red"
           channel: Alarm
           importance: high
           vibrationPattern: "100,30,100,30,100,30,200,30,200,30,200,30,100,30,100,30,100"
-          persistent: true           # set to persistent
-          clickAction: /lovelace/3    # navigate user to the lovelace alarm view
-          icon: 'mdi:alarm-light'
+          persistent: true # set to persistent
+          clickAction: /lovelace/3 # navigate user to the lovelace alarm view
+          icon: "mdi:alarm-light"
           group: alarm
           tag: alarm
     - service: notify.mobile_app_sm_g973f
       data:
         message: "ALARM!! de {{ state_attr(trigger.entity_id, 'friendly_name') }} gaat open!"
-        title: 'ALARM!!!'
+        title: "ALARM!!!"
         data:
-          sticky: 'true'   
-          color: 'red'
+          sticky: "true"
+          color: "red"
           channel: Alarm
           importance: high
           vibrationPattern: "100,30,100,30,100,30,200,30,200,30,200,30,100,30,100,30,100"
-          persistent: true           # set to persistent
-          clickAction: /lovelace/3    # navigate user to the lovelace alarm view
-          icon: 'mdi:alarm-light'
+          persistent: true # set to persistent
+          clickAction: /lovelace/3 # navigate user to the lovelace alarm view
+          icon: "mdi:alarm-light"
           group: alarm
           tag: alarm
 - alias: Send notification when alarm triggered
   trigger:
-  - platform: state
-    entity_id: alarm_control_panel.thuis_alarm
-    to: triggered
+    - platform: state
+      entity_id: alarm_control_panel.thuis_alarm
+      to: triggered
   action:
-  - service: script.turn_on
-    data:
-      entity_id: script.flash_beneden
-  - service: script.turn_on
-    data:
-      entity_id: script.siren_alarm_sound_on
-  - service: script.turn_on
-    data:
-      entity_id: script.alarm_bericht
-  - service: notify.html5
-    data:
-      message: 'ALARM!! Het alarm is geactiveerd!'
-      title: 'ALARM!!!'
-  - service: notify.mobile_app_phone_erik
-    data:
-      message: 'ALARM!! Het alarm is geactiveerd!'
-      title: 'ALARM!!!'
+    - service: script.turn_on
       data:
-        sticky: 'false'   
-        color: 'red'
-        channel: Alarm
-        importance: high
-        vibrationPattern: "100,30,100,30,100,30,200,30,200,30,200,30,100,30,100,30,100"
-        persistent: true           # set to persistent
-        clickAction: /lovelace/3    # navigate user to the lovelace alarm view
-        icon: 'mdi:alarm-light'
-        group: alarm
-        tag: alarm  
-        push:
-          category: camera
-        entity_id: camera.woonkamer
-  - service: notify.mobile_app_sm_g973f
-    data:
-      message: 'ALARM!! Het alarm is geactiveerd!'
-      title: 'ALARM!!!'
+        entity_id: script.flash_beneden
+    - service: script.turn_on
       data:
-        sticky: 'false'   
-        color: 'red'
-        channel: Alarm
-        importance: high
-        vibrationPattern: "100,30,100,30,100,30,200,30,200,30,200,30,100,30,100,30,100"
-        persistent: true           # set to persistent
-        clickAction: /lovelace/3    # navigate user to the lovelace alarm view
-        icon: 'mdi:alarm-light'
-        group: alarm
-        tag: alarm  
-        push:
-          category: camera
-        entity_id: camera.woonkamer
-  - service: persistent_notification.create
-    data:
-      message: 'ALARM!! Het alarm is geactiveerd!'
-      title: 'ALARM!!!'
-  - data:
-      event: alarm_triggered
-    service: ifttt.trigger
-  - service: input_boolean.turn_on
-    data:
-      entity_id: input_boolean.alarm_switch
-  - service: media_player.turn_on
-    entity_id: media_player.keuken_hub
-  - delay: '00:00:01'
-  - service: cast.show_lovelace_view
-    data:
+        entity_id: script.siren_alarm_sound_on
+    - service: script.turn_on
+      data:
+        entity_id: script.alarm_bericht
+    - service: notify.html5
+      data:
+        message: "ALARM!! Het alarm is geactiveerd!"
+        title: "ALARM!!!"
+    - service: notify.mobile_app_phone_erik
+      data:
+        message: "ALARM!! Het alarm is geactiveerd!"
+        title: "ALARM!!!"
+        data:
+          sticky: "false"
+          color: "red"
+          channel: Alarm
+          importance: high
+          vibrationPattern: "100,30,100,30,100,30,200,30,200,30,200,30,100,30,100,30,100"
+          persistent: true # set to persistent
+          clickAction: /lovelace/3 # navigate user to the lovelace alarm view
+          icon: "mdi:alarm-light"
+          group: alarm
+          tag: alarm
+          push:
+            category: camera
+          entity_id: camera.woonkamer
+    - service: notify.mobile_app_sm_g973f
+      data:
+        message: "ALARM!! Het alarm is geactiveerd!"
+        title: "ALARM!!!"
+        data:
+          sticky: "false"
+          color: "red"
+          channel: Alarm
+          importance: high
+          vibrationPattern: "100,30,100,30,100,30,200,30,200,30,200,30,100,30,100,30,100"
+          persistent: true # set to persistent
+          clickAction: /lovelace/3 # navigate user to the lovelace alarm view
+          icon: "mdi:alarm-light"
+          group: alarm
+          tag: alarm
+          push:
+            category: camera
+          entity_id: camera.woonkamer
+    - service: persistent_notification.create
+      data:
+        message: "ALARM!! Het alarm is geactiveerd!"
+        title: "ALARM!!!"
+    - data:
+        event: alarm_triggered
+      service: ifttt.trigger
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.alarm_switch
+    - service: media_player.turn_on
       entity_id: media_player.keuken_hub
-      dashboard_path: lovelace
-      view_path: '3'
-  - delay: '00:00:05'
-  - service: cast.show_lovelace_view
-    data:
-      entity_id: media_player.keuken_hub
-      dashboard_path: lovelace
-      view_path: '3'
-  - delay:
-      minutes: 10
-  - service: html5.dismiss
+    - delay: "00:00:01"
+    - service: cast.show_lovelace_view
+      data:
+        entity_id: media_player.keuken_hub
+        dashboard_path: lovelace
+        view_path: "3"
+    - delay: "00:00:05"
+    - service: cast.show_lovelace_view
+      data:
+        entity_id: media_player.keuken_hub
+        dashboard_path: lovelace
+        view_path: "3"
+    - delay:
+        minutes: 10
+    - service: html5.dismiss
   id: 9c161e0a271545a191ab7565ded2b9c3
 - alias: alarm aan
   trigger:
-  - platform: state
-    entity_id: alarm_control_panel.thuis_alarm
-    to: armed_away
+    - platform: state
+      entity_id: alarm_control_panel.thuis_alarm
+      to: armed_away
   condition:
     condition: not
     conditions:
       - condition: state
         entity_id: group.all_persons
-        state: 'home'
+        state: "home"
   action:
-  - service: input_boolean.turn_on
-    data:
-      entity_id: input_boolean.camera_switch
-  - service: input_boolean.turn_off
-    data:
-      entity_id: input_boolean.notify_home
-  - data:
-      entity_id:
-      - light.beneden
-      - light.ouderslaapkamer
-      - light.kamer_evie
-      - light.kamer_jules
-      - light.yoga_kamer
-      - light.liefde
-      - light.tuinverlichting
-    service: light.turn_off
-  - service: notify.html5
-    data:
-      message: 'Het alarm staat nu aan en kan afgaan bij ongewenst bezoek!'
-      title: 'ALARM AAN'
-  - service: notify.mobile_app_phone_erik
-    data:
-      message: 'Het alarm staat nu aan en kan afgaan bij ongewenst bezoek!'
-      title: 'ALARM AAN'
-  - service: notify.mobile_app_sm_g973f
-    data:
-      message: 'Het alarm staat nu aan en kan afgaan bij ongewenst bezoek!'
-      title: 'ALARM AAN' 
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.camera_switch
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.notify_home
+    - data:
+        entity_id:
+          - light.beneden
+          - light.ouderslaapkamer
+          - light.kamer_evie
+          - light.kamer_jules
+          - light.yoga_kamer
+          - light.liefde
+          - light.tuinverlichting
+      service: light.turn_off
+    - service: notify.html5
+      data:
+        message: "Het alarm staat nu aan en kan afgaan bij ongewenst bezoek!"
+        title: "ALARM AAN"
+    - service: notify.mobile_app_phone_erik
+      data:
+        message: "Het alarm staat nu aan en kan afgaan bij ongewenst bezoek!"
+        title: "ALARM AAN"
+    - service: notify.mobile_app_sm_g973f
+      data:
+        message: "Het alarm staat nu aan en kan afgaan bij ongewenst bezoek!"
+        title: "ALARM AAN"
   id: 53e1682e2b7f41b7a015688a26b9f67d
 - alias: alarm uit
   trigger:
-  - platform: state
-    entity_id: alarm_control_panel.thuis_alarm
-    to: disarmed
+    - platform: state
+      entity_id: alarm_control_panel.thuis_alarm
+      to: disarmed
   action:
-  - service: notify.html5
-    data:
-      message: 'Het alarm is uitgezet!'
-      title: 'ALARM UIT'
-  - service: notify.mobile_app_phone_erik
-    data:
-      message: 'Het alarm is uitgezet!'
-      title: 'ALARM UIT'
-  - service: notify.mobile_app_sm_g973f
-    data:
-      message: 'Het alarm is uitgezet!'
-      title: 'ALARM UIT' 
-  - service: input_boolean.turn_off
-    data:
-      entity_id: input_boolean.camera_switch
-  - service: script.turn_off
-    data:
-      entity_id: script.flash_beneden
-  - service: script.turn_off
-    data:
-      entity_id: script.flash_loop
-  - service: switch.turn_off
-    data:
-      entity_id: switch.siren_alarm_switch
-  - service: ifttt.trigger
-    data:
-      event: camera_off
-  - service: input_boolean.turn_off
-    data:
-      entity_id: input_boolean.alarm_switch
-  - service: script.turn_on
-    data_template:
-      entity_id: >
-        {% if is_state('input_boolean.nachtstand', 'on') %}
-          script.nachtlicht_eetkamer_aan
-        {% elif is_state('binary_sensor.low_lux_input', 'on') %}
-          script.daglicht_eetkamer_aan
-        {% else %}
-          script.noop
-        {% endif %}
-  - service: script.turn_on
-    data_template:
-      entity_id: >
-        {% if is_state('input_boolean.nachtstand', 'on') %}
-          script.nachtlicht_woonkamer_aan
-        {% elif is_state('binary_sensor.low_lux_input', 'on') %}
-          script.daglicht_woonkamer_aan
-        {% else %}
-          script.noop
-        {% endif %}
-  - service: light.turn_on
-    data_template:
-      entity_id: "{% if (states('sensor.time') > '20:00' and states('sensor.time') < '02:00') %}\n  light.tuinverlichting{% endif %}"
+    - service: notify.html5
+      data:
+        message: "Het alarm is uitgezet!"
+        title: "ALARM UIT"
+    - service: notify.mobile_app_phone_erik
+      data:
+        message: "Het alarm is uitgezet!"
+        title: "ALARM UIT"
+    - service: notify.mobile_app_sm_g973f
+      data:
+        message: "Het alarm is uitgezet!"
+        title: "ALARM UIT"
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.camera_switch
+    - service: script.turn_off
+      data:
+        entity_id: script.flash_beneden
+    - service: script.turn_off
+      data:
+        entity_id: script.flash_loop
+    - service: switch.turn_off
+      data:
+        entity_id: switch.siren_alarm_current_value
+    - service: ifttt.trigger
+      data:
+        event: camera_off
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.alarm_switch
+    - service: script.turn_on
+      data_template:
+        entity_id: >
+          {% if is_state('input_boolean.nachtstand', 'on') %}
+            script.nachtlicht_eetkamer_aan
+          {% elif is_state('binary_sensor.low_lux_input', 'on') %}
+            script.daglicht_eetkamer_aan
+          {% else %}
+            script.noop
+          {% endif %}
+    - service: script.turn_on
+      data_template:
+        entity_id: >
+          {% if is_state('input_boolean.nachtstand', 'on') %}
+            script.nachtlicht_woonkamer_aan
+          {% elif is_state('binary_sensor.low_lux_input', 'on') %}
+            script.daglicht_woonkamer_aan
+          {% else %}
+            script.noop
+          {% endif %}
+    - service: light.turn_on
+      data_template:
+        entity_id: "{% if (states('sensor.time') > '20:00' and states('sensor.time') < '02:00') %}\n  light.tuinverlichting{% endif %}"
   id: fc0fd67abd07497d85ccdd1aef90c08c
 - alias: overrule alarm
   trigger:
-  - platform: state
-    entity_id: input_boolean.alarm_switch
-    to: 'off'
+    - platform: state
+      entity_id: input_boolean.alarm_switch
+      to: "off"
   action:
-  - service: script.turn_off
-    data:
-      entity_id: script.flash_beneden
-  - service: script.turn_off
-    data:
-      entity_id: script.flash_loop
-  - service: switch.turn_off
-    data:
-      entity_id: switch.siren_alarm_switch
-  - service: script.turn_off
-    data:
-      entity_id: script.fire_alarm
-  - service: script.turn_off
-    data:
-      entity_id: script.fire_alarm_loop
-  - service: alarm_control_panel.alarm_arm_away
-    data:
-      entity_id: alarm_control_panel.thuis_alarm
+    - service: script.turn_off
+      data:
+        entity_id: script.flash_beneden
+    - service: script.turn_off
+      data:
+        entity_id: script.flash_loop
+    - service: switch.turn_off
+      data:
+        entity_id: switch.siren_alarm_current_value
+    - service: script.turn_off
+      data:
+        entity_id: script.fire_alarm
+    - service: script.turn_off
+      data:
+        entity_id: script.fire_alarm_loop
+    - service: alarm_control_panel.alarm_arm_away
+      data:
+        entity_id: alarm_control_panel.thuis_alarm
   id: cf81e6862bbc4a069deca8e02ecffd96
 - id: camera_switch_on
   alias: Camera woonkamer aanzetten
   trigger:
-  - platform: state
-    entity_id: input_boolean.camera_switch
-    to: 'on'
+    - platform: state
+      entity_id: input_boolean.camera_switch
+      to: "on"
   action:
-  - data:
-      event: camera_on
-    service: ifttt.trigger
+    - data:
+        event: camera_on
+      service: ifttt.trigger
 - id: camera_switch_off
   alias: Camera woonkamer uitzetten
   trigger:
-  - platform: state
-    entity_id: input_boolean.camera_switch
-    to: 'off'
+    - platform: state
+      entity_id: input_boolean.camera_switch
+      to: "off"
   action:
-  - data:
-      event: camera_off
-    service: ifttt.trigger
+    - data:
+        event: camera_off
+      service: ifttt.trigger
 - id: b10b3071ba464de4920c3ea160d6733c
   alias: Inbreker gespot
   trigger:
@@ -318,7 +318,7 @@
         - binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4
         - binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_2
         - binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_3
-      to: 'on'
+      to: "on"
   condition:
     - condition: template
       value_template: >-
@@ -349,7 +349,7 @@
         {% endif %}
     - condition: state
       entity_id: input_boolean.notify_home
-      state: 'off'
+      state: "off"
     - condition: state
       entity_id: alarm_control_panel.thuis_alarm
       state: armed_away
@@ -357,76 +357,76 @@
       conditions:
         - condition: state
           entity_id: group.all_persons
-          state: 'home'
+          state: "home"
         - condition: state
           entity_id: person.erik
-          state: 'home'
+          state: "home"
         - condition: state
           entity_id: person.nathalie
-          state: 'home'
+          state: "home"
   action:
-  - entity_id: alarm_control_panel.thuis_alarm
-    service: alarm_control_panel.alarm_trigger
-- id: '1559067716859'
+    - entity_id: alarm_control_panel.thuis_alarm
+      service: alarm_control_panel.alarm_trigger
+- id: "1559067716859"
   alias: brandalarm triggered
   trigger:
-  - entity_id: binary_sensor.smart_smoke_sensor_hs1sa_z_sensor
-    from: 'off'
-    platform: state
-    to: 'on'
-  - entity_id: binary_sensor.smart_smoke_sensor_hs1sa_z_sensor_2
-    from: 'off'
-    platform: state
-    to: 'on'
+    - entity_id: binary_sensor.smoke_detector_smoke
+      from: "off"
+      platform: state
+      to: "on"
+    - entity_id: binary_sensor.smoke_detector_any_2
+      from: "off"
+      platform: state
+      to: "on"
   condition: []
   action:
-  - service: script.turn_on
-    data:
-      entity_id: script.fire_alarm
-  - service: script.turn_on
-    data:
-      entity_id: script.sirene_alarm_sound_on
-  - service: script.turn_on
-    data:
-      entity_id: script.alarm_bericht
-  - service: persistent_notification.create
-    data:
-      message: 'ALARM!! Het BRANDALARM is geactiveerd!'
-      title: 'ALARM!!!'
-  - service: notify.html5
-    data:
-      message: 'ALARM!! Het BRANDALARM is geactiveerd!'
-      title: 'ALARM!!!'
-  - service: notify.mobile_app_phone_erik
-    data:
-      message: "ALARM!! Het BRANDALARM is geactiveerd! Reden: {{ state_attr(trigger.entity_id, 'friendly_name') }}"
-      title: 'ALARM!!!'
+    - service: script.turn_on
       data:
-        sticky: 'false'   
-        color: 'red'
-  - service: notify.mobile_app_sm_g973f
-    data:
-      message: 'ALARM!! Het BRANDALARM is geactiveerd!'
-      title: 'ALARM!!!'
+        entity_id: script.fire_alarm
+    - service: script.turn_on
       data:
-        sticky: 'false'   
-        color: 'red'
-  - service: ifttt.trigger
-    data:
-      event: brandalarm_triggered
-  - service: input_boolean.turn_on
-    data:
-      entity_id: input_boolean.alarm_switch
+        entity_id: script.sirene_alarm_sound_on
+    - service: script.turn_on
+      data:
+        entity_id: script.alarm_bericht
+    - service: persistent_notification.create
+      data:
+        message: "ALARM!! Het BRANDALARM is geactiveerd!"
+        title: "ALARM!!!"
+    - service: notify.html5
+      data:
+        message: "ALARM!! Het BRANDALARM is geactiveerd!"
+        title: "ALARM!!!"
+    - service: notify.mobile_app_phone_erik
+      data:
+        message: "ALARM!! Het BRANDALARM is geactiveerd! Reden: {{ state_attr(trigger.entity_id, 'friendly_name') }}"
+        title: "ALARM!!!"
+        data:
+          sticky: "false"
+          color: "red"
+    - service: notify.mobile_app_sm_g973f
+      data:
+        message: "ALARM!! Het BRANDALARM is geactiveerd!"
+        title: "ALARM!!!"
+        data:
+          sticky: "false"
+          color: "red"
+    - service: ifttt.trigger
+      data:
+        event: brandalarm_triggered
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.alarm_switch
 ######################################################
 ########## Motion Detection ##########################
 ######################################################
-- id: '1607948466665'
+- id: "1607948466665"
   alias: Send a camera snapshot when motion is detected
-  description: 'Snapshot opritcamera naar telefoon Erik'
+  description: "Snapshot opritcamera naar telefoon Erik"
   use_blueprint:
     path: vorion/send-camera-snapshot-notification-on-motion.yaml
     input:
-      delay: '0'
+      delay: "0"
       motion_sensor: binary_sensor.motion_sensor_buiten_motion
       camera: camera.oprit
       notify_device: 5ea63a4119c7446786cdc45b6d644fe4
@@ -435,11 +435,11 @@
   trigger:
     - platform: state
       entity_id: binary_sensor.motion_sensor_buiten_motion
-      to: 'on'
+      to: "on"
   condition:
     - condition: state
       entity_id: input_boolean.record_oprit
-      state: 'off'
+      state: "off"
   mode: single
   action:
     - service: script.turn_on
@@ -448,20 +448,20 @@
   trigger:
     - platform: state
       entity_id: binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: binary_sensor.motion_schuifpui
-      to: 'on'
+      to: "on"
     - platform: state
       entity_id: binary_sensor.motion_sensor_woonkamer
-      to: 'on'
+      to: "on"
   condition:
     - condition: state
       entity_id: input_boolean.camera_switch
-      state: 'on'
+      state: "on"
     - condition: state
       entity_id: input_boolean.record_woonkamer
-      state: 'off'
+      state: "off"
   mode: single
   action:
     - service: script.turn_on

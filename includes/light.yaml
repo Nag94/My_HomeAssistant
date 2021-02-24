@@ -1,6 +1,6 @@
 - platform: switch
   name: tuinslinger_achter
-  entity_id: switch.tuinverlichting_switch
+  entity_id: switch.tuinslinger_achter_switch
 - platform: group
   name: living
   entities:
@@ -33,7 +33,7 @@
 - platform: group
   name: buiten
   entities:
-    - light.garagelamp
+    - light.garagelamp_2
     - light.garage_floodlight
     - light.voordeurlamp
     - light.opritlampen
