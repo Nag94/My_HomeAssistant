@@ -285,7 +285,9 @@ garagelicht_aan:
       entity_id: timer.timer_garage
     - service: light.turn_on
       data:
-        entity_id: light.garagelamp_2
+        entity_id:
+          - light.garagelamp_2
+          - light.led_paneel_garage
     - service: timer.start
       entity_id: timer.timer_garage
 garagelicht_uit:

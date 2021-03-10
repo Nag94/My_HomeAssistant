@@ -1,0 +1,14 @@
+- id: kachel_uit_na_LED_uit
+  alias: Kachel garage uit als LED uit gaat
+  trigger:
+    - entity_id: light.led_paneel_garage
+      platform: state
+      to: "off"
+  condition:
+    - condition: state
+      entity_id: climate.kachel_garage
+      state: "on"
+  action:
+    - data:
+        entity_id: climate.kachel_garage
+      service: climate.turn_off

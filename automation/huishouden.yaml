@@ -385,11 +385,11 @@
       to: "on"
   condition:
     - condition: state
-      entity_id: switch.genie
+      entity_id: switch.genie_woonkamer
       state: "on"
   action:
     - service: switch.turn_off
-      entity_id: switch.genie
+      entity_id: switch.genie_woonkamer
 - alias: Genie aan als schuifpui dicht gaat
   trigger:
     - platform: state
@@ -406,7 +406,7 @@
         before: "07:00:00"
   action:
     - service: switch.turn_on
-      entity_id: switch.genie
+      entity_id: switch.genie_woonkamer
 - alias: genie aan
   trigger:
     - platform: time
@@ -419,7 +419,7 @@
       state: "off"
   action:
     - service: switch.turn_on
-      entity_id: switch.genie
+      entity_id: switch.genie_woonkamer
 - alias: genie uit
   trigger:
     - platform: time
@@ -429,7 +429,7 @@
   condition: []
   action:
     - service: switch.turn_off
-      entity_id: switch.genie
+      entity_id: switch.genie_woonkamer
 
 - alias: Genie Set strength slider
   id: "genie-slider-sterkte"
@@ -529,11 +529,7 @@
   trigger:
     - platform: template
       value_template: >-
-        {% if states("sensor.picnic_delivery") != "unknown" or "unavailable" %} 
-          {{as_timestamp(state_attr('sensor.picnic_delivery', 'delivery').window_start)
-          - as_timestamp(states('sensor.date') + " " + states('sensor.time'))
-          - 1800 < 0}}
-        {% endif %}
+        {{ 1800 > (as_timestamp(state_attr('sensor.picnic_delivery', 'delivery').window_start) - as_timestamp(states('sensor.date') + " " + states('sensor.time'))) > 0}}
   condition: []
   action:
     - service: tts.google_home_say
@@ -550,7 +546,7 @@
           {{- ms.items-}}
         message: >-
           <speak>
-            Picnic komt eraan!<break time="300ms"/> Over ongeveer een half uurtje staan ze voor de deur.
+            Picnic komt eraan!<break time="300ms"/> Over ongeveer een uurtje staan ze voor de deur.
           </speak>
         #        language: 'nl'
         cache: false
@@ -568,11 +564,7 @@
   trigger:
     - platform: template
       value_template: >-
-        {% if states("sensor.picnic_delivery") != "unknown" or "unavailable" %} 
-          {{as_timestamp(state_attr('sensor.picnic_delivery', 'delivery').cut_off_time)
-          - as_timestamp(states('sensor.date') + " " + states('sensor.time'))
-          - 3600 < 0}}
-        {% endif %}
+        {{ 3600 > (as_timestamp(state_attr('sensor.picnic_delivery', 'delivery').cut_off_time) - as_timestamp(states('sensor.date') + " " + states('sensor.time'))) > 0}}
   condition: []
   action:
     - service: tts.google_home_say

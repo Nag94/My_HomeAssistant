@@ -776,6 +776,10 @@
     - condition: state
       entity_id: light.kamer_evie
       state: "off"
+    - condition: state
+      entity_id:
+        - binary_sensor.low_lux_input_hal
+      state: "on"
     - condition: or
       conditions:
         - condition: state
@@ -865,6 +869,10 @@
     - condition: state
       entity_id: light.kamer_jules
       state: "off"
+    - condition: state
+      entity_id:
+        - binary_sensor.low_lux_input_hal
+      state: "on"
     - condition: or
       conditions:
         - condition: state
@@ -1107,7 +1115,9 @@
   action:
     - service: light.turn_off
       data:
-        entity_id: light.garagelamp_2
+        entity_id: 
+          - light.garagelamp_2
+          - light.led_paneel_garage
 - alias: pir_garage_on
   condition:
     - condition: state

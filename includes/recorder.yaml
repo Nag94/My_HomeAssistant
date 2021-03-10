@@ -37,3 +37,10 @@ include:
     - switch.kerstboom
     - switch.tuinslinger_achter_switch
     - switch.ventilator_kachel_switch
+    - sensor.woonkamer_voor
+    - sensor.bijkeuken
+    - sensor.hal
+    - sensor.average_lux_xiaomi
+    - sensor.average_lux
+    - sensor.weather_cloud_coverage
+    - sensor.eindhoven_irradiance

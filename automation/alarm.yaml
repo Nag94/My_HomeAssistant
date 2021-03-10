@@ -281,6 +281,28 @@
     - service: alarm_control_panel.alarm_arm_away
       data:
         entity_id: alarm_control_panel.thuis_alarm
+    - service: script.turn_on
+      data_template:
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'on') %}
+            script.nachtlicht_eetkamer_aan
+          {% else %}
+            {% if is_state('binary_sensor.low_lux_input_eetkamer', 'on') %}
+              script.daglicht_eetkamer_aan
+            {% else %}
+              script.nachtlicht_uit
+            {% endif %}
+          {% endif %}
+    - service: script.turn_on
+      data_template:
+        entity_id: >-
+          {% if is_state('input_boolean.nachtstand', 'on') %}
+            script.nachtlicht_woonkamer_aan
+          {% else %}
+            {% if is_state('binary_sensor.low_lux_input_eetkamer', 'on') %}
+              script.daglicht_woonkamer_aan
+            {% endif %}
+          {% endif %}
   id: cf81e6862bbc4a069deca8e02ecffd96
 - id: camera_switch_on
   alias: Camera woonkamer aanzetten
@@ -466,3 +488,113 @@
   action:
     - service: script.turn_on
       entity_id: script.woonkamer_movie
+#############################################################
+####### deuren open als je gaat slapen of weg gaat ############
+#############################################################
+- alias: check deuren als je weggaat of gaat slapen
+  trigger:
+    - device_id: 0435dbb6373049949c44c04f3de67525
+      domain: hue
+      platform: device
+      subtype: turn_off
+      type: remote_button_short_release
+    - platform: state
+      entity_id: group.all_persons
+      to: "not_home"
+  condition:
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: binary_sensor.voordeur
+          state: "on"
+        - condition: state
+          entity_id: binary_sensor.schuifpui
+          state: "on"
+        - condition: state
+          entity_id: binary_sensor.achterdeur
+          state: "on"
+        - condition: state
+          entity_id: binary_sensor.garagedeur
+          state: "on"
+        - condition: state
+          entity_id: binary_sensor.balkondeur_ouderslaapkamer
+          state: "on"
+        - condition: state
+          entity_id: binary_sensor.balkondeur_voor
+          state: "on"
+  action:
+    - service: tts.google_home_say
+      data:
+        entity_id: >-
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
+        message: >-
+          <speak>
+            Er staat nog een deur open!<break time="300ms"/> Misschien moet je die nog even dichtdoen.<break time="300ms"/>
+            {% if is_state('binary_sensor.voordeur', 'on') %}
+              Kijk naar de voordeur
+            {% elif is_state('binary_sensor.schuifpui', 'on') %}
+              Kijk naar de schuifpui
+            {% elif is_state('binary_sensor.achterdeur', 'on') %}
+              Kijk naar de achterdeur
+            {% elif is_state('binary_sensor.garagedeur', 'on') %}
+              Kijk naar de garagedeur
+            {% elif is_state('binary_sensor.balkondeur_slaapkamer', 'on') %}
+              Kijk naar de balkondeur op de slaapkamer
+            {% elif is_state('binary_sensor.balkondeur_voor', 'on') %}
+              Kijk naar de balkondeur aan de voorkant"
+            {% endif %}
+          </speak>
+        #        language: 'nl'
+        cache: false
+    - service: notify.mobile_app_phone_erik
+      data:
+        message: >-
+          "ALARM!! Er staat nog een deur open
+            {% if is_state('binary_sensor.voordeur', 'on') %}
+              Kijk naar de voordeur
+            {% elif is_state('binary_sensor.schuifpui', 'on') %}
+              Kijk naar de schuifpui
+            {% elif is_state('binary_sensor.achterdeur', 'on') %}
+              Kijk naar de achterdeur
+            {% elif is_state('binary_sensor.garagedeur', 'on') %}
+              Kijk naar de garagedeur
+            {% elif is_state('binary_sensor.balkondeur_slaapkamer', 'on') %}
+              Kijk naar de balkondeur op de slaapkamer
+            {% elif is_state('binary_sensor.balkondeur_voor', 'on') %}
+              Kijk naar de balkondeur aan de voorkant"
+            {% endif %}
+        title: "ALARM!!!"
+        data:
+          persistent: false # set to persistent
+          clickAction: /lovelace/7 # navigate user to the lovelace alarm view
+          icon: "mdi:alarm-light"
+    - service: notify.mobile_app_sm_g973f
+      data:
+        message: >-
+          "ALARM!! Er staat nog een deur open
+            {% if is_state('binary_sensor.voordeur', 'on') %}
+              Kijk naar de voordeur
+            {% elif is_state('binary_sensor.schuifpui', 'on') %}
+              Kijk naar de schuifpui
+            {% elif is_state('binary_sensor.achterdeur', 'on') %}
+              Kijk naar de achterdeur
+            {% elif is_state('binary_sensor.garagedeur', 'on') %}
+              Kijk naar de garagedeur
+            {% elif is_state('binary_sensor.balkondeur_slaapkamer', 'on') %}
+              Kijk naar de balkondeur op de slaapkamer
+            {% elif is_state('binary_sensor.balkondeur_voor', 'on') %}
+              Kijk naar de balkondeur aan de voorkant"
+            {% endif %}
+        title: "ALARM!!!"
+        data:
+          persistent: false # set to persistent
+          clickAction: /lovelace/7 # navigate user to the lovelace alarm view
+          icon: "mdi:alarm-light"

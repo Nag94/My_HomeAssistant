@@ -223,12 +223,12 @@
       friendly_name: Aantal lampen aan
       value_template: >-
         {% for state in states
-           if ( 'light' in state.entity_id 
+          if ( 'light' in state.entity_id 
                 and state.domain in ['light','switch']
                 and state.state == 'on' ) -%}
-           {% if loop.last -%}
-             {{ loop.index }}
-           {%- endif %}
+          {% if loop.last -%}
+            {{ loop.index }}
+          {%- endif %}
         {% else %}
           0
         {%- endfor %}
@@ -523,6 +523,22 @@
 #############################
 ######### Energy ###########
 #############################
+
+# Verbruik naar W
+- platform: template
+  sensors:
+    power_consumption_w:
+      friendly_name: "Verbruik in W"
+      value_template: "{{ (states('sensor.power_consumption') |float *1000) }}"
+      unit_of_measurement: "W"
+
+# Energieproductie naar W
+- platform: template
+  sensors:
+    power_production_w:
+      friendly_name: "Energieproductie in W"
+      value_template: "{{ (states('sensor.power_production') |float *1000) }}"
+      unit_of_measurement: "W"
 
 # - platform: template
 #   sensors:

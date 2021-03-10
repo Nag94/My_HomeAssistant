@@ -1,6 +1,9 @@
 - platform: switch
   name: tuinslinger_achter
   entity_id: switch.tuinslinger_achter_switch
+- platform: switch
+  name: LED paneel garage
+  entity_id: switch.led_garage
 - platform: group
   name: living
   entities:
@@ -34,6 +37,7 @@
   name: buiten
   entities:
     - light.garagelamp_2
+    - light.led_paneel_garage
     - light.garage_floodlight
     - light.voordeurlamp
     - light.opritlampen

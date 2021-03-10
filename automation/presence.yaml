@@ -134,10 +134,12 @@
   trigger:
     - platform: state
       entity_id: person.erik
-      to: "home"
+      from: 'not_home'
+      to: 'home'
     - platform: state
       entity_id: person.nathalie
-      to: "home"
+      from: 'not_home'
+      to: 'home'
   action:
     - service: input_select.select_option
       data:
@@ -189,10 +191,12 @@
   trigger:
     - platform: state
       entity_id: person.erik
-      to: "not_home"
+      from: 'home'
+      to: 'not_home'
     - platform: state
       entity_id: person.nathalie
-      to: "not_home"
+      from: 'home'
+      to: 'not_home'
   action:
     - service: input_select.select_option
       data:
@@ -265,6 +269,9 @@
       - condition: state
         entity_id: group.all_persons
         state: "home"
+      - condition: state
+        entity_id: input_boolean.notify_home
+        state: "on"
   action:
     - data:
         entity_id: input_boolean.vakantiestand
