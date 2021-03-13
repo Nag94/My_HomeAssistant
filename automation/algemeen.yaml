@@ -116,7 +116,7 @@
         - input_boolean.ouderslaapkamer
         - input_boolean.eetkamer
         - input_boolean.woonkamer_ultra
-- alias: Mediaspelers uit door nacht
+- alias: Mediaspelers aan na nacht
   trigger:
     - platform: state
       entity_id: input_boolean.nachtstand
@@ -148,6 +148,7 @@
         - input_boolean.home_mini_woonkamer
         - input_boolean.ouderslaapkamer_mini
         - input_boolean.werkkamer_mini
+        - input_boolean.keuken_hub
 ############################
 ###### update Hassio #######
 ############################

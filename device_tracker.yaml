@@ -17,7 +17,6 @@
   hosts:
     erik: !secret erik_phone
     nathalie: !secret nathalie_phone
-    oprit_cam_ip: !secret cam_oprit_ip
 
 - platform: bluetooth_le_tracker
   new_device_defaults:

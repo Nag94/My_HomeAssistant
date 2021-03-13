@@ -2,15 +2,48 @@ deurbelscript:
   alias: Deurbel script
   sequence:
   - data:
-      entity_id: media_player.keuken_hub
-      volume_level: 0.7
+      entity_id: >-
+        {% set ms = namespace(items=[]) %}
+        {%- for state in states.input_boolean -%}
+          {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+            or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+            or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+            {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {{- ms.items-}}
+      volume_level: 0.5
     service: media_player.volume_set
   - data_template:
+      entity_id: >-
+        {% set ms = namespace(items=[]) %}
+        {%- for state in states.input_boolean -%}
+          {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+            or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+            or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+            {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {{- ms.items-}}
+      media_content_id: 'https://silverentand.duckdns.org/local/deurbel/deurbel1.mp3'
+      media_content_type: music
+    service: media_player.play_media
+  - delay: '00:00:01'
+  - data_template:
       cache: false
-      language: nl
-      message: Ding Dong! Er staat iemand aan de deur.
-    entity_id: media_player.keuken_hub
-    service: tts.google_translate_say
+#      language: nl
+      message: <speak>Er staat iemand aan de deur.</speak>
+      entity_id: >-
+        {% set ms = namespace(items=[]) %}
+        {%- for state in states.input_boolean -%}
+          {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+            or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+            or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+            {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {{- ms.items-}}
+    service: tts.google_home_say
   - data:
       entity_id: camera.deur_camera
       filename: tmp/deurbel.jpg
