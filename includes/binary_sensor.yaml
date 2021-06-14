@@ -20,7 +20,7 @@
       friendly_name: High lux input
       value_template: >
         {% if (states('sensor.hal_sensor_beneden_light_level') | float) > (states('input_number.high_lux') | float) %}
-         True
+          True
         {% else %}
           False
         {% endif %}
@@ -36,7 +36,7 @@
       friendly_name: High lux input Eetkamer
       value_template: >
         {% if (states('sensor.bijkeuken') | float) > (states('input_number.high_lux_eetkamer') | float) %}
-         True
+          True
         {% else %}
           False
         {% endif %}
@@ -52,7 +52,7 @@
       friendly_name: High lux input Woonkamer
       value_template: >
         {% if (states('sensor.woonkamer_voor') | float) > (states('input_number.high_lux_woonkamer') | float) %}
-         True
+          True
         {% else %}
           False
         {% endif %}
@@ -68,11 +68,26 @@
       friendly_name: High lux input Hal
       value_template: >
         {% if (states('sensor.hal') | float) > (states('input_number.high_lux_hal') | float) %}
-         True
+          True
         {% else %}
           False
         {% endif %}
-
+    low_lux_input_slaapkamer:
+      friendly_name: Low lux input Slaapkamer
+      value_template: >
+        {% if (states('sensor.slaapkamer_light_sensor') | float) < (states('input_number.low_lux_slaapkamer') | float) %}
+          True
+        {% else %}
+          False
+        {% endif %}
+    high_lux_input_slaapkamer:
+      friendly_name: High lux input Slaapkamer
+      value_template: >
+        {% if (states('sensor.slaapkamer_light_sensor') | float) > (states('input_number.high_lux_slaapkamer') | float) %}
+          True
+        {% else %}
+          False
+        {% endif %}
     low_lux_input_buiten:
       friendly_name: Low lux buiten
       value_template: >
@@ -85,7 +100,7 @@
       friendly_name: High lux buiten
       value_template: >
         {% if (states('sensor.motion_sensor_buiten_light_level') | float) > (states('input_number.high_lux_buiten') | float) %}
-         True
+          True
         {% else %}
           False
         {% endif %}
@@ -113,39 +128,38 @@
         {% else %}
           False
         {% endif %}
+    pv_system_input:
+      friendly_name: Zonnepanelen input
+      value_template: >
+        {% if (states('sensor.solaredge_ac_power') | float) > (states('input_number.pv_system') | float) %}
+          True
+        {% else %}
+          False
+        {% endif %}
     nachtmode_aan:
       friendly_name: Nachtstand aan
       value_template: >-
-        {% set current_time = as_timestamp(strptime(states("sensor.date_time"), "%Y-%m-%d, %H:%M")) | int %}
-        {% set nacht_aan_vol = states("sensor.date") + ", " + states("input_datetime.nacht_aan_tijd")[0:5] %}
-        {% set nacht_uit_vol = states("sensor.date") + ", " + states("input_datetime.nacht_uit_tijd")[0:5] %}
-        {% set nacht_aan = as_timestamp(strptime(nacht_aan_vol, "%Y-%m-%d, %H:%M")) | int %}
-        {% set nacht_uit = as_timestamp(strptime(nacht_uit_vol, "%Y-%m-%d, %H:%M")) | int %} 
-        {% if current_time | int >= nacht_uit | int %}
-          {% set nacht_uit_mod = nacht_uit | int + 86400 %}
+        {% set n = now().replace(microsecond=0, tzinfo=None) %}
+        {% set b = now().fromisoformat(states("sensor.date") + " " + states("input_datetime.nacht_aan_tijd")) %}
+        {% set e = now().fromisoformat(states("sensor.date") + " " + states("input_datetime.nacht_uit_tijd")) %}
+        {% if (b >= e and (n >= b or n < e)) or (b < e and (n >= b and n < e)) %}
+          True
         {% else %}
-          {% set nacht_uit_mod = nacht_uit | int %}
+          False
         {% endif %}
-        {%- if current_time | int > nacht_aan | int %}
-          {% set nacht_aan_mod = nacht_aan | int + 86400 %}
-        {%- else %}
-          {% set nacht_aan_mod = nacht_aan | int %}
-        {% endif %}
-        {% if nacht_aan_mod > nacht_uit_mod %}
-          {% if nacht_aan_mod >= current_time <= nacht_uit_mod %}
-            True
-          {% else %}
-            False
-          {% endif %}
+    kinderbedtijd:
+      friendly_name: Kinderbedtijd
+      value_template: >-
+        {% set nu = now().replace(microsecond=0, tzinfo=None) %}
+        {% set uit = now().fromisoformat(states("sensor.date") + " " + states("input_datetime.nacht_uit_tijd")) %}
+        {% set kbt = now().fromisoformat(states("sensor.date") + " " + states("input_datetime.kinderbedtijd")) %}
+        {% if (kbt >= uit and (nu >= kbt or nu < uit)) or (kbt < uit and (nu >= kbt and n < uit)) %}
+          True
         {% else %}
-          {% if nacht_aan_mod <= current_time <= nacht_uit_mod %}
-            True
-          {% else %}
-            False
-          {% endif %}
+          False
         {% endif %}
     lichtwaarde_input:
-      friendly_name: Lichwaarde input
+      friendly_name: Lichtwaarde input
       value_template: >
         {% if (states('sensor.sunlight_pct') | float) > (states('input_number.lichtwaarde') | float) %}
           True
@@ -248,16 +262,3 @@
       prob_given_false: 0.2
       platform: 'state'
       to_state: 'home'
-###########################
-####### Camera ###########
-##########################
-# - platform: mqtt
-#   name: "Opritcam"
-#   state_topic: "cameras/oprit/motion"
-#   name: Oprit Camera Motion
-#   device_class: motion
-# - platform: mqtt
-#   name: "Woonkamercam"
-#   state_topic: "cameras/woonkamer/motion"
-#   name: Woonkamer Camera Motion
-#   device_class: motion

@@ -1,8 +1,5 @@
 - platform: google_maps
   username: !secret hass_maps_user
-  consider_home: 300
-  new_device_defaults:
-    track_new_devices: true
 
 #- platform: netgear
 #  host: !secret router_url
@@ -18,6 +15,5 @@
     erik: !secret erik_phone
     nathalie: !secret nathalie_phone
 
-- platform: bluetooth_le_tracker
-  new_device_defaults:
-    track_new_devices: false
+# - platform: bluetooth_le_tracker
+#   track_new_devices: true

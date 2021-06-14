@@ -2,7 +2,7 @@
   alias: ventilator aan
   trigger:
     - platform: numeric_state
-      entity_id: sensor.nas_pd02z_battery_powered_pir_sensor_v2_air_temperature
+      entity_id: sensor.temperature_eetkamer
       above: 24
     - platform: state
       entity_id: group.all_persons
@@ -14,33 +14,33 @@
       after: '06:59:00'
       before: '22:30:00'
     - condition: numeric_state
-      entity_id: sensor.nas_pd02z_battery_powered_pir_sensor_v2_air_temperature
-      above: 24
+      entity_id: sensor.temperature_eetkamer
+      above: 21
     - condition: state
       entity_id: group.all_persons
       state: 'home'
   action:
     - service: fan.turn_on
-      entity_id: fan.ventilator
+      entity_id: fan.ventilator_1_fan
     - service: fan.set_speed
-      entity_id: fan.ventilator
+      entity_id: fan.ventilator_1_fan
       data_template:
         speed: >
-          {% set temp = states('sensor.nas_pd02z_battery_powered_pir_sensor_v2_air_temperature')|float %}
+          {% set temp = states('sensor.temperature_eetkamer')|float %}
           {% if temp < 24 %} low
           {% elif 24 <= temp < 27 %} medium
           {% else %} high
           {% endif %}
     - service: fan.oscilate
-      entity_id: fan.ventilator
+      entity_id: fan.ventilator_1_fan
       data_template:
         oscillating: 'true'
 - id: ventilator_uit
   alias: ventilator uit
   trigger:
     - platform: numeric_state
-      entity_id: sensor.nas_pd02z_battery_powered_pir_sensor_v2_air_temperature
-      below: 24
+      entity_id: sensor.temperature_eetkamer
+      below: 21
     - platform: state
       entity_id: group.all_persons
       to: 'not_home'
@@ -48,8 +48,8 @@
       at: '22:30:00'
   condition:
     - condition: state
-      entity_id: fan.ventilator
+      entity_id: fan.ventilator_1_fan
       state: 'on'
   action:
     service: fan.turn_off
-    entity_id: fan.ventilator
+    entity_id: fan.ventilator_1_fan

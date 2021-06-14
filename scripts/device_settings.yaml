@@ -1,20 +1,20 @@
 sound_siren_in_doorbell_mode:
   alias: Sound Siren In Doorbell Mode
   sequence:
-  - service: zwave.set_config_parameter
-    data_template:
-      node_id: 15
+  - service: zwave_js.set_config_parameter
+    target:
+      entity_id: switch.siren_alarm_current_value
+    data:
       parameter: 7
-      value: Door bell music
+      value: 2
   - service: switch.turn_on
-    entity_id: switch.shenzhen_neo_electronics_co_ltd_siren_alarm_switch
+    entity_id: switch.siren_alarm_current_value
 sound_siren_in_alarm_mode:
   alias: Sound Siren In Alarm Mode
   sequence:
-  - service: zwave.set_config_parameter
-    data_template:
-      node_id: 15
+  - service: zwave_js.set_config_parameter
+    target:
+      entity_id: switch.siren_alarm_current_value
+    data:
       parameter: 7
-      value: Alarm music
-  - service: switch.turn_on
-    entity_id: switch.shenzhen_neo_electronics_co_ltd_siren_alarm_switch
+      value: 1

@@ -4,6 +4,12 @@
 - platform: switch
   name: LED paneel garage
   entity_id: switch.led_garage
+- platform: switch
+  name: Spotjes Werkkamer
+  entity_id: switch.werkkamer_achter
+- platform: switch
+  name: Spotjes Speelkamer
+  entity_id: switch.speelkamer_light
 - platform: group
   name: living
   entities:
@@ -36,8 +42,6 @@
 - platform: group
   name: buiten
   entities:
-    - light.garagelamp_2
-    - light.led_paneel_garage
     - light.garage_floodlight
     - light.voordeurlamp
     - light.opritlampen
@@ -48,10 +52,23 @@
     - light.hal_wandlamp_2
     - light.hal
 - platform: group
+  name: Werkkamer achter
+  entities:
+    - light.spotjes_werkkamer
+- platform: group
+  name: Speelkamer
+  entities:
+    - light.spotjes_speelkamer
+- platform: group
   name: tuinverlichting
   entities:
     - light.tuinslinger
     - light.tuinslinger_achter
+- platform: group
+  name: Garage
+  entities:
+    - light.garagelamp_2
+    - light.led_paneel_garage
 - platform: mqtt
   name: "Keukenspots"
   state_topic: "keukenspots/stats/POWER"

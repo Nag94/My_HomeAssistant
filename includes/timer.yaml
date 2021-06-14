@@ -24,3 +24,10 @@ timer_oprit:
 
 timer_woonkamer:
   duration: '00:00:45'
+
+timer_ouderslaapkamer:
+  duration: '00:01:00'
+timer_evie:
+  duration: '00:01:00'
+timer_jules:
+  duration: '00:01:00'

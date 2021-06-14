@@ -1,0 +1,70 @@
+name: GardenPAC Pool Heatpump
+primary_entity:
+  entity: climate
+  dps:
+    - id: 1
+      name: hvac_mode
+      type: boolean
+      mapping:
+        - dps_val: false
+          value: "off"
+          icon: "mdi:hvac-off"
+          icon_priority: 1
+        - dps_val: true
+          value: "heat"
+          icon: "mdi:hot-tub"
+          icon_priority: 3
+    - id: 102
+      name: current_temperature
+      type: integer
+      readonly: true
+    - id: 103
+      name: temperature_unit
+      type: boolean
+      mapping:
+        - dps_val: false
+          value: F
+        - dps_val: true
+          value: C
+    - id: 104
+      name: power_level
+      type: integer
+      readonly: true
+    - id: 105
+      name: operating_mode
+      type: string
+      readonly: true
+    - id: 106
+      name: temperature
+      type: integer
+      mapping:
+        - constraint: temperature_unit
+          conditions:
+            - dps_val: false
+              range:
+                min: 60
+                max: 115
+      range:
+        min: 18
+        max: 45
+    - id: 107
+      type: integer
+      name: unknown_107
+    - id: 108
+      type: integer
+      name: unknown_108
+    - id: 115
+      type: integer
+      name: unknown_115
+    - id: 116
+      type: integer
+      name: unknown_116
+    - id: 117
+      name: preset_mode
+      type: boolean
+      mapping:
+        - dps_val: false
+          value: Silent
+        - dps_val: true
+          value: Smart
+        

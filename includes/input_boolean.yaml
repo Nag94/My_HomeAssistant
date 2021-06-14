@@ -14,6 +14,10 @@ nachtstand:
   name: Nachtstand actief
   initial: off
   icon: mdi:theme-light-dark
+kinderbedtijd:
+  name: Kinderbedtijd
+  initial: off
+  icon: mdi:sleep
 vakantiestand:
   name: Vakantiemodus
   initial: off
@@ -22,14 +26,22 @@ brievenbus:
   name: Post in de brievenbus
   initial: off
   icon: mdi:mailbox
+record_deurbel:
+  name: Deurbelcamera neemt op
+  icon: mdi:cctv
+  initial: off
 record_oprit:
   name: Opritcamera neemt op
   icon: mdi:cctv
-  initial: 'off'
+  initial: off
 record_woonkamer:
   name: Camera in woonkamer neemt op
   icon: mdi:cctv
-  initial: 'off'
+  initial: off
+record_g3_1:
+  name: 1e G3 Camera neemt op
+  icon: mdi:cctv
+  initial: off
 ochtendgebed:
   name: Ochtendgebed afgespeeld?
   initial: off
@@ -42,8 +54,12 @@ zonwering_open:
   initial: on
 verlichting_als_overdag:
   name: Verlichting als overdag
-  icon: mdi:light
-verlichting_steady:
+  icon: mdi:brightness-5
+verlichting_steady_eetkamer:
+  name: Verlichting stabiel houden
+  icon: mdi:lightbulb-on
+  initial: off
+verlichting_steady_woonkamer:
   name: Verlichting stabiel houden
   icon: mdi:lightbulb-on
   initial: off
@@ -93,8 +109,8 @@ home_mini_woonkamer:
 werkkamer_mini:  
   name: "Werkkamer (Nest Mini)"
   icon: mdi:google-home
-ouderslaapkamer_mini:  
-  name: "Ouderslaapkamer (Nest Mini)"
+yogakamer_mini:  
+  name: "Yogakamer (Nest Mini)"
   icon: mdi:google-home
 keuken_hub:  
   name: "Keuken (Nest Hub)"

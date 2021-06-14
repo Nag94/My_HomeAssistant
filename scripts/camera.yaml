@@ -7,7 +7,7 @@ oprit_movie:
     - service: camera.record
       data_template:
         entity_id: camera.oprit
-        filename: 'www/video/oprit_{{ now().strftime("%Y%m%d-%H%M%S") }}.mp4'
+        filename: 'www/video/oprit/oprit_{{ now().strftime("%Y%m%d-%H%M%S") }}.mp4'
         lookback: 8
         duration: 40
     - delay:
@@ -24,8 +24,38 @@ woonkamer_movie:
       data_template:
         entity_id: camera.woonkamer
         lookback: 8
-        filename: 'www/video/woonkamer_{{ now().strftime("%Y%m%d-%H%M%S") }}.mp4'
+        filename: 'www/video/woonkamer/woonkamer_{{ now().strftime("%Y%m%d-%H%M%S") }}.mp4'
     - delay:
         seconds: 50
     - service: input_boolean.turn_off
       entity_id: input_boolean.record_woonkamer
+deurbel_movie:
+  alias: Film van deurbel na motion trigger
+  icon: mdi:cctv
+  sequence:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.record_deurbel
+    - service: camera.record
+      data_template:
+        entity_id: camera.deurbel
+        lookback: 10
+        filename: 'www/video/deurbel/deurbel_{{ now().strftime("%Y%m%d-%H%M%S") }}.mp4'
+    - delay:
+        seconds: 50
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.record_deurbel
+g3_1_movie:
+  alias: Film van G3 1 na motion trigger
+  icon: mdi:cctv
+  sequence:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.record_g3_1
+    - service: camera.record
+      data_template:
+        entity_id: camera.camera_g3
+        lookback: 8
+        filename: 'www/video/G3/G3_1_{{ now().strftime("%Y%m%d-%H%M%S") }}.mp4'
+    - delay:
+        seconds: 35
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.record_g3_1

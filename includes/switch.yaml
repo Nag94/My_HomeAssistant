@@ -12,10 +12,12 @@
 
 - platform: philips_ambilight+hue
   name: Ambilight+Hue
+  secured_transport: true
+  api_version: 6
   host: !secret tv_woonkamer
   username: !secret tv_username
   password: !secret tv_password
-# id: 2131230783
+# #  id: 2131230783
   scan_interval: 5
 
 - platform: template

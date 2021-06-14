@@ -6,52 +6,46 @@ import logging
 
 from aiohttp import CookieJar
 from aiohttp.client_exceptions import ServerDisconnectedError
-
-from pyunifiprotect import UpvServer, NotAuthorized, NvrError
-
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_ID,
-    CONF_HOST,
-    CONF_PORT,
-    CONF_USERNAME,
-    CONF_PASSWORD,
-    CONF_FILENAME,
-    CONF_SCAN_INTERVAL,
-)
-
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_ID,
+    CONF_PASSWORD,
+    CONF_PORT,
+    CONF_SCAN_INTERVAL,
+    CONF_USERNAME,
+    EVENT_HOMEASSISTANT_STOP,
+)
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
-from homeassistant.helpers.event import async_track_time_interval
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 import homeassistant.helpers.device_registry as dr
+from homeassistant.helpers.typing import ConfigType
+from pyunifiprotect import NotAuthorized, NvrError, UpvServer
+from pyunifiprotect.const import SERVER_ID
 
 from .const import (
+    CONF_DISABLE_RTSP,
     CONF_SNAPSHOT_DIRECT,
     DEFAULT_BRAND,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     UNIFI_PROTECT_PLATFORMS,
 )
+from .data import UnifiProtectData
 
 SCAN_INTERVAL = timedelta(seconds=DEFAULT_SCAN_INTERVAL)
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Unifi Protect components."""
 
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up the Unifi Protect config entries."""
 
     if not entry.options:
@@ -63,6 +57,10 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
                 ),
                 CONF_SNAPSHOT_DIRECT: entry.data.get(CONF_SNAPSHOT_DIRECT, False),
             },
+        )
+    if not entry.options.get(CONF_DISABLE_RTSP):
+        hass.config_entries.async_update_entry(
+            entry, options={CONF_DISABLE_RTSP: entry.data.get(CONF_DISABLE_RTSP, False)}
         )
 
     session = async_create_clientsession(hass, cookie_jar=CookieJar(unsafe=True))
@@ -81,12 +79,8 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
     )
 
-    coordinator = DataUpdateCoordinator(
-        hass,
-        _LOGGER,
-        name=DOMAIN,
-        update_method=protectserver.update,
-        update_interval=timedelta(seconds=events_update_interval),
+    protect_data = UnifiProtectData(
+        hass, protectserver, timedelta(seconds=events_update_interval)
     )
 
     try:
@@ -95,16 +89,35 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         _LOGGER.error(
             "Could not Authorize against Unifi Protect. Please reinstall the Integration."
         )
-        return
-    except (NvrError, ServerDisconnectedError):
+        return False
+    except (NvrError, ServerDisconnectedError) as notreadyerror:
+        raise ConfigEntryNotReady from notreadyerror
+
+    if entry.unique_id is None:
+        hass.config_entries.async_update_entry(entry, unique_id=nvr_info[SERVER_ID])
+
+    await protect_data.async_setup()
+    if not protect_data.last_update_success:
         raise ConfigEntryNotReady
 
-    await coordinator.async_refresh()
-    hass.data[DOMAIN][entry.entry_id] = {
-        "coordinator": coordinator,
+    update_listener = entry.add_update_listener(_async_options_updated)
+
+    data = hass.data[DOMAIN][entry.entry_id] = {
+        "protect_data": protect_data,
         "upv": protectserver,
         "snapshot_direct": entry.options.get(CONF_SNAPSHOT_DIRECT, False),
+        "server_info": nvr_info,
+        "update_listener": update_listener,
+        "disable_stream": entry.options[CONF_DISABLE_RTSP],
     }
+
+    async def _async_stop_protect_data(event):
+        """Stop updates."""
+        await protect_data.async_stop()
+
+    data["stop_event_listener"] = hass.bus.async_listen_once(
+        EVENT_HOMEASSISTANT_STOP, _async_stop_protect_data
+    )
 
     await _async_get_or_create_nvr_device_in_registry(hass, entry, nvr_info)
 
@@ -113,14 +126,11 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
             hass.config_entries.async_forward_entry_setup(entry, platform)
         )
 
-    if not entry.update_listeners:
-        entry.add_update_listener(async_update_options)
-
     return True
 
 
 async def _async_get_or_create_nvr_device_in_registry(
-    hass: HomeAssistantType, entry: ConfigEntry, nvr
+    hass: HomeAssistant, entry: ConfigEntry, nvr
 ) -> None:
     device_registry = await dr.async_get_registry(hass)
     device_registry.async_get_or_create(
@@ -134,12 +144,12 @@ async def _async_get_or_create_nvr_device_in_registry(
     )
 
 
-async def async_update_options(hass: HomeAssistantType, entry: ConfigEntry):
+async def _async_options_updated(hass: HomeAssistant, entry: ConfigEntry):
     """Update options."""
     await hass.config_entries.async_reload(entry.entry_id)
 
 
-async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload Unifi Protect config entry."""
     unload_ok = all(
         await asyncio.gather(
@@ -151,6 +161,10 @@ async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry) -> boo
     )
 
     if unload_ok:
+        data = hass.data[DOMAIN][entry.entry_id]
+        data["update_listener"]()
+        data["stop_event_listener"]()
+        await data["protect_data"].async_stop()
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok

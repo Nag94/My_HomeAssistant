@@ -18,10 +18,10 @@ play_spotify_morning:
   - service: media_player.shuffle_set
     data:
       entity_id: media_player.spotify_erik_silverentand
-      shuffle: true
+      shuffle: false
   - data:
       entity_id: media_player.spotify_erik_silverentand
-      media_content_id: spotify:playlist:37i9dQZEVXbeccjaf96LOc
+      media_content_id: "https://open.spotify.com/playlist/37i9dQZEVXbeccjaf96LOc?si=3af7681a4bd44df7"
       media_content_type: playlist
     service: media_player.play_media
   alias: play_spotify_morning
@@ -36,7 +36,7 @@ play_media:
           {% if is_state("input_select.afspeelmedium", "Woonkamer (Chromecast)") %} media_player.woonkamer_ultra
           {% elif is_state("input_select.afspeelmedium", "Woonkamer (Home Mini)") %} media_player.home_mini_woonkamer
           {% elif is_state("input_select.afspeelmedium", "Werkkamer") %} media_player.werkkamer_mini
-          {% elif is_state("input_select.afspeelmedium", "Ouderslaapkamer") %} media_player.ouderslaapkamer_mini        
+          {% elif is_state("input_select.afspeelmedium", "Yogakamer") %} media_player.yogakamer_mini        
           {% elif is_state("input_select.afspeelmedium", "Eetkamer") %} media_player.eetkamer
           {% elif is_state("input_select.afspeelmedium", "Keukenspeaker") %} media_player.keuken_speaker_2
           {% elif is_state("input_select.afspeelmedium", "Nest Hub Keuken") %} media_player.keuken_hub
@@ -66,7 +66,7 @@ pause_media:
           {% if is_state("input_select.afspeelmedium", "Woonkamer (Chromecast)") %} media_player.woonkamer_ultra
           {% elif is_state("input_select.afspeelmedium", "Woonkamer (Home Mini)") %} media_player.home_mini_woonkamer
           {% elif is_state("input_select.afspeelmedium", "Werkkamer") %} media_player.werkkamer_mini
-          {% elif is_state("input_select.afspeelmedium", "Ouderslaapkamer") %} media_player.ouderslaapkamer_mini  
+          {% elif is_state("input_select.afspeelmedium", "Yogakamer") %} media_player.yogakamer_mini  
           {% elif is_state("input_select.afspeelmedium", "Eetkamer") %} media_player.eetkamer
           {% elif is_state("input_select.afspeelmedium", "Keukenspeaker") %} media_player.keuken_speaker_2
           {% elif is_state("input_select.afspeelmedium", "Nest Hub Keuken") %} media_player.keuken_hub
@@ -82,7 +82,7 @@ stop_media:
           {% if is_state("input_select.afspeelmedium", "Woonkamer (Chromecast)") %} media_player.woonkamer_ultra
           {% elif is_state("input_select.afspeelmedium", "Woonkamer (Home Mini)") %} media_player.home_mini_woonkamer
           {% elif is_state("input_select.afspeelmedium", "Werkkamer") %} media_player.werkkamer_mini
-          {% elif is_state("input_select.afspeelmedium", "Ouderslaapkamer") %} media_player.ouderslaapkamer_mini  
+          {% elif is_state("input_select.afspeelmedium", "Yogakamer") %} media_player.yogakamer_mini  
           {% elif is_state("input_select.afspeelmedium", "Eetkamer") %} media_player.eetkamer
           {% elif is_state("input_select.afspeelmedium", "Keukenspeaker") %} media_player.keuken_speaker_2
           {% elif is_state("input_select.afspeelmedium", "Nest Hub Keuken") %} media_player.keuken_hub

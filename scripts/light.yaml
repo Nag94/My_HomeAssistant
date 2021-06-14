@@ -39,31 +39,31 @@ groundfloor_light:
         kelvin: 2700
     - service: input_boolean.turn_on
       entity_id: input_boolean.verlichting_steady
-nachtlicht_aan:
-  alias: Licht aan in de nacht
-  sequence:
-    - service: timer.cancel
-      entity_id: timer.timer_lamp_beneden
-    - service: light.turn_on
-      data:
-        entity_id:
-          - light.schilderij
-          - light.schuifpui
-          - light.keuken
-          - light.eettafel_1
-          - light.eettafel_2
-          - light.tv_1
-          - light.tv_2
-          - light.borden
-          - light.hue_go_woonkamer
-          - light.bank
-        brightness: 60
-        rgb_color:
-          - 226
-          - 188
-          - 117
-    - service: timer.start
-      entity_id: timer.timer_lamp_beneden
+# nachtlicht_aan:
+#   alias: Licht aan in de nacht
+#   sequence:
+#     - service: timer.cancel
+#       entity_id: timer.timer_lamp_beneden
+#     - service: light.turn_on
+#       data:
+#         entity_id:
+#           - light.schilderij
+#           - light.schuifpui
+#           - light.keuken
+#           - light.eettafel_1
+#           - light.eettafel_2
+#           - light.tv_1
+#           - light.tv_2
+#           - light.borden
+#           - light.hue_go_woonkamer
+#           - light.bank
+#         brightness: 60
+#         rgb_color:
+#           - 226
+#           - 188
+#           - 117
+#     - service: timer.start
+#       entity_id: timer.timer_lamp_beneden
 nachtlicht_uit:
   alias: Licht uit
   sequence:
@@ -73,59 +73,57 @@ nachtlicht_uit:
           - light.living
           - light.eetkamer_keuken
           - light.tuinverlichting
-          - light.keukenspots_all
-          - light.plug1
           - light.hall_all
         transition: 120
-daglicht_aan:
-  alias: Licht aan overdag
-  sequence:
-    - service: light.turn_on
-      data_template:
-        entity_id: light.eettafel_1, light.eettafel_2
-        brightness: >-
-          {% if '06:00' <= now().strftime("%H:%M") <= "09:30" or "17:30" <= now().strftime("%H:%M") <= "19:30" %}
-          220
-          {% else %}
-          90
-          {% endif %}
-        rgb_color:
-          - 226
-          - 188
-          - 117
-        transition: 30
-    - service: light.turn_on
-      data_template:
-        entity_id: >-
-          {% if states('sensor.sunlight_pct')|float <8 %}
-          light.keukenspots_all, light.schilderij, light.schuifpui, light.keuken, light.woonkamer
-          {% else %}
-          light.schilderij, light.schuifpui, light.keuken, light.woonkamer
-          {% endif %}
-        brightness: 90
-        rgb_color:
-          - 226
-          - 188
-          - 117
-        transition: 30
-    - service: light.turn_on
-      data_template:
-        entity_id: >-
-          {% if states('sensor.sunlight_pct')|float <8 %}
-          light.liefde
-          {% else %}
-          light.dummy
-          {% endif %}
-        brightness_pct: 50
-        transition: 30
-    # - service: light.turn_on
-    #   data_template:
-    #     entity_id: >-
-    #       {% if states('sensor.sunlight_pct')|float <8 %}
-    #       light.plug1
-    #       {% else %}
-    #       light.dummy
-    #       {% endif %}
+# daglicht_aan:
+#   alias: Licht aan overdag
+#   sequence:
+#     - service: light.turn_on
+#       data_template:
+#         entity_id: light.eettafel_1, light.eettafel_2
+#         brightness: >-
+#           {% if '06:00' <= now().strftime("%H:%M") <= "09:30" or "17:30" <= now().strftime("%H:%M") <= "19:30" %}
+#           220
+#           {% else %}
+#           90
+#           {% endif %}
+#         rgb_color:
+#           - 226
+#           - 188
+#           - 117
+#         transition: 30
+#     - service: light.turn_on
+#       data_template:
+#         entity_id: >-
+#           {% if states('sensor.sunlight_pct')|float <8 %}
+#           light.keukenspots_all, light.schilderij, light.schuifpui, light.keuken, light.woonkamer
+#           {% else %}
+#           light.schilderij, light.schuifpui, light.keuken, light.woonkamer
+#           {% endif %}
+#         brightness: 90
+#         rgb_color:
+#           - 226
+#           - 188
+#           - 117
+#         transition: 30
+#     - service: light.turn_on
+#       data_template:
+#         entity_id: >-
+#           {% if states('sensor.sunlight_pct')|float <8 %}
+#           light.liefde
+#           {% else %}
+#           light.dummy
+#           {% endif %}
+#         brightness_pct: 50
+#         transition: 30
+#     # - service: light.turn_on
+#     #   data_template:
+#     #     entity_id: >-
+#     #       {% if states('sensor.sunlight_pct')|float <8 %}
+#     #       light.plug1
+#     #       {% else %}
+#     #       light.dummy
+#     #       {% endif %}
 #############################
 ######### Woonkamer #########
 ############################
@@ -169,7 +167,7 @@ daglicht_woonkamer_aan:
     - service: light.turn_on
       data_template:
         entity_id: >-
-          {% if states('sensor.sunlight_pct')|float <8 %}
+          {% if states('sensor.woonkamer_voor')|float < 400 %}
           light.liefde
           {% else %}
           light.dummy
@@ -219,7 +217,7 @@ daglicht_eetkamer_aan:
     - service: light.turn_on
       data_template:
         entity_id: >-
-          {% if states('sensor.sunlight_pct')|float <8 %}
+          {% if states('sensor.bijkeuken')|float < 90 %}
           light.keukenspots_all, light.schilderij, light.schuifpui, light.keuken
           {% else %}
           light.schilderij, light.schuifpui, light.keuken
@@ -230,14 +228,6 @@ daglicht_eetkamer_aan:
           - 188
           - 117
         transition: 30
-    # - service: light.turn_on
-    #   data_template:
-    #     entity_id: >-
-    #       {% if states('sensor.sunlight_pct')|float <8 %}
-    #       light.plug1
-    #       {% else %}
-    #       light.dummy
-    #       {% endif %}
 ###############################
 ########## Keuken #############
 ##########################
@@ -360,6 +350,43 @@ sunrise_evie:
           - 0.4
         brightness: 255
         transition: 600
+
+evie_nachtlicht_aan:
+  alias: Slaapkamer Evie licht aan in de nacht
+  sequence:
+    - service: timer.cancel
+      entity_id: timer.timer_evie
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.hue_go_evie
+        brightness: 20
+        rgb_color:
+          - 245
+          - 188
+          - 50
+    - service: timer.start
+      entity_id: timer.timer_evie
+evie_nachtlicht_uit:
+  alias: Slaapkamer Evie licht uit
+  sequence:
+    - service: light.turn_off
+      data:
+        entity_id:
+          - light.kamer_evie
+        transition: 10
+evie_daglicht_aan:
+  alias: Slaapkamer Evie licht aan overdag
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.kamer_evie
+        brightness: 190
+        rgb_color:
+          - 245
+          - 188
+          - 117
 ########################################
 ################ Jules #################
 ########################################
@@ -400,6 +427,43 @@ sunrise_jules:
           - 0.4
         brightness: 255
         transition: 600
+
+jules_nachtlicht_aan:
+  alias: Slaapkamer Jules licht aan in de nacht
+  sequence:
+    - service: timer.cancel
+      entity_id: timer.timer_jules
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.hue_go_jules
+        brightness: 20
+        rgb_color:
+          - 245
+          - 188
+          - 50
+    - service: timer.start
+      entity_id: timer.timer_jules
+jules_nachtlicht_uit:
+  alias: Slaapkamer Jules licht uit
+  sequence:
+    - service: light.turn_off
+      data:
+        entity_id:
+          - light.kamer_jules
+        transition: 10
+jules_daglicht_aan:
+  alias: Slaapkamer Jules licht aan overdag
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.kamer_jules
+        brightness: 190
+        rgb_color:
+          - 245
+          - 188
+          - 117
 ########################################
 ########## Ouderslaapkamer  ############
 ########################################
@@ -440,6 +504,45 @@ sunrise_ouders:
           - 0.4
         brightness: 255
         transition: 600
+
+ouderslaapkamer_nachtlicht_aan:
+  alias: Ouderslaapkamer licht aan in de nacht
+  sequence:
+    - service: timer.cancel
+      entity_id: timer.timer_ouderslaapkamer
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.ouderslaapkamer
+        brightness: 5
+        rgb_color:
+          - 245
+          - 188
+          - 50
+    - service: timer.start
+      entity_id: timer.timer_ouderslaapkamer
+ouderslaapkamer_nachtlicht_uit:
+  alias: Ouderslaapkamer licht uit
+  sequence:
+    - service: light.turn_off
+      data:
+        entity_id:
+          - light.ouderslaapkamer
+        transition: 10
+ouderslaapkamer_daglicht_aan:
+  alias: ouderslaapkamer licht aan overdag
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.ouderslaapkamer
+        brightness: 190
+        rgb_color:
+          - 245
+          - 188
+          - 117
+    - service: timer.start
+      entity_id: timer.timer_ouderslaapkamer
 ########################################
 ################# HAL ##################
 ########################################
@@ -496,10 +599,10 @@ hal_nachtlicht_aan:
           - 50
     - service: light.turn_on
       data:
-        brightness: 20
+        brightness: 15
         color_temp: 450
         entity_id:
-          - light.hal_wandlamp_1
+          - light.hal_wandlamp_2
     - service: timer.start
       entity_id: timer.timer_hal
 hal_nachtlicht_uit:

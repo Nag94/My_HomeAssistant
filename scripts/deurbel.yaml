@@ -12,7 +12,7 @@ deurbelscript:
           {%- endif -%}
         {%- endfor -%}
         {{- ms.items-}}
-      volume_level: 0.5
+      volume_level: 0.6
     service: media_player.volume_set
   - data_template:
       entity_id: >-
@@ -25,10 +25,10 @@ deurbelscript:
           {%- endif -%}
         {%- endfor -%}
         {{- ms.items-}}
-      media_content_id: 'https://silverentand.duckdns.org/local/deurbel/deurbel1.mp3'
+      media_content_id: "{{ dingdong }}"
       media_content_type: music
     service: media_player.play_media
-  - delay: '00:00:01'
+  - delay: '00:00:04'
   - data_template:
       cache: false
 #      language: nl
@@ -44,18 +44,7 @@ deurbelscript:
         {%- endfor -%}
         {{- ms.items-}}
     service: tts.google_home_say
-  - data:
-      entity_id: camera.deur_camera
-      filename: tmp/deurbel.jpg
-    service: camera.snapshot
-sirene_doorbell_sound_on:
-  alias: Bel geluid
-  sequence:
-  - service: script.turn_on
-    data:
-      entity_id: script.sound_siren_in_doorbell_mode
-  - service: switch.turn_on
-    entity_id: switch.siren_alarm_switch
+
 ################################
 ##### Deurbel test #############
 ################################

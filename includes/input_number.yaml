@@ -70,6 +70,22 @@
     max: 5000
     step: 20
 
+  high_lux_slaapkamer:
+    name: High Lux Slaapkamer
+    icon: mdi:gauge
+#    initial: 100
+    min: 0
+    max: 3000
+    step: 20
+
+  low_lux_slaapkamer:
+    name: Low Lux Slaapkamer
+    icon: mdi:gauge
+#    initial: 40
+    min: 0
+    max: 3000
+    step: 20
+
   high_lux_buiten:
     name: High Lux Buiten
     icon: mdi:gauge
@@ -113,6 +129,13 @@
     min: 0
     max: 100
     step: 1
+
+  pv_system:
+    name: PV Opbrengst
+    icon: mdi:solar-power
+    min: 0
+    max: 4000
+    step: 100
 
   lichtwaarde:
     name: Lichtwaarde

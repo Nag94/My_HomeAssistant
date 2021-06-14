@@ -4,12 +4,12 @@
   hosts:
     - host: !secret mp_eetkamer
     - host: !secret mp_keuken
-- platform: philips_android_tv
-  name: "TV Woonkamer"
-  host: !secret tv_woonkamer
-  mac: !secret tv_mac
-  username: !secret tv_username
-  password: !secret tv_password
+# - platform: philips_android_tv
+#   name: "TV Woonkamer"
+#   host: !secret tv_woonkamer
+#   mac: !secret tv_mac
+#   username: !secret tv_username
+#   password: !secret tv_password
 - platform: androidtv
   name: "Android TV Woonkamer"
   host: !secret tv_woonkamer

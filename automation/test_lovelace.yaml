@@ -1,0 +1,2186 @@
+decluttering_templates:
+  home_connect:
+    card:
+      cards:
+        - card:
+            columns: 2
+            type: glance
+          filter:
+            exclude:
+              - entity_id: 'switch.[[machine_type]]_program*'
+              - state: unavailable
+            include:
+              - domain: switch
+                entity_id: '*[[machine_type]]*'
+                options:
+                  tap_action:
+                    action: toggle
+              - entity_id: '*[[machine_type]]*'
+                not:
+                  domain: switch
+          type: 'custom:auto-entities'
+          unique: true
+        - card:
+            card:
+              columns: 1
+              title: Programma
+              type: glance
+            filter:
+              exclude:
+                - entity_id: 'switch.[[machine_type]]_program*'
+                  state: unavailable
+                - entity_id: 'switch.[[machine_type]]_program*'
+                  state: 'off'
+              include:
+                - entity_id: 'switch.[[machine_type]]_program*'
+                  options:
+                    tap_action:
+                      action: toggle
+            type: 'custom:auto-entities'
+          conditions:
+            - entity: 'switch.[[machine_type]]_power'
+              state: 'on'
+          type: conditional
+      type: vertical-stack
+title: Home
+views:
+  - icon: 'mdi:view-dashboard'
+    title: Bedieningspaneel
+    visible:
+      - user: 92240a435e1b47a5962e20003d8170a2
+    badges: []
+    cards:
+      - entity: weather.eindhoven
+        type: 'custom:weather-card'
+      - card:
+          cards:
+            - content: >-
+                <h2><center>Er is vandaag iets in de brievenbus
+                gedaan!</center></h2>
+              type: markdown
+            - entity: input_boolean.brievenbus
+              hold_action:
+                action: more-info
+              icon: 'mdi:email-newsletter'
+              icon_height: 40px
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: toggle
+              type: button
+          type: 'custom:stack-in-card'
+        conditions:
+          - entity: input_boolean.brievenbus
+            state: 'on'
+        type: conditional
+      - card:
+          show_header_toggle: false
+          title: Media
+          type: entities
+        filter:
+          exclude:
+            - state: 'off'
+            - state: unavailable
+            - state: idle
+            - state: paused
+            - entity_id: media_player.tv_woonkamer
+            - entity_id: media_player.alle_mediaspelers
+          include:
+            - domain: media_player
+        show_empty: false
+        type: 'custom:auto-entities'
+      - card:
+          show_state: false
+          title: Afval voor vandaag
+          type: glance
+        entities:
+          - entity: sensor.afvalinfo_gft
+            icon: 'mdi:leaf'
+            name: GFT
+          - entity: sensor.afvalinfo_pbd
+            icon: 'mdi:bottle-soda-classic-outline'
+            name: PMD
+          - entity: sensor.afvalinfo_restafval
+            name: Restafval
+          - entity: sensor.afvalinfo_papier
+            icon: 'mdi:layers-triple-outline'
+            name: Oud Papier
+        show_empty: false
+        state_filter:
+          - attribute: days_until_collection_date
+            operator: <=
+            value: '0'
+        type: entity-filter
+      - card:
+          columns: 1
+          entities:
+            - entity: sensor.knmi_waarschuwing
+            - entity: sensor.knmi_alert_description
+          show_icon: false
+          show_name: false
+          title: KNMI Weeralarm
+          type: glance
+        conditions:
+          - entity: sensor.knmi_waarschuwing
+            state_not: Code groen
+        type: conditional
+      - dateColor: black
+        dateSize: 90
+        dayWrapperLineColor: black
+        defaultMode: Event
+        dimFinishedEvents: true
+        disableLocationLink: false
+        enableModeChange: true
+        entities:
+          - entity: calendar.esilverentand_gmail_com
+            type: icon3
+          - entity: calendar.nathaliehouben11_gmail_com
+            type: icon3
+          - entity: calendar.onze_agenda
+            type: icon2
+          - entity: calendar.afval
+            type: icon3
+          - entity: calendar.jules
+            type: icon3
+          - entity: calendar.evie
+            type: icon3
+          - entity: calendar.gezin
+            type: icon2
+          - entity: calendar.feestdagen_in_nederland
+            type: icon3
+          - entity: calendar.psv
+            type: icon3
+          - entity: calendar.erikennathalie_silverentand_net
+            type: icon3
+          - entity: calendar.evenementenkalender_l_union_fraternelle
+            type: icon3
+        eventBarColor: blue
+        finishedEventFilter: grayscale(100%)
+        finishedEventOpacity: 0.6
+        fullDayEventText: Hele dag
+        hideFinishedEvents: true
+        language: nl
+        locationIconColor: 'rgb(230, 124, 115)'
+        locationLinkColor: black
+        locationTextSize: 90
+        maxDaysToShow: 7
+        progressBarColor: blue
+        showColors: true
+        showCurrentEventLine: false
+        showDate: false
+        showDescription: false
+        showEventIcon: false
+        showFullDayProgress: false
+        showLastCalendarWeek: false
+        showLocation: true
+        showMonth: false
+        showNoEventsForToday: false
+        showProgressBar: true
+        showWeekDay: true
+        sortByStartTime: true
+        timeColor: blue
+        timeSize: 90
+        title: Kalender
+        titleColor: black
+        titleSize: 100
+        type: 'custom:atomic-calendar-revive'
+        untilText: t/m
+      - cards:
+          - cards:
+              - detail: 1
+                graph: line
+                name: Woonkamer
+                theme: Backend-selected
+                type: sensor
+                entity: sensor.temperature_eetkamer
+              - detail: 1
+                entity: sensor.hal_sensor_boven_temperature
+                graph: line
+                name: Boven
+                theme: Backend-selected
+                type: sensor
+            type: horizontal-stack
+          - cards:
+              - detail: 1
+                entity: sensor.motion_sensor_buiten_temperature
+                graph: line
+                max: 40
+                min: -20
+                name: Buiten
+                theme: Backend-selected
+                type: sensor
+            type: horizontal-stack
+          - cards:
+              - entity: switch.espressomachine_switch
+                hold_action:
+                  action: more-info
+                icon: 'mdi:coffee'
+                show_icon: true
+                show_name: true
+                show_state: false
+                tap_action:
+                  action: toggle
+                type: button
+                name: Koffie
+              - entity: switch.ventilator_kachel_switch
+                hold_action:
+                  action: more-info
+                icon: 'mdi:fire'
+                show_icon: true
+                show_name: true
+                tap_action:
+                  action: toggle
+                type: entity-button
+                name: Haard
+            type: horizontal-stack
+          - cards:
+              - type: thermostat
+                entity: climate.kachel_garage
+              - type: 'custom:vertical-stack-in-card'
+                cards:
+                  - type: vertical-stack
+                    cards:
+                      - type: button
+                        entity: switch.genie_woonkamer
+                        name: Perfume Genie
+                        icon: 'mdi:oil-lamp'
+                        icon_height: 165px
+                      - type: 'custom:button-card'
+                        entity: input_boolean.genie_pauze
+                        size: 25px
+                        name: Pauzeer het automatisch aanzetten
+                        styles:
+                          name:
+                            - text-transform: none
+                            - font-size: 10px
+            type: horizontal-stack
+          - cards:
+              - entities:
+                  - entity: cover.neo_coolcam_roller_shutter_curtain_switch
+                    name: Zonnescherm
+                    icon: 'mdi:storefront'
+                    type: 'custom:slider-entity-row'
+                type: entities
+            type: horizontal-stack
+        type: vertical-stack
+      - cards:
+          - entities:
+              - entity: sensor.veldhoven_e_o
+              - entity: zone.home
+              - entity: zone.werk_erik
+              - entity: zone.werk_nath
+              - entity: device_tracker.google_maps_111003784876807104536
+              - entity: device_tracker.google_maps_110538620571626781876
+              - entity: person.erik
+              - entity: device_tracker.sm_g973f
+              - entity: device_tracker.in2023
+            geo_location_sources: []
+            hours_to_show: 24
+            type: map
+          - entities:
+              - entities:
+                  - entity: person.erik
+                  - entity: person.nathalie
+                head: binary_sensor.iemand_thuis
+                type: 'custom:fold-entity-row'
+            type: entities
+        type: vertical-stack
+      - card:
+          show_state: false
+          title: Update(s) beschikbaar
+          type: glance
+        entities:
+          - entity: binary_sensor.updater
+            name: Home Assistant
+            state_filter:
+              - operator: ==
+                value: 'on'
+          - entity: sensor.hacs
+            name: HACS
+            state_filter:
+              - operator: '>'
+                value: '0'
+        show_empty: false
+        type: entity-filter
+      - type: vertical-stack
+        cards:
+          - camera_image: camera.oprit_cam
+            camera_view: live
+            elements:
+              - icon: 'mdi:run-fast'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  top: 25px
+                  right: 25px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id: switch.oprit_cam_mobile_tracking
+                type: icon
+              - icon: 'mdi:run'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  top: 25px
+                  right: 0px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id: switch.oprit_cam_mobile_tracking
+                type: icon
+              - icon: 'mdi:eye'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 25px
+                  top: 50px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id: switch.oprit_cam_privacy
+                type: icon
+              - icon: 'mdi:eye-off'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 0px
+                  top: 50px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id: switch.oprit_cam_privacy
+                type: icon
+              - icon: 'mdi:volume-high'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 25px
+                  top: 75px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id: switch.oprit_cam_sound
+                type: icon
+              - icon: 'mdi:volume-off'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 0px
+                  top: 75px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id: switch.oprit_cam_sound
+                type: icon
+              - icon: 'mdi:led-on'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 25px
+                  top: 100px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id: switch.oprit_cam_light
+                type: icon
+              - icon: 'mdi:led-off'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 0px
+                  top: 100px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id: switch.oprit_cam_light
+                type: icon
+              - icon: 'mdi:brightness-4'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 25px
+                  top: 125px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id: switch.oprit_cam_infrared_light
+                type: icon
+              - icon: 'mdi:brightness-5'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 0px
+                  top: 125px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id: switch.oprit_cam_infrared_light
+                type: icon
+            entity: camera.oprit_cam
+            type: picture-elements
+          - camera_image: camera.camera_woonkamer
+            camera_view: live
+            elements:
+              - icon: 'mdi:arrow-up'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  bottom: 50px
+                  right: 25px
+                tap_action:
+                  action: call-service
+                  service: ezviz_cloud.ezviz_ptz
+                  service_data:
+                    direction: up
+                    entity_id: camera.camera_woonkamer
+                type: icon
+              - icon: 'mdi:arrow-down'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  bottom: 0px
+                  right: 25px
+                tap_action:
+                  action: call-service
+                  service: ezviz_cloud.ezviz_ptz
+                  service_data:
+                    direction: down
+                    entity_id: camera.camera_woonkamer
+                type: icon
+              - icon: 'mdi:arrow-left'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  bottom: 25px
+                  right: 50px
+                tap_action:
+                  action: call-service
+                  service: ezviz_cloud.ezviz_ptz
+                  service_data:
+                    direction: left
+                    entity_id: camera.camera_woonkamer
+                type: icon
+              - icon: 'mdi:arrow-right'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  bottom: 25px
+                  right: 0px
+                tap_action:
+                  action: call-service
+                  service: ezviz_cloud.ezviz_ptz
+                  service_data:
+                    direction: right
+                    entity_id: camera.camera_woonkamer
+                type: icon
+              - icon: 'mdi:run-fast'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  top: 25px
+                  right: 25px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id: switch.camera_woonkamer_mobile_tracking
+                type: icon
+              - icon: 'mdi:run'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  top: 25px
+                  right: 0px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id: switch.camera_woonkamer_mobile_tracking
+                type: icon
+              - icon: 'mdi:eye'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 25px
+                  top: 50px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id: switch.camera_woonkamer_privacy
+                type: icon
+              - icon: 'mdi:eye-off'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 0px
+                  top: 50px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id: switch.camera_woonkamer_privacy
+                type: icon
+              - icon: 'mdi:volume-high'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 25px
+                  top: 75px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id: switch.camera_woonkamer_sound
+                type: icon
+              - icon: 'mdi:volume-off'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 0px
+                  top: 75px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id: switch.camera_woonkamer_sound
+                type: icon
+              - icon: 'mdi:led-on'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 25px
+                  top: 100px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id: switch.camera_woonkamer_light
+                type: icon
+              - icon: 'mdi:led-off'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 0px
+                  top: 100px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id: switch.camera_woonkamer_light
+                type: icon
+              - icon: 'mdi:brightness-4'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 25px
+                  top: 125px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id: switch.camera_woonkamer_infrared_light
+                type: icon
+              - icon: 'mdi:brightness-5'
+                style:
+                  background: 'rgba(255, 255, 255, 0.5)'
+                  right: 0px
+                  top: 125px
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id: switch.camera_woonkamer_infrared_light
+                type: icon
+            entity: camera.camera_woonkamer
+            type: picture-elements
+      - cards:
+          - aspect_ratio: 100%
+            type: iframe
+            url: >-
+              https://image.buienradar.nl/2.0/image/animation/RadarMapRainNL?height=400&width=400&extension=gif&renderBackground=True&renderBranding=False&renderText=True&history=2&forecast=8&skip=4
+          - type: 'custom:neerslag-card'
+            title: Neerslag
+            entities:
+              - sensor.neerslag_buienalarm_regen_data
+              - sensor.neerslag_buienradar_regen_data
+        type: vertical-stack
+      - card:
+          show_state: false
+          title: Deze deuren zijn open
+          type: glance
+        entities:
+          - entity: binary_sensor.balkondeur_ouderslaapkamer
+            icon: 'mdi:door-open'
+          - entity: binary_sensor.balkondeur_voor
+            icon: 'mdi:door-open'
+          - entity: binary_sensor.garagedeur
+            icon: 'mdi:door-open'
+          - entity: binary_sensor.toilet
+            icon: 'mdi:door-open'
+          - entity: binary_sensor.voordeur
+            icon: 'mdi:door-open'
+          - entity: binary_sensor.achterdeur
+            icon: 'mdi:door-open'
+          - entity: binary_sensor.hal
+            icon: 'mdi:door-open'
+          - entity: binary_sensor.schuifpui
+            icon: 'mdi:door-open'
+          - entity: binary_sensor.vaatwasser_door
+            icon: 'mdi:door-open'
+        show_empty: false
+        state_filter:
+          - 'on'
+        title: Deuren
+        type: entity-filter
+      - card:
+          type: glance
+          entities:
+            - entity: sensor.lampen_aan
+          state_color: false
+          show_state: true
+          show_icon: false
+        conditions:
+          - entity: sensor.lampen_aan
+            state_not: '0'
+        type: conditional
+      - type: gauge
+        min: 0
+        entity: sensor.power_production
+        max: 5
+        severity:
+          green: 3.5
+          yellow: 2
+          red: 0
+        name: Energieproductie
+  - icon: 'mdi:lamp'
+    path: verlichting
+    title: Verlichting
+    visible:
+      - user: 92240a435e1b47a5962e20003d8170a2
+    badges: []
+    cards:
+      - cards:
+          - cards:
+              - entity: light.living
+                icon: 'mdi:sofa'
+                name: Woonkamer
+                type: light
+              - entity: light.eetkamer_keuken
+                icon: 'mdi:silverware'
+                name: Eetkamer en Keuken
+                type: light
+            type: horizontal-stack
+          - cards:
+              - entity: light.hall_all
+                icon: 'mdi:stairs'
+                name: Hal
+                type: light
+              - entity: light.ouderslaapkamer
+                icon: 'mdi:bed-king'
+                type: light
+            type: horizontal-stack
+          - cards:
+              - entity: light.kamer_evie
+                icon: 'mdi:bed'
+                type: light
+              - entity: light.kamer_jules
+                icon: 'mdi:bed'
+                type: light
+            type: horizontal-stack
+          - cards:
+              - entity: light.yoga_kamer
+                icon: 'mdi:yoga'
+                type: light
+              - entity: light.spotjes_werkkamer
+                icon: 'mdi:desk'
+                name: Werkkamer Achter
+                show_icon: true
+                show_name: true
+                type: light
+            type: horizontal-stack
+          - cards:
+              - entity: light.spotjes_speelkamer
+                icon: 'mdi:controller-classic'
+                type: light
+                name: Speelkamer
+              - entity: light.garage_floodlight
+                hold_action:
+                  action: more-info
+                icon: 'mdi:spotlight'
+                show_icon: true
+                show_name: true
+                type: light
+            type: horizontal-stack
+          - cards:
+              - cards:
+                  - entity: light.tuinverlichting
+                    hold_action:
+                      action: more-info
+                    icon: 'mdi:string-lights'
+                    name: Tuinverlichting
+                    show_icon: true
+                    show_name: true
+                    tap_action:
+                      action: toggle
+                    type: entity-button
+                  - entity: light.garage
+                    type: light
+                type: vertical-stack
+              - cards:
+                  - entity: light.opritlampen_2
+                    icon: 'mdi:lightbulb-multiple'
+                    name: Oprit
+                    type: light
+                  - entity: light.voordeurlamp_2
+                    icon: 'mdi:outdoor-lamp'
+                    name: Voordeur
+                    type: light
+                type: vertical-stack
+            type: horizontal-stack
+        type: vertical-stack
+      - entities:
+          - entity: input_select.hue_groups
+          - entity: input_select.hue_scenes
+          - action_name: Scene kiezen
+            icon: 'mdi:palette'
+            name: ' '
+            service: script.set_hue_scene
+            type: call-service
+        show_header_toggle: false
+        title: Verlichting
+        type: entities
+      - cards:
+          - entities:
+              - entity: input_boolean.wakeup_hal_enabled
+              - entity: input_boolean.wakeup_hal_weekend
+              - entity: input_datetime.wakeup_tijd_hal
+            show_header_toggle: false
+            title: Wake-up Hal
+            type: entities
+          - entities:
+              - entity: input_boolean.wakeup_ouders_enabled
+              - entity: input_boolean.wakeup_ouders_weekend
+              - entity: input_datetime.wakeup_tijd_ouders
+            show_header_toggle: false
+            title: Wake-up Ouders
+            type: entities
+          - entities:
+              - entity: input_boolean.wakeup_evie_enabled
+              - entity: input_boolean.wakeup_evie_weekend
+              - entity: input_datetime.wakeup_tijd_evie
+            show_header_toggle: false
+            title: Wake-up Evie
+            type: entities
+          - entities:
+              - entity: input_boolean.wakeup_jules_enabled
+              - entity: input_boolean.wakeup_jules_weekend
+              - entity: input_datetime.wakeup_tijd_jules
+            show_header_toggle: false
+            title: Wake-up Jules
+            type: entities
+        type: vertical-stack
+      - type: glance
+        entities:
+          - entity: sensor.bijkeuken
+          - entity: sensor.woonkamer_voor
+          - entity: sensor.hal
+          - entity: sensor.motion_sensor_buiten_light_level
+            name: Buiten
+        title: Licht
+        show_icon: true
+        state_color: false
+      - cards:
+          - cards:
+              - entity: script.dining_light
+                icon: 'mdi:lightbulb-on'
+                show_header_toggle: false
+                size: 35%
+                title: Eetkamer
+                type: 'custom:button-card'
+              - entity: script.living_light
+                icon: 'mdi:lightbulb-on'
+                show_header_toggle: false
+                size: 35%
+                title: Woonkamer
+                type: 'custom:button-card'
+            type: horizontal-stack
+          - cards:
+              - entity: input_boolean.verlichting_steady
+                icon: 'mdi:toggle-switch'
+                show_header_toggle: false
+                size: 35%
+                title: Licht Beneden
+                type: 'custom:button-card'
+              - entity: script.daglicht_aan
+                icon: 'mdi:lightbulb-on-outline'
+                show_header_toggle: false
+                size: 35%
+                title: Licht Beneden
+                type: 'custom:button-card'
+            type: horizontal-stack
+          - icon: 'hass:television'
+            size: 15%
+            tap_action:
+              action: call-service
+              service: cast.show_lovelace_view
+              service_data:
+                entity_id: media_player.keuken_hub
+                view_path: verlichting
+            type: 'custom:button-card'
+        type: vertical-stack
+  - badges: []
+    cards:
+      - entities:
+          - entity: light.woonkamer_tv_ambilight
+          - entity: switch.ambilight_hue
+        show_header_toggle: false
+        title: Ambilight Woonkamer
+        type: entities
+      - cards: null
+        client_id: fd501a7e99b64b2d8252e269b3421886
+        limit: 10
+        type: 'custom:spotify-card'
+        account: default
+        spotify_entity: media_player.spotify_erik_silverentand
+        playlist_type: featured
+        country_code: NL
+      - entities:
+          - name: Dashboard
+            type: cast
+            view: 0
+          - name: Verlichting
+            type: cast
+            view: verlichting
+        show_header_toggle: false
+        title: Cast Control
+        type: entities
+      - cards:
+          - text: Media Spelers
+            type: 'custom:text-divider-row'
+          - cards:
+              - cards:
+                  - artwork: cover
+                    entity: media_player.eetkamer_speakers
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    info: short
+                    type: 'custom:mini-media-player'
+                  - artwork: cover
+                    entity: media_player.keuken_speaker
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    info: short
+                    type: 'custom:mini-media-player'
+                type: horizontal-stack
+              - cards:
+                  - artwork: cover
+                    entity: media_player.android_tv_woonkamer
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    info: short
+                    type: 'custom:mini-media-player'
+                  - artwork: cover
+                    entity: media_player.yamaha_receiver
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    info: short
+                    type: 'custom:mini-media-player'
+                type: horizontal-stack
+              - cards:
+                  - artwork: cover
+                    entity: media_player.65oled854_12_2
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    info: short
+                    type: 'custom:mini-media-player'
+                type: horizontal-stack
+            type: vertical-stack
+          - text: Chromecast Spelers
+            type: 'custom:text-divider-row'
+          - cards:
+              - cards:
+                  - artwork: cover
+                    entity: media_player.65oled854_12
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    info: short
+                    type: 'custom:mini-media-player'
+                type: horizontal-stack
+              - cards:
+                  - artwork: cover
+                    entity: media_player.keuken_hub
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    info: short
+                    type: 'custom:mini-media-player'
+                  - entity: media_player.woonkamer_ultra
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    artwork: cover
+                    info: short
+                    type: 'custom:mini-media-player'
+                type: horizontal-stack
+              - cards:
+                  - artwork: cover
+                    entity: media_player.ouderslaapkamer_mini
+                    name: Yogakamer / Werkkamer 2
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    info: short
+                    type: 'custom:mini-media-player'
+                  - entity: media_player.home_mini_woonkamer
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    artwork: cover
+                    info: short
+                    type: 'custom:mini-media-player'
+                type: horizontal-stack
+              - cards:
+                  - entity: media_player.werkkamer_mini
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    artwork: cover
+                    info: short
+                    type: 'custom:mini-media-player'
+                  - artwork: cover
+                    entity: media_player.ouderslaapkamer
+                    hide:
+                      icon: true
+                      mute: true
+                      power_state: false
+                    info: short
+                    type: 'custom:mini-media-player'
+                type: horizontal-stack
+            type: vertical-stack
+        mode: vertical
+        type: 'custom:stack-in-card'
+      - entities:
+          - sensor.rikkie80
+        show_header_toggle: false
+        type: entities
+      - cards:
+          - cards:
+              - entity: script.play_media
+                hold_action:
+                  action: more-info
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: toggle
+                theme: Google Light Theme
+                type: button
+              - entity: script.pause_media
+                hold_action:
+                  action: more-info
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: toggle
+                theme: Google Light Theme
+                type: button
+              - entity: script.stop_media
+                hold_action:
+                  action: more-info
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: toggle
+                theme: Google Light Theme
+                type: button
+            type: horizontal-stack
+          - entities:
+              - entity: input_number.volume_radio
+            show_header_toggle: false
+            theme: Google Light Theme
+            type: entities
+          - cards:
+              - entities:
+                  - entity: input_select.radio_station
+                show_header_toggle: false
+                theme: Google Light Theme
+                type: entities
+              - entities:
+                  - entity: input_select.afspeelmedium
+                show_header_toggle: false
+                theme: Google Light Theme
+                type: entities
+            type: horizontal-stack
+        title: Mediabediening
+        type: vertical-stack
+      - type: entities
+        entities:
+          - entity: input_boolean.eetkamer_speakers
+          - entity: input_boolean.keuken_speaker
+          - entity: input_boolean.werkkamer_mini
+          - entity: input_boolean.yogakamer_mini
+            name: Yogakamer (Nest Mini)
+          - entity: input_boolean.home_mini_woonkamer
+          - entity: input_boolean.eetkamer
+          - entity: input_boolean.ouderslaapkamer
+          - entity: input_boolean.65oled854_12
+          - entity: input_boolean.woonkamer_ultra
+          - entity: input_boolean.keuken_hub
+        title: 'Berichten naar deze Media spelers:'
+        show_header_toggle: false
+      - type: 'custom:mini-media-player'
+        entity: media_player.eetkamer_speakers
+        hide:
+          power: true
+          icon: true
+          source: true
+        speaker_group:
+          platform: bluesound
+          show_group_count: true
+          entities:
+            - entity_id: media_player.eetkamer_speakers
+              name: Eetkamer Speakers
+            - entity_id: media_player.keuken_speaker
+              name: Keuken Speaker
+        volume_stateless: false
+        group: true
+        sound_mode: icon
+        source: icon
+        artwork: none
+        toggle_power: true
+      - type: vertical-stack
+        cards:
+          - type: media-control
+            entity: media_player.spotify_erik_silverentand
+          - type: media-control
+            entity: media_player.spotify_nathalie1981
+          - type: media-control
+            entity: media_player.spotify_evie2015
+          - type: media-control
+            entity: media_player.spotify_jules
+    icon: 'mdi:youtube'
+    path: media
+    title: Media
+  - badges: []
+    cards:
+      - entity: alarm_control_panel.thuis_alarm
+        name: Alarm paneel
+        states:
+          - arm_away
+          - arm_home
+        type: alarm-panel
+      - entities:
+          - entity: input_boolean.pir_hal_boven
+          - entity: input_boolean.pir_hal_beneden
+          - entity: input_boolean.pir_eetkamer
+            name: pir eetkamer
+          - entity: input_boolean.pir_woonkamer
+          - entity: input_boolean.pir_garage
+          - entity: input_boolean.pir_toilet
+          - entity: input_boolean.pir_ouderslaapkamer
+          - entity: input_boolean.pir_evie
+          - type: divider
+          - entity: input_boolean.voordeur
+          - entity: input_boolean.achterdeur
+          - entity: input_boolean.deur_garage
+          - entity: input_boolean.schuifpui
+        show_header_toggle: false
+        title: Alarm sensors
+        type: entities
+      - type: alarm-panel
+        states:
+          - arm_home
+          - arm_away
+          - arm_night
+        entity: alarm_control_panel.alarmo
+    icon: 'mdi:shield-lock'
+    panel: false
+    title: Alarm
+  - icon: 'mdi:cctv'
+    panel: false
+    title: Camera
+    visible:
+      - user: 92240a435e1b47a5962e20003d8170a2
+    type: 'custom:masonry-layout'
+    layout:
+      width: 400
+      max_cols: 10
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: picture-entity
+            entity: camera.oprit_cam
+            camera_image: camera.oprit_cam
+          - type: picture-entity
+            entity: camera.camera_woonkamer
+            camera_image: camera.camera_woonkamer
+      - entities:
+          - entity: switch.camera_woonkamer_privacy
+            name: Privacy mode Woonkamer
+            secondary_info: last-changed
+            icon: 'mdi:incognito'
+        show_header_toggle: false
+        type: entities
+      - type: 'custom:multiline-entity-card'
+        entity: sensor.veldhoven_e_o
+        detail: 1
+      - entities:
+          - entity: sensor.adguard_average_processing_speed
+          - entity: sensor.adguard_dns_queries
+          - entity: sensor.adguard_dns_queries_blocked_ratio
+          - entity: switch.adguard_filtering
+          - entity: switch.adguard_parental_control
+          - entity: sensor.adguard_parental_control_blocked
+          - entity: switch.adguard_protection
+          - entity: switch.adguard_safe_browsing
+          - entity: sensor.adguard_safe_browsing_blocked
+          - entity: switch.adguard_safe_search
+          - entity: sensor.adguard_safe_searches_enforced
+        show_header_toggle: false
+        title: AdGuard
+        type: entities
+      - type: vertical-stack
+        cards:
+          - type: 'custom:gallery-card'
+            maximum_files: '10'
+            entities:
+              - sensor.oprit
+            file_name_format: oprit_%YYY%m%d-%H%M%S
+            caption_format: '%d-%m %H:%M'
+            title: Oprit Camera
+            menu_alignment: Bottom
+          - type: 'custom:gallery-card'
+            menu_alignment: Bottom
+            maximum_files: '10'
+            entities:
+              - sensor.woonkamer
+            file_name_format: woonkamer_%YYY%m%d-%H%M%S
+            caption_format: '%d-%m %H:%M'
+            title: Woonkamer Camera
+      - type: entities
+        entities:
+          - entity: input_select.deurbel
+        title: Deurbel Geluid
+  - badges: []
+    card:
+      cards:
+        - type: 'custom:auto-entities'
+      title: Vaatwasser
+      type: vertical-stack
+    cards:
+      - cards:
+          - template: home_connect
+            type: 'custom:decluttering-card'
+            variables:
+              - machine_type: vaatwasser
+        title: Vaatwasser
+        type: vertical-stack
+      - cards:
+          - entities:
+              - entity: sensor.droger_current
+                icon: 'mdi:tumble-dryer'
+                name: Droger
+              - entity: sensor.wasmachine_current
+                icon: 'mdi:washing-machine'
+                name: Wasmachine
+            type: glance
+          - entities:
+              - entity: sensor.droger_watts
+                icon: 'mdi:tumble-dryer'
+              - entity: sensor.wasmachine_watts
+                icon: 'mdi:washing-machine'
+            show_header_toggle: false
+            type: entities
+        title: Wassen/Drogen
+        type: vertical-stack
+      - cards:
+          - entities:
+              - type: divider
+              - entity: sensor.150nw_printer_status
+                icon: 'mdi:information-variant'
+                name: 'Printer status:'
+              - entity: sensor.150nw_printer_error
+                icon: 'mdi:alert-outline'
+                name: 'Printer foutmelding:'
+              - entity: sensor.150nw_printer_uptime
+                icon: 'mdi:clock-check-outline'
+                name: 'Printer uptime:'
+              - type: divider
+              - entities:
+                  - entity: sensor.150nw_color_pages_printed
+                    icon: 'mdi:counter'
+                    name: 'Kleurenpagina''s geprint:'
+                  - entity: sensor.150nw_bw_pages_printed
+                    icon: 'mdi:counter'
+                    name: 'Z/W pagina''s geprint:'
+                head:
+                  entity: sensor.150nw_total_pages_printed
+                  icon: 'mdi:counter'
+                  name: 'Totaal pagina''s geprint:'
+                type: 'custom:fold-entity-row'
+              - type: divider
+            type: entities
+          - animation:
+              delay: 1000
+              speed: 1000
+              state: 'on'
+            direction: up
+            entities:
+              - color: '#333333'
+                entity: sensor.hp_color_laser_150nw_black_toner_s_n_crum_200426a3bd8
+                entity_config: null
+                name: Zwart
+              - color: '#00FFFF'
+                entity: sensor.hp_color_laser_150nw_cyan_toner_s_n_crum_200426a41df
+                entity_config: null
+                name: Cyaan
+              - color: '#FF00FF'
+                entity: sensor.hp_color_laser_150nw_magenta_toner_s_n_crum_200426a2f58
+                entity_config: null
+                name: Magenta
+              - color: '#FFFf00'
+                entity: sensor.hp_color_laser_150nw_yellow_toner_s_n_crum_200426a3b35
+                entity_config: null
+                name: Geel
+            entity_row: false
+            height: 100px
+            limit_value: true
+            max: 100
+            min: 0
+            positions:
+              icon: 'off'
+              indicator: 'off'
+              minmax: 'off'
+              title: outside
+              value: outside
+            stack: horizontal
+            target: 15
+            title: 'Toner Niveaus:'
+            type: 'custom:bar-card'
+            width: 70%
+        keep:
+          background: false
+          border_radius: false
+          box_shadow: false
+          margin: false
+          outer_padding: false
+        mode: vertical
+        title: HP Color LaserJet 150nw
+        type: 'custom:stack-in-card'
+    icon: 'mdi:dishwasher'
+    panel: false
+    path: Huishouden
+    title: Huishouden
+  - icon: 'mdi:flash'
+    path: energie
+    title: Energie
+    visible:
+      - user: 92240a435e1b47a5962e20003d8170a2
+    badges: []
+    cards:
+      - type: 'custom:power-wheel-card'
+        title: Energie
+        solar_power_entity: sensor.solaredge_ac_power
+        grid_power_consumption_entity: sensor.power_consumption_w
+        grid_power_production_entity: sensor.power_production_w
+      - aggregate_func: max
+        entities:
+          - color: blue
+            entity: sensor.water_daily
+        group_by: date
+        hour24: true
+        hours_to_show: 168
+        name: Dagelijks waterverbruik
+        show:
+          graph: bar
+        type: 'custom:mini-graph-card'
+      - aggregate_func: last
+        entities:
+          - color: lightblue
+            entity: sensor.water_monthly
+            name: Maandelijks Waterverbruik
+            show_fill: false
+        group_by: date
+        hours_to_show: 168
+        icon: 'mdi:counter'
+        show:
+          graph: bar
+        type: 'custom:mini-graph-card'
+      - aggregate_func: max
+        entities:
+          - color: green
+            entity: sensor.daily_energy
+        group_by: date
+        hour24: true
+        hours_to_show: 168
+        name: Dagelijks Energieverbruik
+        show:
+          graph: bar
+        type: 'custom:mini-graph-card'
+      - entities:
+          - color: grey
+            entity: sensor.power_consumption
+            name: Huidig energieverbruik stroomnet
+            points_per_hour: 2
+            show_fill: false
+        line_width: 2
+        show:
+          graph: line
+        type: 'custom:mini-graph-card'
+      - aggregate_func: last
+        entities:
+          - color: grey
+            entity: sensor.monthly_energy
+            name: Maandelijks Energieverbruik
+            show_fill: false
+        group_by: date
+        hours_to_show: 168
+        icon: 'mdi:counter'
+        show:
+          graph: bar
+        type: 'custom:mini-graph-card'
+      - entities:
+          - entity: input_number.all_in_enkeltarief_stroom
+            icon: 'mdi:flash'
+            name: Tarief per kWh
+          - entity: input_number.netbeheerkosten_stroom
+            icon: 'mdi:flash'
+            name: Vaste netbeheerkosten per jaar
+          - entity: input_number.vaste_leveringskosten_stroom
+            icon: 'mdi:flash'
+            name: Vaste leveringskosten per jaar
+          - entity: input_number.vermindering_energiebelasting_stroom
+            icon: 'mdi:flash'
+            name: Vermindering energiebelasting per jaar
+        show_header_toggle: false
+        title: Tarieven
+        type: entities
+      - cards:
+          - cards:
+              - entity: sensor.energy_kwh_to_watt
+                max: 5000
+                min: 0
+                scale: 37px
+                severity:
+                  amber: 5000
+                  green: 0
+                  yellow: 500
+                title: null
+                type: 'custom:gauge-card'
+              - entities:
+                  - entity: sensor.average_energy_day
+                    icon: 'mdi:home-analytics'
+                    name: Gemiddeld
+                  - entity: sensor.daily_energy_short
+                    icon: 'mdi:flash'
+                    name: Vandaag
+                  - entity: sensor.today_energy_price
+                    icon: 'mdi:currency-eur'
+                    name: Vandaag
+                show_header_toggle: false
+                title: null
+                type: entities
+            title: Elektra
+            type: 'custom:vertical-stack-in-card'
+          - entities:
+              - entity: sensor.yesterday_energy_short
+                icon: 'mdi:flash'
+                name: Gisteren
+              - entity: sensor.yesterday_energy_price
+                icon: 'mdi:currency-eur'
+                name: Gisteren
+            show_header_toggle: false
+            title: null
+            type: entities
+          - entities:
+              - entity: sensor.monthly_energy_short
+                icon: 'mdi:flash'
+                name: Deze Maand
+              - entity: sensor.month_energy_price
+                icon: 'mdi:currency-eur'
+                name: Deze Maand
+            show_header_toggle: false
+            title: null
+            type: entities
+          - entities:
+              - entity: sensor.last_month_energy_short
+                icon: 'mdi:flash'
+                name: Vorige Maand
+              - entity: sensor.last_month_energy_price
+                icon: 'mdi:currency-eur'
+                name: Vorige Maand
+            show_header_toggle: false
+            title: null
+            type: entities
+        type: vertical-stack
+  - badges: []
+    cards:
+      - entities:
+          - entities:
+              - entity: light.tv_1
+              - entity: light.tv_2
+              - entity: light.bank
+              - entity: light.borden
+              - entity: light.liefde
+              - entity: light.hue_go_woonkamer
+            head:
+              entity: light.living
+              name: Woonkamer
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: light.eettafel_1
+              - entity: light.eettafel_2
+              - entity: light.schilderij
+              - entity: light.schuifpui
+              - entity: light.keuken
+              - entity: light.keukenspots_all
+            head:
+              entity: light.eetkamer_keuken
+              name: Eetkamer en Keuken
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: light.ouderslaapkamer_1
+              - entity: light.ouderslaapkamer_2
+            head: light.ouderslaapkamer
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: light.hue_go_evie
+            head: light.kamer_evie
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: light.hue_go_jules
+            head: light.kamer_jules
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: light.spotjes_werkkamer
+            head: light.werkkamer_achter
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: light.spotjes_speelkamer
+            head: light.spotjes_speelkamer
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: light.hue_go_yoga
+            head: light.yoga_kamer
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: light.hal
+              - entity: light.hal_wandlamp_1
+              - entity: light.hal_wandlamp_2
+            head:
+              entity: light.hall_all
+              name: Hal
+            type: 'custom:fold-entity-row'
+          - entity: light.toilet_lamp
+            name: Toilet
+          - entities:
+              - entity: light.garagelamp_2
+              - entity: light.led_paneel_garage
+            head: light.garage
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: light.garage_floodlight
+              - entity: light.opritlampen_2
+              - entity: light.voordeurlamp_2
+              - entity: light.tuinslinger_achter
+                name: Slinger achter in de tuin
+              - entity: light.tuinslinger
+                name: Slinger boven het luifel
+            head: light.buiten
+            type: 'custom:fold-entity-row'
+        title: Licht
+        type: entities
+      - entities:
+          - entities:
+              - entity: input_number.high_lux_eetkamer
+              - entity: input_number.low_lux_eetkamer
+              - entity: input_number.high_lux_woonkamer
+              - entity: input_number.low_lux_woonkamer
+              - entity: input_number.high_lux_slaapkamer
+              - entity: input_number.low_lux_slaapkamer
+              - entity: input_number.high_lux_hal
+              - entity: input_number.low_lux_hal
+              - entity: input_number.high_lux_buiten
+              - entity: input_number.low_lux_buiten
+              - entity: input_number.wolkendek
+              - entity: input_number.zonhoek
+              - entity: input_number.azimuth_min
+              - entity: input_number.azimuth_max
+              - entity: input_number.irradiance
+              - entity: input_number.lichtwaarde
+              - entity: input_number.pv_system
+            head:
+              label: Input
+              type: section
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: binary_sensor.low_lux_input_eetkamer
+              - entity: binary_sensor.high_lux_input_eetkamer
+              - entity: binary_sensor.low_lux_input_woonkamer
+              - entity: binary_sensor.high_lux_input_woonkamer
+              - entity: binary_sensor.low_lux_input_slaapkamer
+              - entity: binary_sensor.high_lux_input_slaapkamer
+              - entity: binary_sensor.low_lux_input_hal
+              - entity: binary_sensor.high_lux_input_hal
+              - entity: binary_sensor.low_lux_input_buiten
+              - entity: binary_sensor.high_lux_input_buiten
+              - entity: binary_sensor.wolkendek_input
+              - entity: binary_sensor.zonhoek_low_input
+              - entity: binary_sensor.azimuth_input
+              - entity: binary_sensor.low_irradiance_input
+              - entity: binary_sensor.lichtwaarde_input
+              - entity: binary_sensor.nachtmode_aan
+              - entity: binary_sensor.workday_sensor
+              - entity: binary_sensor.pv_system_input
+            head:
+              label: Status
+              type: section
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: input_datetime.nacht_aan_tijd
+              - entity: input_datetime.nacht_uit_tijd
+            head:
+              label: Stel dag/nacht tijd in
+              type: section
+            type: 'custom:fold-entity-row'
+        show_header_toggle: false
+        title: Variabelen en status
+        type: entities
+      - entities:
+          - entities:
+              - entity: alarm_control_panel.thuis_alarm
+              - entity: input_boolean.alarm_switch
+              - entity: switch.siren_alarm_current_value
+                name: Sirene
+              - entity: input_boolean.notify_home
+              - entity: input_boolean.nachtstand
+              - entity: input_boolean.camera_switch
+              - entity: input_boolean.vakantiestand
+              - entity: input_boolean.genie_pauze
+                name: Genie op pauze
+              - entity: input_boolean.brievenbus
+                icon_template: >-
+                  {% if is_state("input_boolean.brievenbus", "on")
+                  %}mdi:mailbox-up{% else %}mdi:mailbox{% endif %}
+              - entity: input_boolean.record_oprit
+              - entity: input_boolean.record_woonkamer
+              - entity: input_boolean.ochtendgebed
+              - entity: input_boolean.disable_automatic_sunscreens
+              - entity: input_boolean.zonwering_open
+                name: Zonwering ingerold
+              - entity: input_boolean.ochtendmuziek
+              - entity: input_boolean.test
+            head:
+              label: Schakelaars
+              type: section
+            type: 'custom:fold-entity-row'
+        show_header_toggle: false
+        type: entities
+      - entities:
+          - entities:
+              - entity: binary_sensor.pir_motion_sensor_eetkamer
+                name: PIR Eetkamer (Z-Wave)
+              - entity: binary_sensor.motion_sensor_woonkamer
+                name: PIR Woonkamer
+              - entity: binary_sensor.pir_motion_sensor_garage
+                name: PIR garage
+              - entity: binary_sensor.pir_motion_toilet
+                name: PIR Toilet
+              - entity: binary_sensor.motion_sensor_buiten_motion
+              - entity: binary_sensor.hal_sensor_beneden_motion
+              - entity: binary_sensor.hal_sensor_boven_motion
+              - entity: binary_sensor.motion_ouderslaapkamer
+              - entity: binary_sensor.motion_evie
+              - entity: binary_sensor.motion_jules
+            head:
+              label: Bewegingsdetectie
+              type: section
+            type: 'custom:fold-entity-row'
+        type: entities
+      - cards:
+          - detail: 1
+            entity: sensor.temperature_eetkamer
+            graph: line
+            name: Woonkamer
+            theme: Backend-selected
+            type: sensor
+            unit: °C
+          - detail: 1
+            entity: sensor.hal_sensor_boven_temperature
+            graph: line
+            name: Boven
+            theme: Backend-selected
+            type: sensor
+            unit: °C
+        type: horizontal-stack
+      - cards:
+          - detail: 2
+            entity: sensor.motion_sensor_buiten_light_level
+            graph: line
+            name: Licht buiten
+            theme: Backend-selected
+            type: sensor
+            unit: lux
+          - detail: 2
+            entity: sensor.hal_sensor_beneden_light_level
+            graph: line
+            name: Licht beneden
+            theme: Backend-selected
+            type: sensor
+            unit: lux
+          - entity: sensor.average_lux
+            graph: line
+            type: sensor
+            unit: Lux
+          - detail: 2
+            entity: sensor.weather_cloud_coverage
+            graph: line
+            name: Hoog wolkendek
+            theme: Backend-selected
+            type: sensor
+            unit: '%'
+        type: vertical-stack
+      - cards:
+          - detail: 2
+            entity: sensor.eindhoven_irradiance
+            graph: line
+            name: zonnestraling
+            theme: Backend-selected
+            type: sensor
+            unit: W/m2
+          - detail: 2
+            entity: sensor.zonhoek
+            graph: line
+            name: Zonhoek
+            theme: Backend-selected
+            type: sensor
+          - detail: 2
+            entity: sensor.azimuth
+            graph: line
+            theme: Backend-selected
+            type: sensor
+          - detail: 2
+            entity: sensor.sunlight_pct
+            graph: line
+            name: Lichtwaarde
+            theme: Backend-selected
+            type: sensor
+        type: vertical-stack
+      - entities:
+          - entity: input_select.erik_status_dropdown
+          - entity: input_select.nathalie_status_dropdown
+        show_header_toggle: false
+        title: Status uitgebreide aanwezigheid
+        type: entities
+      - entities:
+          - entities:
+              - entity: binary_sensor.erik_aanwezig
+              - entity: binary_sensor.nathalie_aanwezig
+            head: binary_sensor.iemand_thuis
+            type: 'custom:fold-entity-row'
+        type: entities
+      - entities:
+          - entity: binary_sensor.updater
+          - entity: sensor.hacs
+        type: entities
+      - entities:
+          - entity: input_select.themes
+        title: Selecteer Thema
+        type: entities
+      - cards:
+          - card:
+              type: entities
+              title: Deuren open
+              entities:
+                - entity: binary_sensor.voordeur
+                  icon_template: |
+                    {% if is_state('binary_sensor.voordeur', 'off') %}
+                      mdi:door
+                    {% else %}
+                      mdi:door-open
+                    {% endif %}
+                  name: Voordeur
+                  state_color: true
+                - entity: binary_sensor.achterdeur
+                  icon_template: |
+                    {% if is_state('binary_sensor.achterdeur', 'off') %}
+                      mdi:door
+                    {% else %}
+                      mdi:door-open
+                    {% endif %}
+                  name: Achterdeur
+                  state_color: true
+                - entity: binary_sensor.schuifpui
+                  icon_template: |
+                    {% if is_state('binary_sensor.schuifpui', 'off') %}
+                      mdi:door-closed
+                    {% else %}
+                      mdi:door-open
+                    {% endif %}
+                  name: Schuifpui
+                  state_color: true
+                - entity: binary_sensor.balkondeur_ouderslaapkamer
+                  icon_template: >
+                    {% if is_state('binary_sensor.balkondeur_ouderslaapkamer',
+                    'off') %}
+                      mdi:door
+                    {% else %}
+                      mdi:door-open
+                    {% endif %}
+                  state_color: true
+                - entity: binary_sensor.balkondeur_voor
+                  icon_template: |
+                    {% if is_state('binary_sensor.balkondeur_voor', 'off') %}
+                      mdi:door
+                    {% else %}
+                      mdi:door-open
+                    {% endif %}
+                  state_color: true
+                - entity: binary_sensor.toilet
+                  icon_template: |
+                    {% if is_state('binary_sensor.toilet', 'off') %}
+                      mdi:door
+                    {% else %}
+                      mdi:door-open
+                    {% endif %}
+                  state_color: true
+                - entity: binary_sensor.garagedeur
+                  icon_template: |
+                    {% if is_state('binary_sensor.garagedeur', 'off') %}
+                      mdi:door
+                    {% else %}
+                      mdi:door-open
+                    {% endif %}
+                  name: Garagedeur
+                  state_color: true
+            entities:
+              - binary_sensor.voordeur
+              - binary_sensor.achterdeur
+              - binary_sensor.schuifpui
+              - binary_sensor.garagedeur
+              - binary_sensor.toilet
+              - binary_sensor.balkondeur_voor
+              - binary_sensor.balkondeur_ouderslaapkamer
+            title: Deuren
+            type: 'custom:card-templater'
+          - card:
+              entities:
+                - entity: binary_sensor.vibration_brievenbus
+                  icon_template: >
+                    {% if is_state('binary_sensor.vibration_brievenbus', 'off')
+                    %}
+                      mdi:mailbox
+                    {% else %}
+                      mdi:mailbox-open-up
+                    {% endif %}
+                  name: Brievenbus sensor 1
+                  state_color: true
+                - entity: binary_sensor.vibration_brievenbus_2
+                  icon_template: >
+                    {% if is_state('binary_sensor.vibration_brievenbus_2',
+                    'off') %}
+                      mdi:mailbox
+                    {% else %}
+                      mdi:mailbox-open-up
+                    {% endif %}
+                  name: Brievenbus sensor 2
+                  state_color: true
+              type: glance
+            entities:
+              - binary_sensor.brievenbus
+              - binary_sensor.brievenbus_2
+            title: Brievenbus
+            type: 'custom:card-templater'
+        type: vertical-stack
+      - type: entities
+        entities:
+          - entities:
+              - entity: switch.genie_woonkamer
+                icon: 'mdi:oil-lamp'
+              - entity: sensor.genie_geur_status
+                icon: 'mdi:hydraulic-oil-level'
+              - entity: sensor.genie_wifi_status
+                icon: 'mdi:wifi-strength-2'
+              - entity: sensor.genie_geur
+                icon: 'mdi:buddhism'
+              - entity: input_number.genie_speed
+            head: binary_sensor.genie_status
+            type: 'custom:fold-entity-row'
+      - type: vertical-stack
+        cards:
+          - type: sensor
+            entity: sensor.woonkamer_voor
+            graph: line
+            detail: 2
+          - type: sensor
+            entity: sensor.bijkeuken
+            graph: line
+            detail: 2
+          - type: sensor
+            entity: sensor.hal
+            graph: line
+            detail: 2
+          - type: sensor
+            entity: sensor.average_lux_xiaomi
+            graph: line
+            detail: 2
+      - type: 'custom:auto-entities'
+        card:
+          type: 'custom:fold-entity-row'
+          head:
+            type: section
+            label: Timers
+        filter:
+          include:
+            - domain: timer
+    icon: 'mdi:tune'
+    title: Settings
+    visible:
+      - user: 92240a435e1b47a5962e20003d8170a2
+  - badges: []
+    cards:
+      - entity: weather.thuis
+        type: weather-forecast
+      - content: >
+          Het is niet verstandig om langer dan
+          {{states('sensor.skin_type_2_safe_exposure_time')}} minuten in de zon
+          te gaan
+        title: UV Straling
+        type: markdown
+      - air_pollution_level: sensor.u_s_air_pollution_level
+        air_quality_index: sensor.u_s_air_quality_index
+        city: Veldhoven
+        main_pollutant: sensor.u_s_main_pollutant
+        temp: sensor.eindhoven_temperature
+        type: 'custom:air-visual-card'
+      - type: entities
+        entities:
+          - sensor.temperature_eetkamer
+          - sensor.pressure_eetkamer
+          - sensor.humidity_eetkamer
+      - cards:
+          - aspect_ratio: 0%
+            entity: camera.buienradar_loop
+            name: Buienradar
+            show_state: false
+            type: picture-entity
+          - fillColor: 'rgba(89, 160, 238, 0.2)'
+            icon: 'mdi:weather-rainy'
+            lat: 51.426948
+            lineColor: 'rgba(89, 160, 238, 1)'
+            long: 5.423349
+            type: 'custom:buien-rain-forecast'
+            update_interval: 10
+        type: vertical-stack
+      - elements:
+          - entity: sensor.current_uv_index
+            gauge:
+              animationDuration: 1500
+              animationRule: linear
+              borders: 'no'
+              colorValueBoxRect: '#222'
+              colorValueBoxRectEnd: '#333'
+              height: 200
+              highlights:
+                - color: 'rgba(247, 228, 1, .75)'
+                  from: 2.5
+                  to: 5.5
+                - color: 'rgba(40, 149, 0, .75)'
+                  from: 0
+                  to: 2.5
+                - color: 'rgba(248, 123, 1, .75)'
+                  from: 5.5
+                  to: 7.5
+                - color: 'rgba(216, 23, 0, .75)'
+                  from: 7.5
+                  to: 10.5
+                - color: 'rgba(75, 46, 154, .75)'
+                  from: 10.5
+                  to: 13
+              majorTicks:
+                - '0'
+                - '1'
+                - '2'
+                - '3'
+                - '4'
+                - '5'
+                - '6'
+                - '7'
+                - '8'
+                - '9'
+                - '10'
+                - '11'
+                - '12'
+                - '13'
+              maxValue: 13
+              minValue: 0
+              minorTicks: 5
+              needleCircleInner: false
+              needleCircleOuter: true
+              needleCircleSize: 7
+              needleType: arrow
+              needleWidth: 4
+              startAngle: 40
+              strokeTicks: true
+              ticksAngle: 280
+              title: UV Index
+              type: radial-gauge
+              valueBox: true
+              valueBoxBorderRadius: 10
+              valueDec: 2
+              valueInt: 2
+              width: 200
+            style:
+              background-color: transparent
+              box-shadow: none
+              left: 50%
+              top: 50%
+            type: 'custom:canvas-gauge-card'
+        image: /local/UV_gauge_wa.png
+        type: picture-elements
+      - entities:
+          - sensor.thuis_cloud_ceiling
+          - sensor.thuis_hours_of_sun_0d
+          - sensor.thuis_hours_of_sun_1d
+          - sensor.thuis_hours_of_sun_2d
+          - sensor.thuis_hours_of_sun_3d
+          - sensor.thuis_hours_of_sun_4d
+          - sensor.thuis_precipitation
+          - sensor.thuis_pressure_tendency
+          - sensor.thuis_realfeel_temperature
+          - sensor.thuis_realfeel_temperature_max_0d
+          - sensor.thuis_realfeel_temperature_max_1d
+          - sensor.thuis_realfeel_temperature_max_2d
+          - sensor.thuis_realfeel_temperature_max_3d
+          - sensor.thuis_realfeel_temperature_max_4d
+          - sensor.thuis_realfeel_temperature_min_0d
+          - sensor.thuis_realfeel_temperature_min_1d
+          - sensor.thuis_realfeel_temperature_min_2d
+          - sensor.thuis_realfeel_temperature_min_3d
+          - sensor.thuis_realfeel_temperature_min_4d
+          - sensor.thuis_thunderstorm_probability_day_0d
+          - sensor.thuis_thunderstorm_probability_day_1d
+          - sensor.thuis_thunderstorm_probability_day_2d
+          - sensor.thuis_thunderstorm_probability_day_3d
+          - sensor.thuis_thunderstorm_probability_day_4d
+          - sensor.thuis_thunderstorm_probability_night_0d
+          - sensor.thuis_thunderstorm_probability_night_1d
+          - sensor.thuis_thunderstorm_probability_night_2d
+          - sensor.thuis_thunderstorm_probability_night_3d
+          - sensor.thuis_thunderstorm_probability_night_4d
+          - sensor.thuis_uv_index
+          - sensor.thuis_uv_index_0d
+          - sensor.thuis_uv_index_1d
+          - sensor.thuis_uv_index_2d
+          - sensor.thuis_uv_index_3d
+          - sensor.thuis_uv_index_4d
+        type: entities
+      - type: vertical-stack
+        cards:
+          - type: entities
+            entities:
+              - entity: sensor.pollen_grassen
+              - entity: sensor.pollen_grass_count
+                name: ' '
+                icon: ' '
+              - entity: sensor.pollen_bomen
+              - entity: sensor.pollen_tree_count
+                name: ' '
+                icon: ' '
+              - entity: sensor.pollen_onkruiden
+              - entity: sensor.pollen_weed_count
+                name: ' '
+                icon: ' '
+              - entity: sensor.pollen_last_updated
+            title: Ambee Pollen
+      - entity: fan.ventilator_1_fan
+        name: Ventilator
+        type: 'custom:fan-xiaomi'
+        platform: xiaomi_miio_fan
+    icon: 'mdi:weather-sunny'
+    path: weer
+    title: Weer
+  - icon: 'mdi:battery'
+    path: batterij
+    title: Batterij
+    visible:
+      - user: 92240a435e1b47a5962e20003d8170a2
+    badges: []
+    cards:
+      - color_gradient:
+          - '#ff0000'
+          - '#ffff00'
+          - '#00ff00'
+        entities:
+          - entity: >-
+              sensor.heiman_technology_co_ltd_smart_smoke_sensor_hs1sa_z_battery_level
+            name: Rookmelder 1
+            type: 'custom:battery-entity'
+          - entity: >-
+              sensor.heiman_technology_co_ltd_smart_smoke_sensor_hs1sa_z_battery_level_2
+            name: Rookmelder 2
+            type: 'custom:battery-entity'
+          - entity: >-
+              sensor.shenzhen_neo_electronics_co_ltd_battery_powered_pir_sensor_v2_battery_level_4
+            name: PIR Woonkamer
+          - entity: binary_sensor.motion_sensor_buiten_motion
+            name: PIR buiten
+          - entity: sensor.shenzhen_neo_electronics_co_ltd_siren_alarm_battery_level
+            name: Sirene Woonkamer
+            type: 'custom:battery-entity'
+          - entity: sensor.kamer_evie_battery_level
+            name: Hue Dimmer Slaapkamer Evie
+            type: 'custom:battery-entity'
+          - entity: sensor.kamer_jules_schakelaar_battery_level
+            name: Hue Dimmer Slaapkamer Jules
+            type: 'custom:battery-entity'
+          - entity: sensor.woonkamer_schakelaar_battery_level
+            name: Hue Dimmer Woonkamer
+            type: 'custom:battery-entity'
+          - entity: sensor.ouderslaapkamer_schakelaar_battery_level
+            name: Hue Dimmer Ouderslaapkamer
+            type: 'custom:battery-entity'
+          - entity: sensor.hue_dimmer_yogakamer_battery_level
+            name: Hue Dimmer Yogakamer
+            type: 'custom:battery-entity'
+          - entity: sensor.in2023_battery_level
+            name: Telefoon Erik
+            type: 'custom:battery-entity'
+          - entity: sensor.sm_g973f_battery_level
+            name: Telefoon Nathalie
+            type: 'custom:battery-entity'
+          - entity: sensor.openclose_3_battery_level
+            name: Voordeur
+            type: 'custom:battery-entity'
+          - entity: sensor.openclose_5_battery_level
+            name: Achterdeur
+            type: 'custom:battery-entity'
+          - entity: sensor.openclose_6_battery_level
+            name: Schuifpui
+            type: 'custom:battery-entity'
+          - entity: sensor.openclose_8_battery_level
+            name: Garage
+            type: 'custom:battery-entity'
+          - entity: sensor.vibration_sensor_brievenbus_battery_level
+            name: Brievenbus 1
+            type: 'custom:battery-entity'
+          - entity: sensor.vibration_4_battery_level
+            name: Brievenbus 2
+            type: 'custom:battery-entity'
+        title: Status van de accu's
+        type: 'custom:battery-state-card'
+  - title: Solaredge
+    path: solaredge
+    icon: 'mdi:solar-power'
+    visible:
+      - user: 92240a435e1b47a5962e20003d8170a2
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.solaredge_ac_current_a
+          - entity: sensor.solaredge_ac_current_b
+          - entity: sensor.solaredge_ac_current_c
+          - entity: sensor.solaredge_ac_current
+          - entity: sensor.solaredge_ac_energy_kwh
+          - entity: sensor.solaredge_ac_frequency
+          - entity: sensor.solaredge_ac_pf
+          - entity: sensor.solaredge_ac_power
+          - entity: sensor.solaredge_ac_va
+          - entity: sensor.solaredge_ac_var
+          - entity: sensor.solaredge_ac_voltage_ab
+          - entity: sensor.solaredge_ac_voltage_an
+          - entity: sensor.solaredge_ac_voltage_bc
+          - entity: sensor.solaredge_ac_voltage_bn
+          - entity: sensor.solaredge_ac_voltage_ca
+          - entity: sensor.solaredge_ac_voltage_cn
+          - entity: sensor.solaredge_dc_current
+          - entity: sensor.solaredge_dc_power
+          - entity: sensor.solaredge_dc_voltage
+          - entity: sensor.solaredge_status_vendor
+          - entity: sensor.solaredge_status
+          - entity: sensor.solaredge_temp_sink
+      - entities:
+          - entity: sensor.power_consumption
+          - entity: sensor.energy_consumption_tarif_1
+          - entity: sensor.energy_consumption_tarif_2
+          - entity: sensor.energy_consumption_total
+          - entity: sensor.power_consumption_phase_l1
+          - entity: sensor.power_consumption_phase_l2
+          - entity: sensor.power_consumption_phase_l3
+          - entity: sensor.power_production
+          - entity: sensor.energy_production_tarif_1
+          - entity: sensor.energy_production_tarif_2
+          - entity: sensor.power_production_phase_l1
+          - entity: sensor.power_production_phase_l2
+          - entity: sensor.power_production_phase_l3
+          - entity: sensor.power_tariff
+        type: entities
+
+
+
+      - cards:
+          - cards:
+              - entity: sensor.energy_kwh_to_watt
+                max: 5000
+                min: 0
+                scale: 37px
+                severity:
+                  amber: 5000
+                  green: 0
+                  yellow: 500
+                title: ''
+                type: 'custom:gauge-card'
+              - entities:
+                  - entity: sensor.average_energy_day
+                    icon: 'mdi:home-analytics'
+                    name: Gemiddeld
+                  - entity: sensor.daily_energy_short
+                    icon: 'mdi:flash'
+                    name: Vandaag
+                  - entity: sensor.today_energy_price
+                    icon: 'mdi:currency-eur'
+                    name: Vandaag
+                show_header_toggle: false
+                title: ''
+                type: entities
+            title: Elektra
+            type: 'custom:vertical-stack-in-card'
+          - entities:
+              - entity: sensor.yesterday_energy_short
+                icon: 'mdi:flash'
+                name: Gisteren
+              - entity: sensor.yesterday_energy_price
+                icon: 'mdi:currency-eur'
+                name: Gisteren
+            show_header_toggle: false
+            title: ''
+            type: entities
+          - entities:
+              - entity: sensor.monthly_energy_short
+                icon: 'mdi:flash'
+                name: Deze Maand
+              - entity: sensor.month_energy_price
+                icon: 'mdi:currency-eur'
+                name: Deze Maand
+            show_header_toggle: false
+            title: ''
+            type: entities
+          - entities:
+              - entity: sensor.last_month_energy_short
+                icon: 'mdi:flash'
+                name: Vorige Maand
+              - entity: sensor.last_month_energy_price
+                icon: 'mdi:currency-eur'
+                name: Vorige Maand
+            show_header_toggle: false
+            title: ''
+            type: entities
+        type: vertical-stack
+        title: ''

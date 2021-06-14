@@ -14,6 +14,12 @@ homeassistant:
   external_url: !secret external_url
   media_dirs:
     camera: /config/www/video/
+  auth_providers:
+    - type: homeassistant
+    - type: trusted_networks
+      trusted_networks:
+        - 192.168.0.0/16
+        - 127.0.0.1
 
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
@@ -35,7 +41,7 @@ panel_iframe:
 logger:
   default: error
   logs:
-    homeassistant.core: info
+    homeassistant.core: warn
 
 influxdb:
   host: a0d7b954-influxdb
@@ -50,20 +56,29 @@ influxdb:
 frontend:
   themes: !include_dir_merge_named themes
 
+folder_watcher:
+- folder: /config/www/deurbel/foto
+
 breaking_changes:
 
 python_script:
 
-# browser_mod:
-# devices:
-#   1210b5b0 c3dfacb5:
-#     name: Erikmobiel
-#   c59ef2c8-790839dc:
-#     name: werklaptop
-#     492405d1-efc10bc8:
-#       name: Nathmobiel
-#   7c41798c-f582fe21:
-#     name: thuislaptop
+magic_areas:
+
+template:
+  - trigger:
+      - platform: time
+        at: "23:59:59"
+    sensor:
+      - name: Max rain today
+        state: "{{ states('sensor.eindhoven_rain_1d') }}"
+        unit_of_measurement: "mm"
+      - name: Rainchance today
+        state: "{{ states('sensor.eindhoven_rainchance_1d') }}"
+        unit_of_measurement: "%"
+      - name: Max temp today
+        state: "{{ states('sensor.eindhoven_temperature_1d') }}"
+        unit_of_measurement: "°C"
 
 google_assistant:
   project_id: amazing-limiter-212613
@@ -136,6 +151,18 @@ rest_command:
     method: post
     url: !secret genie_high
     content_type: application/json
+  genie_room_low:
+    method: post
+    url: !secret genie_room_low
+    content_type: application/json
+  genie_room_med:
+    method: post
+    url: !secret genie_room_med
+    content_type: application/json
+  genie_room_high:
+    method: post
+    url: !secret genie_room_high
+    content_type: application/json
 
 spotify:
   client_id: !secret spotify_id
@@ -144,6 +171,19 @@ spotify:
 spotcast:
   sp_dc: !secret sp_dc
   sp_key: !secret sp_key
+  accounts:
+    erik:
+      sp_dc: !secret erik_sp_dc
+      sp_key: !secret erik_sp_key
+    nathalie:
+      sp_dc: !secret nath_sp_dc
+      sp_key: !secret nath_sp_key
+    evie:
+      sp_dc: !secret evie_sp_dc
+      sp_key: !secret evie_sp_key
+    jules:
+      sp_dc: !secret jules_sp_dc
+      sp_key: !secret jules_sp_key
 
 camera:
   - platform: ffmpeg
@@ -152,42 +192,17 @@ camera:
   - platform: ffmpeg
     name: "Woonkamer"
     input: !secret cam_woonkamer
-  #  - platform: ezviz
-  #    username: !secret ezviz_un
-  #    password: !secret ezviz_pw
-  #    cameras:
-  #      178211475:
-  #        username: !secret ezviz_gen_un
-  #        password: !secret ezviz_gen_oprit
-  #      C35158510:
-  #        username: !secret ezviz_gen_un
-  #        password: !secret ezviz_gen_woonkamer
   - platform: buienradar
 
 stream:
 
 shell_command:
   remove_video: find /config/www/video/* -mtime +3 -exec rm {} \;
-
-utility_meter:
-  daily_energy_offpeak:
-    source: sensor.energy_consumption_tarif_1
-    cycle: daily
-  daily_energy_peak:
-    source: sensor.energy_consumption_tarif_2
-    cycle: daily
-  #  daily_gas:
-  #    source: sensor.gas_consumption
-  #    cycle: daily
-  monthly_energy_offpeak:
-    source: sensor.energy_consumption_tarif_1
-    cycle: monthly
-  monthly_energy_peak:
-    source: sensor.energy_consumption_tarif_2
-    cycle: monthly
-#  monthly_gas:
-#    source: sensor.gas_consumption
-#    cycle: monthly
+  remove_foto_deurbel: find /config/www/deurbel/foto/* -mtime +2 -exec rm {} \;
+  remove_video_deurbel: find /config/www/video/deurbel/* -mtime +2 -exec rm {} \;
+  remove_woonkamer: find /config/www/video/woonkamer/* -mtime +3 -exec rm {} \;
+  remove_oprit: find /config/www/video/oprit/* -mtime +3 -exec rm {} \;
+  remove_g3: find /config/www/video/G3/* -mtime +3 -exec rm {} \;
 
 google:
   client_id: !secret google_client_id
@@ -215,7 +230,8 @@ airvisual:
 fan: !include includes/fan.yaml
 media_player: !include includes/mediaplayers.yaml
 group: !include includes/groups.yaml
-automation: !include_dir_merge_list automation
+automation split: !include_dir_merge_list automation
+automation: !include automations.yaml
 recorder: !include includes/recorder.yaml
 script: !include_dir_merge_named scripts
 sensor: !include includes/sensor.yaml
@@ -228,4 +244,6 @@ input_boolean: !include includes/input_boolean.yaml
 input_number: !include includes/input_number.yaml
 input_select: !include includes/input_select.yaml
 input_datetime: !include includes/input_date_time.yaml
+input_text: !include includes/input_text.yaml
 timer: !include includes/timer.yaml
+utility_meter: !include includes/utilitymeter.yaml

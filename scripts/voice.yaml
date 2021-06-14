@@ -33,17 +33,16 @@ mediaplayer_say:
         entity_id: "{{ player2 }}"
         volume_level: 0.4
     - delay: 00:00:02
-    - service: tts.google_translate_say
+    - service: tts.google_home_say
       data:
         entity_id: "{{ player2 }}"
         message: "{{ google_say }}"
         cache: false
-        language: "nl"
     - delay: 00:00:04
     - service: media_player.turn_on
       data:
         entity_id: "{{ player2 }}"
-    - delay: 00:00:08
+    - delay: 00:00:04
     - service: media_player.volume_set
       data:
         entity_id: "{{ player2 }}"
@@ -51,7 +50,7 @@ mediaplayer_say:
     - service: spotcast.start
       data:
         entity_id: "{{ player2 }}"
-        uri: "{{ state_attr('media_player.spotify_erik_silverentand', 'media_content_id') }}"
+        uri: "{{ media_content }}"
       # - conditions: "{{ playing }}"
       #   sequence:
       #   - service: media_extractor.play_media
@@ -66,6 +65,40 @@ mediaplayer_say:
       #       entity_id: "{{ player2 }}"
     - service: input_boolean.turn_off
       entity_id: input_boolean.testknop
+
+mediaplayer_resume:
+  alias: Hervatten van muziek na TTS
+  sequence:
+    - variables:
+        spotify: true
+        playing: >-
+          {{ state_attr('media_player.werkkamer_mini', 'app_name') != 'Spotify' and state_attr('media_player.werkkamer_mini', 'source') != 'Spotify' }}
+        media_content: >-
+          {% if state_attr('media_player.werkkamer_mini', 'friendly_name') == state_attr('media_player.spotify_erik_silverentand', 'source') %}
+            {{ state_attr('media_player.spotify_erik_silverentand', 'media_content_id') }}
+          {% else %}
+            {{ state_attr('media_player.werkkamer_mini', 'media_content_id') }}
+          {% endif %}
+        media_type: >-
+          {{ state_attr('media_player.werkkamer_mini', 'media_content_type') }}
+        volume_level: >-
+          {{ state_attr('media_player.werkkamer_mini', 'volume_level')|float }}
+        idle: >-
+          {{ states('media_player.werkkamer_mini') == 'idle' or states('media_player.werkkamer_mini') == 'paused' }}
+    - delay: 00:00:04
+    - service: media_player.turn_on
+      data:
+        entity_id: "{{ player2 }}"
+    - delay: 00:00:04
+    - service: media_player.volume_set
+      data:
+        entity_id: "{{ player2 }}"
+        volume_level: "{{ volume_level }}"
+    - service: spotcast.start
+      data:
+        entity_id: "{{ player2 }}"
+        uri: "{{ media_content }}"
+
 "1557170594134":
   alias: Praten
   sequence:
@@ -104,18 +137,18 @@ weerscript:
             {% elif states('sensor.motion_sensor_buiten_temperature') | int > 20 %} warm met een temperatuur van {{states('sensor.motion_sensor_buiten_temperature')|round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
             {% endif %}
             <p><s>Het wordt vandaag
-            {% if state_attr('weather.eindhoven', 'forecast')[0].temperature | int < 0 %} erg koud met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast')[0].temperature |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-            {% elif state_attr('weather.eindhoven', 'forecast')[0].temperature | int < 10 %} koud met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast')[0].temperature |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-            {% elif state_attr('weather.eindhoven', 'forecast')[0].temperature | int < 15 %} fris met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast')[0].temperature |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-            {% elif state_attr('weather.eindhoven', 'forecast')[0].temperature | int <= 20 %} lekker met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast')[0].temperature |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
-            {% elif state_attr('weather.eindhoven', 'forecast')[0].temperature | int > 20 %} warm met een maximale temperatuur van {{ state_attr('weather.eindhoven', 'forecast')[0].temperature |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% if states('sensor.max_temp_today') | int < 0 %} erg koud met een maximale temperatuur van {{ states('sensor.max_temp_today') |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.max_temp_today') | int < 10 %} koud met een maximale temperatuur van {{ states('sensor.max_temp_today') |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.max_temp_today') | int < 15 %} fris met een maximale temperatuur van {{ states('sensor.max_temp_today') |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.max_temp_today') | int <= 20 %} lekker met een maximale temperatuur van {{ states('sensor.max_temp_today') |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.max_temp_today') | int > 20 %} warm met een maximale temperatuur van {{ states('sensor.max_temp_today') |round}} graden.</s></p><break time="200ms"/><break strength="weak"/>
             {% endif %}
             <p><s>De kans op regen is vandaag
-            {% if state_attr('weather.eindhoven', 'forecast')[0].precipitation | int <= 2 %} verwaarloosbaar.
-            {% elif state_attr('weather.eindhoven', 'forecast')[0].precipitation | int <= 10 %} heel erg klein met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
-            {% elif state_attr('weather.eindhoven', 'forecast')[0].precipitation | int <= 25 %} klein met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
-            {% elif state_attr('weather.eindhoven', 'forecast')[0].precipitation | int <= 50 %} groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
-            {% elif state_attr('weather.eindhoven', 'forecast')[0].precipitation | int > 75 %} heel groot met een hoeveelheid van {{states('sensor.eindhoven_precipitation_forecast_total')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
+            {% if states('sensor.rainchance_today') | int <= 2 %} verwaarloosbaar.
+            {% elif states('sensor.rainchance_today') | int <= 10 %} heel erg klein met een hoeveelheid van {{states('sensor.max_rain_today')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.rainchance_today') | int <= 25 %} klein met een hoeveelheid van {{states('sensor.max_rain_today')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.rainchance_today') | int <= 50 %} groot met een hoeveelheid van {{states('sensor.max_rain_today')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
+            {% elif states('sensor.rainchance_today') | int > 75 %} heel groot met een hoeveelheid van {{states('sensor.max_rain_today')|round}} millimeter.</s></p><break time="200ms"/><break strength="weak"/>
             {% endif %}
             <p><s>De luchtkwaliteit is momenteel {% if states('sensor.u_s_air_quality_index')|int <= 50 %} gezond,
             {% elif 50 < states('sensor.u_s_air_quality_index')|int <= 100 %} gemiddeld,

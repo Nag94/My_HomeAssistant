@@ -1,0 +1,13 @@
+tts_bericht:
+  name: Bericht via Google
+
+deurbel_url_carrillon:
+  initial: !secret deurbel_url_carrillon
+deurbel_url_standaard:
+  initial: !secret deurbel_url_standaard
+deurbel_url_ouderwets:
+  initial: !secret deurbel_url_ouderwets
+deurbel_url_standaard_2:
+  initial: !secret deurbel_url_standaard_2
+deurbel_url_trekbel:
+  initial: !secret deurbel_url_trekbel

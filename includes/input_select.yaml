@@ -47,6 +47,8 @@ hue_groups:
     - Ouderslaapkamer
     - Kamer Evie
     - Kamer Jules
+    - Werkkamer achter
+    - Speelkamer
     - Yoga kamer
 themes:
   icon: mdi:format-paint
@@ -120,7 +122,8 @@ afspeelmedium:
   - Woonkamer (Chromecast)
   - Woonkamer (Home Mini)
   - Werkkamer
-  - Ouderslaapkamer
+  - Yogakamer
+  - Zolder
   - Eetkamer
   - Keukenspeaker
   - Nest Hub Keuken

@@ -44,3 +44,13 @@ include:
     - sensor.average_lux
     - sensor.weather_cloud_coverage
     - sensor.eindhoven_irradiance
+    - sensor.humidity_eetkamer
+    - sensor.daily_energy
+    - sensor.monthly_energy
+    - sensor.hourly_energy
+    - sensor.yearly_energy
+    - sensor.water_meter_usage
+    - sensor.water_hourly
+    - sensor.water_daily
+    - sensor.water_monthly
+    - sensor.water_yearly

@@ -1,4 +1,5 @@
-- alias: zonnescherm openen
+- alias: zonnescherm uitrollen
+  id: 1234zonuitrol
   trigger:
     - platform: time_pattern
       minutes: "/5"
@@ -12,6 +13,12 @@
     - condition: state
       entity_id: input_boolean.zonwering_open
       state: "on"
+    - condition: template
+      value_template: >-
+        {{ states('sensor.bijkeuken')|int > 220 }}
+    - condition: state
+      entity_id: binary_sensor.pv_system_input
+      state: "on"
     - condition: state
       entity_id: binary_sensor.azimuth_input
       state: "on"
@@ -21,18 +28,19 @@
     - condition: numeric_state
       entity_id: sensor.eindhoven_wind_gust
       below: 40
-    #    - condition: numeric_state
-    #      entity_id: sensor.buienalarm_next_rain_forecast
-    #      above: 15 # No rain the next 15 min
-    #      below: 0
     - condition: template
-      value_template: "{{ states('sensor.buienalarm_next_rain_forecast')|int < 0 or states('sensor.buienalarm_next_rain_forecast')|int > 15 }}"
+      value_template: >-
+        {% if states('sensor.buienalarm_next_rain_forecast') != "unknown" %}
+          {{ states('sensor.buienalarm_next_rain_forecast')|int < 0 or states('sensor.buienalarm_next_rain_forecast')|int > 15 }}
+        {% else %}
+          {{ states('sensor.buienalarm_precipitation')|int == 0 }}
+        {% endif %}
     - condition: state
       entity_id: binary_sensor.low_irradiance_input
       state: "on"
-    - condition: numeric_state
-      entity_id: sensor.sunlight_pct
-      above: 30
+    - condition: state
+      entity_id: binary_sensor.lichtwaarde_input
+      state: "on"
     - condition: numeric_state
       entity_id: sensor.temperature_eetkamer
       above: 19
@@ -66,7 +74,8 @@
     - delay:
         minutes: 5
     - service: html5.dismiss
-- alias: zonnescherm sluiten
+- alias: zonnescherm inrollen
+  id: 1234zoninrol
   trigger:
     - platform: state
       entity_id: binary_sensor.azimuth_input
@@ -74,6 +83,11 @@
     - platform: state
       entity_id: binary_sensor.zonhoek_low_input
       to: "on"
+    - platform: numeric_state
+      entity_id: sensor.solaredge_ac_power
+      below: 1000
+      for:
+        minutes: 10
     - platform: state
       entity_id: sun.sun
       to: "below_horizon"
@@ -82,11 +96,11 @@
       to: "off"
       for:
         minutes: 10
-    - platform: state
-      entity_id: binary_sensor.low_irradiance_input
-      to: "off"
-      for:
-        minutes: 30
+#    - platform: state
+#      entity_id: binary_sensor.low_irradiance_input
+#      to: "off"
+#      for:
+#        minutes: 30
     - platform: numeric_state
       entity_id: sensor.eindhoven_wind_gust
       above: 40
@@ -122,6 +136,10 @@
       data_template:
         message: "Het zonnescherm gaat sluiten, reden: {{ state_attr(trigger.entity_id, 'friendly_name') }}"
         title: zonnescherm
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.eetkamer_speakers
+        volume_level: 0.2
     - delay:
         seconds: 10
     - service: cover.set_cover_position

@@ -37,7 +37,9 @@
         - media_player.keukenspeaker
         - media_player.eetkamer_speakers
     - service: input_boolean.turn_off
-      entity_id: input_boolean.ochtendmuziek
+      entity_id:
+        - input_boolean.ochtendmuziek
+        - input_boolean.deurbel_sirene
 - id: Erik_away_buiten_on
   alias: alarm buitencamera aan
   trigger:
@@ -97,6 +99,9 @@
       entity_id: alarm_control_panel.thuis_alarm
       state: armed_away
   action:
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.deurbel_sirene
     - data:
         entity_id: input_boolean.camera_switch
       service: input_boolean.turn_off
@@ -123,6 +128,9 @@
     - data:
         event: camera_off
       service: ifttt.trigger
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.deurbel_sirene
     - service: input_boolean.turn_off
       data:
         entity_id: input_boolean.camera_switch
@@ -134,13 +142,14 @@
   trigger:
     - platform: state
       entity_id: person.erik
-      from: 'not_home'
-      to: 'home'
+      to: "home"
     - platform: state
       entity_id: person.nathalie
-      from: 'not_home'
-      to: 'home'
+      to: "home"
   action:
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.vakantiestand
     - service: input_select.select_option
       data:
         entity_id: >-
@@ -152,15 +161,15 @@
         option: >-
           {% if trigger.entity_id == 'person.erik' %}
             {% if states('input_select.erik_status_dropdown') == 'Net vertrokken' %}
-              'Thuis'
+              Thuis
             {% else %}
-              'Net thuis aangekomen'
+              Net thuis aangekomen
             {% endif %}
           {% else %}
             {% if states('input_select.nathalie_status_dropdown') == 'Net vertrokken' %}
-              'Thuis'
+              Thuis
             {% else %}
-              'Net thuis aangekomen'
+              Net thuis aangekomen
             {% endif %}
           {% endif %}
   id: f4d0db06b4664705bdef61a31161c5b3
@@ -191,12 +200,12 @@
   trigger:
     - platform: state
       entity_id: person.erik
-      from: 'home'
-      to: 'not_home'
+      from: "home"
+      to: "not_home"
     - platform: state
       entity_id: person.nathalie
-      from: 'home'
-      to: 'not_home'
+      from: "home"
+      to: "not_home"
   action:
     - service: input_select.select_option
       data:
@@ -314,6 +323,9 @@
       zone: zone.werk_nath
       event: leave
   action:
+    - service: homeassistant.update_entity
+      target:
+        entity_id: sensor.distance_{{ state_attr(trigger.entity_id, 'friendly_name') }}
     - service: media_player.volume_set
       data:
         entity_id: >-
@@ -342,7 +354,7 @@
         message: >-
           {% if states('group.all_persons') == 'home' %}
             {% if (trigger.event) == 'leave' %}
-              {{ state_attr(trigger.entity_id, 'friendly_name') }} is onderweg naar huis!
+              {{ state_attr(trigger.entity_id, 'friendly_name') }} is onderweg naar huis en zal over ongeveer {{ states('sensor.distance_'+ state_attr(trigger.entity_id, 'friendly_name')) }} minuten aankomen!
             {% else %}
               {{ state_attr(trigger.entity_id, 'friendly_name') }} is op het werk aangekomen
             {% endif %}

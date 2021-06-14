@@ -51,6 +51,19 @@ blueprint:
           unit_of_measurement: seconds
           mode: slider
           step: 1.0
+    condition_entity:
+      name: Condition entity for trigger (Optional)
+      description: Only trigger if the entity has the defined state
+      default: ''
+      selector:
+        entity:
+          domain: person
+    condition_state:
+      name: State of the entity to allow trigger
+      description: Defined state to allow the motion sensor to trigger
+      default: ''
+      selector:
+        text:
   source_url: https://community.home-assistant.io/t/send-camera-snapshot-notification-on-motion/254565
 trigger:
   platform: state
@@ -70,6 +83,11 @@ variables:
     }}.jpg
   snapshot_access_file_path: '{{ snapshot_create_file_path | replace(''/config/www'',''/local'')
     }}'
+  condition_state: !input 'condition_state'
+condition:
+  - condition: state
+    entity_id: !input 'condition_entity'
+    state: '{{ condition_state }}'
 action:
 - delay: '{{ delay }}'
 - service: camera.snapshot

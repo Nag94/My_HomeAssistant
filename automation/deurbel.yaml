@@ -1,48 +1,275 @@
-- alias: Deurbel
+- alias: "Deurbel: play doorbell"
+  id: deurbel_notify
+  initial_state: on
+  mode: single
+  max_exceeded: silent
   trigger:
-    - platform: event
-      event_type: deconz_event
-      event_data:
-        id: deurbel_knop
-        event: 1002
+    - platform: state
+      entity_id: binary_sensor.doorbell_deurbel
+      from: "off"
+      to: "on"
+    - platform: template
+      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('binary_sensor.doorbell_deurbel', 'last_tripped_time')) < 10 }}"
+  condition:
+    - condition: state
+      entity_id: input_boolean.enable_deurbel
+      state: "on"
+    - condition: state
+      entity_id: binary_sensor.voordeur
+      state: "off"
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.deurbel_sirene
+              state: "off"
+          sequence:
+            - service: camera.snapshot
+              data:
+                entity_id: camera.deurbel
+                filename: 'www/deurbel/foto/deurbel_{{ now().strftime("%Y%m%d-%H%M") }}.jpg'
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.deurbel_sirene
+              state: "on"
+          sequence:
+            - service: camera.snapshot
+              data:
+                entity_id: camera.deurbel
+                filename: 'www/deurbel/foto/deurbel_{{ now().strftime("%Y%m%d-%H%M") }}.jpg'
+            - alias: "Kick off some notifications"
+              repeat:
+                while:
+                  - condition: state
+                    entity_id: binary_sensor.voordeur
+                    state: "off"
+                  - condition: state
+                    entity_id: group.all_persons
+                    state: "home"
+                  - condition: template
+                    value_template: "{{ repeat.index <= 3 }}"
+                sequence:    
+                  - service: script.turn_on
+                    target:
+                      entity_id: script.deurbelscript
+                    data:
+                      variables:
+                        dingdong: >
+                          {% if is_state("input_select.deurbel", "Carrillon") %} {{ states('input_text.deurbel_url_carrillon') }}
+                          {% elif is_state("input_select.deurbel", "Standaard") %} {{ states('input_text.deurbel_url_standaard') }}
+                          {% elif is_state("input_select.deurbel", "Ouderwets") %} {{ states('input_text.deurbel_url_ouderwets') }}
+                          {% elif is_state("input_select.deurbel", "Standaard 2") %} {{ states('input_text.deurbel_url_standaard_2') }}
+                          {% elif is_state("input_select.deurbel", "Trekbel") %} {{ states('input_text.deurbel_url_trekbel') }}
+                          {% endif %}
+                  - service: script.turn_on
+                    data:
+                      entity_id: script.sound_siren_in_doorbell_mode
+                  - delay: '00:00:04'
+                  - service: switch.turn_off
+                    entity_id: switch.siren_alarm_current_value
+                  - service: script.turn_on
+                    data:
+                      entity_id: script.sound_siren_in_alarm_mode
+                  - delay: '00:00:20'
+      # default:
+      #   - service: camera.snapshot
+      #     data:
+      #       entity_id: camera.deurbel
+      #       filename: 'www/deurbel/foto/deurbel_{{ now().strftime("%Y%m%d-%H%M") }}.jpg'
+      #   - alias: "Kick off some notifications"
+      #     repeat:
+      #       while:
+      #         - condition: state
+      #           entity_id: binary_sensor.voordeur
+      #           state: "off"
+      #         - condition: state
+      #           entity_id: group.all_persons
+      #           state: "home"
+      #         - condition: template
+      #           value_template: "{{ repeat.index <= 3 }}"
+      #       sequence:    
+      #         - service: script.turn_on
+      #           target:
+      #             entity_id: script.deurbelscript
+      #           data:
+      #             variables:
+      #               dingdong: >
+      #                 {% if is_state("input_select.deurbel", "Carrillon") %} {{ states('input_text.deurbel_url_carrillon') }}
+      #                 {% elif is_state("input_select.deurbel", "Standaard") %} {{ states('input_text.deurbel_url_standaard') }}
+      #                 {% elif is_state("input_select.deurbel", "Ouderwets") %} {{ states('input_text.deurbel_url_ouderwets') }}
+      #                 {% elif is_state("input_select.deurbel", "Standaard 2") %} {{ states('input_text.deurbel_url_standaard_2') }}
+      #                 {% elif is_state("input_select.deurbel", "Trekbel") %} {{ states('input_text.deurbel_url_trekbel') }}
+      #                 {% endif %}
+      #         - delay: '00:00:20'
+
+################################
+##### Deurbel sirene ###########
+################################
+
+- id: 'deurbel sirene uit automation'
+  alias: deurbel sirene uit
+  trigger:
+    - platform: state
+      entity_id: input_boolean.nachtstand
+      to: "on"
+    - platform: state
+      entity_id: input_boolean.vakantiestand
+      to: "on"
+    - platform: state
+      entity_id: input_boolean.schuifpui
+      to: "off"
   condition: []
   action:
-    - service: script.turn_on
-      entity_id: script.deurbel_aan
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.deurbel_sirene
 
-- alias: deurbel_snapshot
+- id: 'deurbel sirene aan automation'
+  alias: deurbel sirene aan
   trigger:
-    - platform: state  
-      entity_id: binary_sensor.pir_deur
-      to: 'on'
-#  condition:
-#    - condition: state
-#      entity_id: group.all_devices
-#      state: not_home
+    # - platform: state
+    #   entity_id: input_boolean.nachtstand
+    #   to: "on"
+    - platform: state
+      entity_id: input_boolean.schuifpui
+      to: "on"
+  condition:
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: group.all_persons
+          state: "home"
+        - condition: state
+          entity_id: input_boolean.notify_home
+          state: "on"
   action:
-    - service: camera.snapshot
-      data:
-        entity_id: camera.oprit
-        filename: 'www/deurbel/deurbel.jpg'
-    - service: notify.html5
-      data:
-        message: 'Er staat iemand aan de deur'
-        title: 'Ding Dong!'
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.deurbel_sirene
+
+################################
+##### Latest image #############
+################################
+- alias: Nieuwe deurbel foto
+  trigger:
+    platform: event
+    event_type: folder_watcher
+    event_data:
+      event_type: created
+  action:
     - service: notify.mobile_app_phone_erik
       data:
         message: 'Er staat iemand aan de deur'
         title: 'Ding Dong!'
         data:
-          clickAction: 'www/deurbel/deurbel.jpg'
+          clickAction: "{{ trigger.event.data.path }}"
           push:
             category: camera
-            entity_id: camera.oprit
-    - service: notify.mobile_app_sm_g973f
-      data:
-        message: 'Er staat iemand aan de deur'
-        title: 'Ding Dong!'
-        data:
-          clickAction: 'www/deurbel/deurbel.jpg'
-          push:
-            category: camera
-            entity_id: camera.oprit
+            entity_id: camera.deurbel
+################################
+##### Display message ##########
+################################
+- alias: Display bericht op deurbel
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_deurbel
+      to: person
+      attribute: event_object
+    - platform: template
+      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('binary_sensor.motion_deurbel', 'last_tripped_time')) < 10 }}"
+    - platform: state
+      entity_id: binary_sensor.doorbell_deurbel
+      from: "off"
+      to: "on"
+    - platform: template
+      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('binary_sensor.doorbell_deurbel', 'last_tripped_time')) < 10 }}"
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.doorbell_deurbel
+              state: "on"
+            - condition: template
+              value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('binary_sensor.doorbell_deurbel', 'last_tripped_time')) < 10 }}"
+            - condition: state
+              entity_id: group.all_persons
+              state: "home"
+            - condition: state
+              entity_id: binary_sensor.voordeur
+              state: "off"
+          sequence:
+            - service: unifiprotect.set_doorbell_lcd_message
+              data:
+                entity_id: camera.deurbel
+                message: Momentje...
+                duration: 6
+        - conditions:
+            - condition: time
+              after: "06:00:00"
+              before: "12:00:00"
+          sequence:
+            - service: unifiprotect.set_doorbell_lcd_message
+              data:
+                entity_id: camera.deurbel
+                message: Goede morgen!
+#                duration: 5
+        - conditions:
+            - condition: time
+              after: "12:00:00"
+              before: "17:30:00"
+          sequence:
+            - service: unifiprotect.set_doorbell_lcd_message
+              data:
+                entity_id: camera.deurbel
+                message: Goede middag!
+        - conditions:
+            - condition: time
+              after: "17:30:00"
+              before: "23:59:00"
+          sequence:
+            - service: unifiprotect.set_doorbell_lcd_message
+              data:
+                entity_id: camera.deurbel
+                message: Goede avond!
+        - conditions:
+            - condition: time
+              after: "00:00:00"
+              before: "06:00:00"
+          sequence:
+            - service: unifiprotect.set_doorbell_lcd_message
+              data:
+                entity_id: camera.deurbel
+                message: Goede nacht!
+      default:
+        - service: unifiprotect.set_doorbell_lcd_message
+          data:
+            entity_id: camera.deurbel
+            message: Welkom!
+
+################################
+##### Motion detected ##########
+################################
+- alias: motion detection deurbel
+  trigger:
+    - platform: template
+      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('binary_sensor.doorbell_deurbel', 'last_tripped_time')) < 10 }}"
+    - platform: template
+      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('binary_sensor.motion_deurbel', 'last_tripped_time')) < 10 }}"
+    - platform: state
+      entity_id: binary_sensor.doorbell_deurbel
+      from: "off"
+      to: "on"
+  condition:
+    - condition: state
+      entity_id: input_boolean.record_deurbel
+      state: "off"
+    - condition: state
+      entity_id: binary_sensor.voordeur
+      state: "off"
+  mode: single
+  action:
+    - service: script.turn_on
+      entity_id: script.deurbel_movie
+    # - delay: "00:00:02"
+    # - service: unifiprotect.set_recording_mode
+    #   data:
+    #     entity_id: camera.deurbel
+    #     recording_mode: smart

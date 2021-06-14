@@ -1,7 +1,8 @@
 - platform: xiaomi_miio_fan
   name: ventilator
-  host: 192.168.1.45
+  host: !secret fan1_host
   token: !secret fan1_token
+#  model: dmaker.fan.1c
 - platform: mqtt
   name: "Ventilator mqtt"
   state_topic: "mifanpower/state"

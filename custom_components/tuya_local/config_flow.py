@@ -5,7 +5,8 @@ from homeassistant import config_entries, data_entry_flow
 from homeassistant.const import CONF_HOST, CONF_NAME
 from homeassistant.core import HomeAssistant, callback
 
-from . import DOMAIN, individual_config_schema, TuyaLocalDevice
+from . import DOMAIN, individual_config_schema
+from .device import TuyaLocalDevice
 from .const import CONF_DEVICE_ID, CONF_LOCAL_KEY
 
 _LOGGER = logging.getLogger(__name__)
@@ -106,4 +107,4 @@ async def async_test_connection(config: dict, hass: HomeAssistant):
         "Test", config[CONF_DEVICE_ID], config[CONF_HOST], config[CONF_LOCAL_KEY], hass
     )
     await device.async_refresh()
-    return device.get_property("1") is not None or device.get_property("3") is not None
+    return device.has_returned_state

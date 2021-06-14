@@ -4,27 +4,22 @@ API for Tuya Local devices.
 
 import json
 import logging
+import tinytuya
 from threading import Lock, Timer
 from time import time
 
-from homeassistant.const import TEMP_CELSIUS
+
+from homeassistant.const import CONF_HOST, CONF_NAME, TEMP_CELSIUS
 from homeassistant.core import HomeAssistant
 
 from .const import (
     API_PROTOCOL_VERSIONS,
-    CONF_TYPE_DEHUMIDIFIER,
-    CONF_TYPE_EUROM_600_HEATER,
-    CONF_TYPE_FAN,
-    CONF_TYPE_GECO_HEATER,
-    CONF_TYPE_GPCV_HEATER,
-    CONF_TYPE_GPPH_HEATER,
-    CONF_TYPE_GSH_HEATER,
-    CONF_TYPE_GARDENPAC_HEATPUMP,
-    CONF_TYPE_KOGAN_HEATER,
-    CONF_TYPE_KOGAN_SWITCH,
-    CONF_TYPE_PURLINE_M100_HEATER,
+    CONF_DEVICE_ID,
+    CONF_LOCAL_KEY,
     DOMAIN,
 )
+from .helpers.device_config import possible_matches
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -39,12 +34,10 @@ class TuyaLocalDevice(object):
             address (str): The network address.
             local_key (str): The encryption key.
         """
-        import pytuya
-
         self._name = name
         self._api_protocol_version_index = None
         self._api_protocol_working = False
-        self._api = pytuya.Device(dev_id, address, local_key, "device")
+        self._api = tinytuya.Device(dev_id, address, local_key)
         self._refresh_task = None
         self._rotate_api_protocol_version()
 
@@ -53,11 +46,13 @@ class TuyaLocalDevice(object):
         self._TEMPERATURE_UNIT = TEMP_CELSIUS
         self._hass = hass
 
-        # API calls to update Tuya devices are asynchronous and non-blocking. This means
-        # you can send a change and immediately request an updated state (like HA does),
-        # but because it has not yet finished processing you will be returned the old state.
-        # The solution is to keep a temporary list of changed properties that we can overlay
-        # onto the state while we wait for the board to update its switches.
+        # API calls to update Tuya devices are asynchronous and non-blocking.
+        # This means you can send a change and immediately request an updated
+        # state (like HA does), but because it has not yet finished processing
+        # you will be returned the old state.
+        # The solution is to keep a temporary list of changed properties that
+        # we can overlay onto the state while we wait for the board to update
+        # its switches.
         self._FAKE_IT_TIL_YOU_MAKE_IT_TIMEOUT = 10
         self._CACHE_TIMEOUT = 20
         self._CONNECTION_ATTEMPTS = 4
@@ -82,57 +77,50 @@ class TuyaLocalDevice(object):
         }
 
     @property
+    def has_returned_state(self):
+        """Return True if the device has returned some state."""
+        return len(self._get_cached_state()) > 1
+
+    @property
     def temperature_unit(self):
         return self._TEMPERATURE_UNIT
 
     async def async_inferred_type(self):
+
         cached_state = self._get_cached_state()
-        if "1" not in cached_state and "3" not in cached_state:
+        # cached state should have "updated_at" timestamp if it has anything,
+        # so use 1 as the threshold for judging if dps have been fetched.
+        if len(cached_state) <= 1:
             await self.async_refresh()
             cached_state = self._get_cached_state()
 
-        _LOGGER.debug(f"Inferring device type from cached state: {cached_state}")
-        if "1" not in cached_state and "3" in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as Kogan Heater")
-            return CONF_TYPE_KOGAN_HEATER
-        if "5" in cached_state and "3" not in cached_state and "103" in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as Goldair Dehumidifier")
-            return CONF_TYPE_DEHUMIDIFIER
-        if "8" in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as Goldair Fan")
-            return CONF_TYPE_FAN
-        if "10" in cached_state and "101" in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as Pur Line Hoti M100 heater")
-            return CONF_TYPE_PURLINE_M100_HEATER
-        if "5" in cached_state and "2" in cached_state and "4" not in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as Eurom Mon Soleil 600 Heater")
-            return CONF_TYPE_EUROM_600_HEATER
-        if "5" in cached_state and "3" not in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as Kogan Switch")
-            return CONF_TYPE_KOGAN_SWITCH
-        if "18" in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as newer type of Kogan Switch")
-            return CONF_TYPE_KOGAN_SWITCH
-        if "106" in cached_state and "2" not in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as GardenPAC Pool Heatpump")
-            return CONF_TYPE_GARDENPAC_HEATPUMP
-        if "106" in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as Goldair GPPH Heater")
-            return CONF_TYPE_GPPH_HEATER
-        if "7" in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as Goldair GPCV Heater")
-            return CONF_TYPE_GPCV_HEATER
-        if "12" in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as Andersson GSH Heter")
-            return CONF_TYPE_GSH_HEATER
-        if "3" in cached_state and "6" in cached_state:
-            _LOGGER.info(f"Detecting {self.name} as Goldair GECO Heater")
-            return CONF_TYPE_GECO_HEATER
-        _LOGGER.warning(f"Detection for {self.name} failed")
-        return None
+        _LOGGER.info(
+            f"{self.name} inferring device type from cached state: {cached_state}"
+        )
+        best_match = None
+        best_quality = 0
+        for config in possible_matches(cached_state):
+            quality = config.match_quality(cached_state)
+            _LOGGER.info(
+                f"{self.name} considering {config.name} with quality {quality}"
+            )
+            if quality > best_quality:
+                best_quality = quality
+                best_match = config
+
+        if best_match is None:
+            _LOGGER.warning(f"Detection for {self.name} failed")
+            return None
+
+        return best_match.legacy_type
 
     async def async_refresh(self):
-        last_updated = self._get_cached_state()["updated_at"]
+        cache = self._get_cached_state()
+        if "updated_at" in cache:
+            last_updated = self._get_cached_state()["updated_at"]
+        else:
+            last_updated = 0
+
         if self._refresh_task is None or time() - last_updated >= self._CACHE_TIMEOUT:
             self._cached_state["updated_at"] = time()
             self._refresh_task = self._hass.async_add_executor_job(self.refresh)
@@ -159,6 +147,9 @@ class TuyaLocalDevice(object):
     async def async_set_property(self, dps_id, value):
         await self._hass.async_add_executor_job(self.set_property, dps_id, value)
 
+    async def async_set_properties(self, dps_map):
+        await self._hass.async_add_executor_job(self._set_properties, dps_map)
+
     def anticipate_property_value(self, dps_id, value):
         """
         Update a value in the cached state only. This is good for when you know the device will reflect a new state in
@@ -176,7 +167,7 @@ class TuyaLocalDevice(object):
         new_state = self._api.status()
         self._cached_state = new_state["dps"]
         self._cached_state["updated_at"] = time()
-        _LOGGER.debug(f"refreshed device state: {json.dumps(new_state)}")
+        _LOGGER.debug(f"{self.name} refreshed device state: {json.dumps(new_state)}")
         _LOGGER.debug(
             f"new cache state (including pending properties): {json.dumps(self._get_cached_state())}"
         )
@@ -195,7 +186,9 @@ class TuyaLocalDevice(object):
         for key, value in properties.items():
             pending_updates[key] = {"value": value, "updated_at": now}
 
-        _LOGGER.debug(f"new pending updates: {json.dumps(self._pending_updates)}")
+        _LOGGER.debug(
+            f"{self.name} new pending updates: {json.dumps(self._pending_updates)}"
+        )
 
     def _debounce_sending_updates(self):
         try:
@@ -207,9 +200,11 @@ class TuyaLocalDevice(object):
 
     def _send_pending_updates(self):
         pending_properties = self._get_pending_properties()
-        payload = self._api.generate_payload("set", pending_properties)
+        payload = self._api.generate_payload(tinytuya.CONTROL, pending_properties)
 
-        _LOGGER.debug(f"sending dps update: {json.dumps(pending_properties)}")
+        _LOGGER.debug(
+            f"{self.name} sending dps update: {json.dumps(pending_properties)}"
+        )
 
         self._retry_on_failed_connection(
             lambda: self._send_payload(payload), "Failed to update device state."
@@ -234,7 +229,7 @@ class TuyaLocalDevice(object):
                 self._api_protocol_working = True
                 break
             except Exception as e:
-                _LOGGER.info(f"Retrying after exception {e}")
+                _LOGGER.debug(f"Retrying after exception {e}")
                 if i + 1 == self._CONNECTION_ATTEMPTS:
                     self._reset_cached_state()
                     self._api_protocol_working = False
@@ -276,3 +271,25 @@ class TuyaLocalDevice(object):
         keys = list(obj.keys())
         values = list(obj.values())
         return keys[values.index(value)] if value in values else fallback
+
+
+def setup_device(hass: HomeAssistant, config: dict):
+    """Setup a tuya device based on passed in config."""
+
+    _LOGGER.info(f"Creating device: {config[CONF_DEVICE_ID]}")
+    hass.data[DOMAIN] = hass.data.get(DOMAIN, {})
+    device = TuyaLocalDevice(
+        config[CONF_NAME],
+        config[CONF_DEVICE_ID],
+        config[CONF_HOST],
+        config[CONF_LOCAL_KEY],
+        hass,
+    )
+    hass.data[DOMAIN][config[CONF_DEVICE_ID]] = {"device": device}
+
+    return device
+
+
+def delete_device(hass: HomeAssistant, config: dict):
+    _LOGGER.info(f"Deleting device: {config[CONF_DEVICE_ID]}")
+    del hass.data[DOMAIN][config[CONF_DEVICE_ID]]["device"]

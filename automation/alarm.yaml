@@ -28,7 +28,7 @@
         entity_id: media_player.eetkamer_speakers
         volume_level: 0.6
     - service: tts.google_home_say
-      entity_id: media_player.keuken_hub
+      entity_id: media_player.eetkamer_speakers
       data_template:
         message: "Pas op! Het alarm gaat zo af!"
     #        language: 'nl'
@@ -227,15 +227,14 @@
     - service: switch.turn_off
       data:
         entity_id: switch.siren_alarm_current_value
-    - service: ifttt.trigger
-      data:
-        event: camera_off
+    - service: switch.turn_on
+      entity_id: switch.camera_woonkamer_privacy
     - service: input_boolean.turn_off
       data:
         entity_id: input_boolean.alarm_switch
     - service: script.turn_on
       data_template:
-        entity_id: >
+        entity_id: >-
           {% if is_state('input_boolean.nachtstand', 'on') %}
             script.nachtlicht_eetkamer_aan
           {% elif is_state('binary_sensor.low_lux_input', 'on') %}
@@ -245,7 +244,7 @@
           {% endif %}
     - service: script.turn_on
       data_template:
-        entity_id: >
+        entity_id: >-
           {% if is_state('input_boolean.nachtstand', 'on') %}
             script.nachtlicht_woonkamer_aan
           {% elif is_state('binary_sensor.low_lux_input', 'on') %}
@@ -255,7 +254,10 @@
           {% endif %}
     - service: light.turn_on
       data_template:
-        entity_id: "{% if (states('sensor.time') > '20:00' and states('sensor.time') < '02:00') %}\n  light.tuinverlichting{% endif %}"
+        entity_id: >-
+          {% if (states('sensor.time') > '20:00' and states('sensor.time') < '02:00') %}
+            light.tuinverlichting
+          {% endif %}
   id: fc0fd67abd07497d85ccdd1aef90c08c
 - alias: overrule alarm
   trigger:
@@ -311,9 +313,8 @@
       entity_id: input_boolean.camera_switch
       to: "on"
   action:
-    - data:
-        event: camera_on
-      service: ifttt.trigger
+    - service: switch.turn_off
+      entity_id: switch.camera_woonkamer_privacy
 - id: camera_switch_off
   alias: Camera woonkamer uitzetten
   trigger:
@@ -321,9 +322,8 @@
       entity_id: input_boolean.camera_switch
       to: "off"
   action:
-    - data:
-        event: camera_off
-      service: ifttt.trigger
+    - service: switch.turn_on
+      entity_id: switch.camera_woonkamer_privacy
 - id: b10b3071ba464de4920c3ea160d6733c
   alias: Inbreker gespot
   trigger:
@@ -335,11 +335,13 @@
         - binary_sensor.garagedeur
         - binary_sensor.pir_eetkamer
         - binary_sensor.pir_woonkamer
+        - binary_sensor.pir_motion_toilet
+        - binary_sensor.motion_evie
+        - binary_sensor.motion_jules
+        - binary_sensor.motion_ouderslaapkamer
         - binary_sensor.hal_sensor_beneden_motion
         - binary_sensor.hal_sensor_boven_motion
-        - binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4
-        - binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_2
-        - binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_3
+        - binary_sensor.pir_motion_sensor_eetkamer
       to: "on"
   condition:
     - condition: template
@@ -352,15 +354,19 @@
           {{ is_state('input_boolean.deur_garage', 'on') }}
         {% elif trigger.entity_id == 'binary_sensor.schuifpui' %}
           {{ is_state('input_boolean.schuifpui', 'on') }}
-        {% elif trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4' %}
+        {% elif trigger.entity_id == 'binary_sensor.pir_motion_sensor_eetkamer' %}
           {{ is_state('input_boolean.pir_eetkamer', 'on') }}
-        {% elif trigger.entity_id == 'binary_sensor.eetkamer' %}
-          {{ is_state('input_boolean.pir_eetkamer', 'on') }}
+        {% elif trigger.entity_id == 'binary_sensor.motion_evie' %}
+          {{ is_state('input_boolean.pir_evie', 'on') }}
+        {% elif trigger.entity_id == 'binary_sensor.motion_jules' %}
+          {{ is_state('input_boolean.pir_jules', 'on') }}
+        {% elif trigger.entity_id == 'binary_sensor.motion_ouderslaapkamer' %}
+          {{ is_state('input_boolean.pir_ouderslaapkamer', 'on') }}
         {% elif trigger.entity_id == 'binary_sensor.motion_sensor_woonkamer' %}
           {{ is_state('input_boolean.pir_woonkamer', 'on') }}
-        {% elif trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_2' %}
+        {% elif trigger.entity_id == 'binary_sensor.pir_motion_toilet' %}
           {{ is_state('input_boolean.pir_toilet', 'on') }}
-        {% elif trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_3' %}
+        {% elif trigger.entity_id == 'binary_sensor.pir_motion_sensor_garage' %}
           {{ is_state('input_boolean.pir_garage', 'on') }}
         {% elif trigger.entity_id == 'binary_sensor.hal_sensor_beneden_motion' %}
           {{ is_state('input_boolean.pir_hal_beneden', 'on') }}
@@ -392,11 +398,11 @@
 - id: "1559067716859"
   alias: brandalarm triggered
   trigger:
-    - entity_id: binary_sensor.smoke_detector_smoke
+    - entity_id: binary_sensor.smoke_detector_bijkeuken
       from: "off"
       platform: state
       to: "on"
-    - entity_id: binary_sensor.smoke_detector_any_2
+    - entity_id: binary_sensor.smoke_detector_zolder
       from: "off"
       platform: state
       to: "on"
@@ -469,9 +475,6 @@
 - alias: motion detection woonkamer
   trigger:
     - platform: state
-      entity_id: binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4
-      to: "on"
-    - platform: state
       entity_id: binary_sensor.motion_schuifpui
       to: "on"
     - platform: state
@@ -488,6 +491,44 @@
   action:
     - service: script.turn_on
       entity_id: script.woonkamer_movie
+- id: "5675689335467"
+  alias: Send a G3 camera snapshot when motion is detected
+  description: "Snapshot G3 1 camera naar telefoon Erik"
+  use_blueprint:
+    path: vorion/send-camera-snapshot-notification-on-motion.yaml
+    input:
+      delay: "0"
+      motion_sensor: binary_sensor.motion_camera_g3
+      camera: camera.camera_g3
+      notify_device: 5ea63a4119c7446786cdc45b6d644fe4
+      notification_title: Beweging gezien op de G3 instant 1!
+- alias: motion detection 1e G3
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_camera_g3
+      to: "on"
+  condition:
+    - condition: state
+      entity_id: input_boolean.notify_home
+      state: "off"
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id: group.all_persons
+          state: "home"
+        - condition: state
+          entity_id: person.erik
+          state: "home"
+        - condition: state
+          entity_id: person.nathalie
+          state: "home"
+    - condition: state
+      entity_id: input_boolean.record_g3_1
+      state: "off"
+  mode: single
+  action:
+    - service: script.turn_on
+      entity_id: script.g3_1_movie
 #############################################################
 ####### deuren open als je gaat slapen of weg gaat ############
 #############################################################

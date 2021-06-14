@@ -4,13 +4,13 @@
 - id: "1557898795923"
   alias: licht aan in eetkamer bij beweging
   trigger:
-    - entity_id: binary_sensor.pir_motion_sensor_with_temperature_sensor_any
+    - entity_id: binary_sensor.pir_motion_sensor_eetkamer
       from: "off"
       platform: state
       to: "on"
-    - platform: state
-      entity_id: binary_sensor.motion_schuifpui
-      to: "on"
+    # - platform: state
+    #   entity_id: binary_sensor.motion_schuifpui
+    #   to: "on"
     - platform: time
       at: "20:00:00"
     - entity_id: sensor.woonkamer_remote
@@ -21,7 +21,10 @@
       entity_id: binary_sensor.low_lux_input_eetkamer
       state: "on"
     - condition: state
-      entity_id: input_boolean.verlichting_steady
+      entity_id: binary_sensor.lichtwaarde_input
+      state: "off"
+    - condition: state
+      entity_id: input_boolean.verlichting_steady_eetkamer
       state: "off"
     - condition: or
       conditions:
@@ -47,15 +50,22 @@
             script.daglicht_eetkamer_aan
           {% endif %}
 - alias: pir_lights_on_eetkamer
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.low_lux_input_eetkamer
+      to: "on"
   condition:
     - condition: sun
       before: sunset
       after: sunrise
     - condition: state
+      entity_id: binary_sensor.lichtwaarde_input
+      state: "off"
+    - condition: state
       entity_id: input_boolean.nachtstand
       state: "off"
     - condition: state
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_eetkamer
       state: "off"
     - condition: or
       conditions:
@@ -71,10 +81,6 @@
         - condition: state
           entity_id: input_boolean.notify_home
           state: "on"
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.low_lux_input_eetkamer
-      to: "on"
   action:
     - service: script.turn_on
       data_template:
@@ -91,7 +97,7 @@
       to: "on"
   condition:
     - condition: state
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_eetkamer
       state: "off"
   action:
     service: light.turn_off
@@ -113,7 +119,7 @@
           - light.eetkamer_keuken
         transition: 20
     - service: input_boolean.turn_off
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_eetkamer
 ##############################
 ######## Woonkamer ############
 #############################
@@ -134,7 +140,7 @@
       entity_id: binary_sensor.low_lux_input_woonkamer
       state: "on"
     - condition: state
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_woonkamer
       state: "off"
     - condition: or
       conditions:
@@ -168,7 +174,7 @@
       entity_id: input_boolean.nachtstand
       state: "off"
     - condition: state
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_woonkamer
       state: "off"
     - condition: or
       conditions:
@@ -205,7 +211,7 @@
       to: "on"
   condition:
     - condition: state
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_woonkamer
       state: "off"
   action:
     service: light.turn_off
@@ -227,7 +233,7 @@
           - light.living
         transition: 20
     - service: input_boolean.turn_off
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_woonkamer
   id: 59c5990eaaa641bca043fd678b047a30
 - id: "1560531033513"
   alias: Lampen beneden aan via dimmer
@@ -263,6 +269,9 @@
       platform: device
       subtype: turn_off
       type: remote_button_short_release
+    - entity_id: sensor.woonkamer_remote
+      platform: state
+      to: 4_click_up
   condition:
     - condition: state
       entity_id: light.beneden
@@ -281,7 +290,9 @@
         entity_id:
           - switch.genie
     - service: input_boolean.turn_off
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_woonkamer
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.verlichting_steady_eetkamer
 - id: "1560618909344"
   alias: Alle lampen uit met dimmer
   trigger:
@@ -310,7 +321,9 @@
           - switch.koffie
           - switch.genie
     - service: input_boolean.turn_off
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_eetkamer
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.verlichting_steady_woonkamer
     - service: switch.turn_on
       data:
         entity_id:
@@ -331,7 +344,7 @@
     - service: script.turn_on
       entity_id: script.living_light
     - service: input_boolean.turn_on
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_woonkamer
 - alias: Eetkamer meer licht
   trigger:
     - entity_id: sensor.woonkamer_remote
@@ -341,7 +354,7 @@
     - service: script.turn_on
       entity_id: script.dining_light
     - service: input_boolean.turn_on
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_eetkamer
 - alias: Beneden meer licht
   trigger:
     - entity_id: sensor.woonkamer_remote
@@ -351,7 +364,9 @@
     - service: script.turn_on
       entity_id: script.groundfloor_light
     - service: input_boolean.turn_on
-      entity_id: input_boolean.verlichting_steady
+      entity_id: input_boolean.verlichting_steady_woonkamer
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.verlichting_steady_eetkamer
 ################################
 ########### TV #################
 ################################
@@ -360,7 +375,7 @@
   trigger:
     - platform: numeric_state
       entity_id: sensor.woonkamer_voor
-      above: 700
+      above: 1500
   condition:
     - condition: state
       entity_id: media_player.tv_woonkamer
@@ -369,23 +384,29 @@
     - service: light.turn_off
       data:
         entity_id: light.woonkamer_tv_ambilight
+    - delay: "00:00:05"
+    - service: light.turn_off
+      data:
+        entity_id:
+          - light.tv_1
+          - light.tv_2
 - id: ambilight_aan_licht
   alias: Ambilight aan door licht
   trigger:
     - platform: numeric_state
       entity_id: sensor.woonkamer_voor
-      below: 550
+      below: 1000
   condition:
     - condition: state
       entity_id: media_player.tv_woonkamer
       state: "on"
   action:
+    - service: switch.turn_on
+      entity_id: switch.ambilight_hue
     - service: light.turn_on
       data:
         entity_id: light.woonkamer_tv_ambilight
         effect: Standard
-    - service: switch.turn_on
-      entity_id: switch.ambilight_hue
 - id: ambilight_uit_check
   alias: Ambilight aan als het donker wordt
   trigger:
@@ -395,17 +416,17 @@
   condition:
     - condition: numeric_state
       entity_id: sensor.woonkamer_voor
-      below: 550
+      below: 1000
     - condition: state
       entity_id: light.woonkamer_tv_ambilight
       state: "off"
   action:
+    - service: switch.turn_on
+      entity_id: switch.ambilight_hue
     - service: light.turn_on
       data:
         entity_id: light.woonkamer_tv_ambilight
         effect: Standard
-    - service: switch.turn_on
-      entity_id: switch.ambilight_hue
 - id: ambilight_aan_check
   alias: Ambilight uit als het licht wordt
   trigger:
@@ -415,7 +436,7 @@
   condition:
     - condition: numeric_state
       entity_id: sensor.woonkamer_voor
-      above: 700
+      above: 1500
     - condition: state
       entity_id: light.woonkamer_tv_ambilight
       state: "on"
@@ -426,8 +447,8 @@
     - delay: "00:00:10"
     - service: light.turn_off
       entity_id:
-        - light.tv1
-        - light.tv2
+        - light.tv_1
+        - light.tv_2
 - id: ambilight_uit_tv
   alias: Ambilight uit door tv
   trigger:
@@ -442,146 +463,17 @@
     - service: light.turn_off
       data:
         entity_id: light.woonkamer_tv_ambilight
-################################
-######## Nachtstand ############
-################################
-- id: "1560969346149"
-  alias: Nachtstand activeren
-  trigger:
-    - entity_id: binary_sensor.nachtmode_aan
-      platform: state
-      to: "on"
-  condition:
-    - condition: or
-      conditions:
-        - condition: state
-          entity_id: group.all_persons
-          state: "home"
-        - condition: state
-          entity_id: person.erik
-          state: "home"
-        - condition: state
-          entity_id: person.nathalie
-          state: "home"
-        - condition: state
-          entity_id: input_boolean.notify_home
-          state: "on"
-        - condition: state
-          entity_id: input_boolean.vakantiestand
-          state: "off"
-  action:
-    - service: input_boolean.turn_on
-      data:
-        entity_id: input_boolean.nachtstand
-- id: "1560969455159"
-  alias: Nachtstand uit
-  trigger:
-    - entity_id: binary_sensor.nachtmode_aan
-      platform: state
-      to: "off"
-  action:
-    - data:
-        entity_id: input_boolean.nachtstand
-      service: input_boolean.turn_off
-    - data:
-        entity_id: input_boolean.ochtendgebed
-      service: input_boolean.turn_off
-    - data:
-        entity_id: input_boolean.ochtendmuziek
-      service: input_boolean.turn_off
-- alias: Acties door nachtschakelaar uit
-  trigger:
-    - entity_id: input_boolean.nachtstand
-      platform: state
-      to: "off"
-  condition:
-    - condition: state
-      entity_id: input_boolean.vakantiestand
-      state: "off"
-  action:
-    - service: frontend.set_theme
-      data:
-        name: "Google Light Theme"
-    - service: script.turn_on
-      data_template:
-        entity_id:
-          "{% if is_state('binary_sensor.low_lux_input', 'on' ) and is_state('group.all_persons',\
-          \ 'home') and is_state('binary_sensor.workday', 'on' ) %}\n  script.daglicht_aan\n\
-          {% else %}\n  script.noop\n{% endif %}"
-    - service: input_boolean.turn_off
-      data_template:
-        entity_id:
-          "{% if is_state('input_boolean.notify_home', 'on' ) or is_state('group.all_persons',\
-          \ 'home') %}\n  input_boolean.camera_switch\n{% endif %}"
-    - service: light.turn_on
-      data_template:
-        entity_id:
-          "{% if is_state('binary_sensor.low_lux_input', 'on' ) and is_state('group.all_persons',\
-          \ 'home') %}\n  light.tuinverlichting\n{% endif %}"
-  id: "fd0c63b0a0a94672a6da52a8c5b03385"
-- alias: Acties door nachtschakelaar aan
-  trigger:
-    - entity_id: input_boolean.nachtstand
-      platform: state
-      to: "on"
-  condition:
-    - condition: state
-      entity_id: input_boolean.verlichting_steady
-      state: "off"
-  action:
-    - service: script.turn_on
-      data:
-        entity_id: script.nachtlicht_uit
-    - service: input_boolean.turn_on
-      data:
-        entity_id: input_boolean.camera_switch
-    - service: light.turn_off
-      data:
-        entity_id: light.liefde
-    - service: light.turn_off
-      data:
-        entity_id: light.tuinverlichting
-    - service: frontend.set_theme
-      data:
-        name: "Google Dark Theme"
-  id: 2d994bb1880c4cb79f5f0bfe51f65c21
-##########################
-###### Vakantiestand #####
-##########################
-- alias: Scene vakantie
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.low_lux_input
-      to: "on"
-    - platform: time
-      at: "22:00:00"
-  condition:
-    - condition: state
-      entity_id: input_boolean.vakantiestand
-      state: "on"
-    - condition: or
-      conditions:
-        - condition: and
-          conditions:
-            - condition: state
-              entity_id: binary_sensor.low_lux_input
-              state: "on"
-            - condition: time
-              before: "22:00:00"
-        - condition: template
-          value_template: '{{ trigger.platform == "time" }}'
-  action:
-    - delay: '{% if trigger.platform == "state" %}00:00:10{% else %}0{{ (range(0,1)|random|int) }}:{{ (range(10, 59)|random|int) }}:{{ (range(10, 59)|random|int) }}{% endif %}'
-    - service: 'light.turn_{{ trigger.platform|replace("state", "on")|replace("time", "off") }}'
-      entity_id: light.beneden
-    - service: persistent_notification.create
-      data_template:
-        message: 'lichten {% if trigger.to_state.state == "on" %}aan{% else %}uit{%endif %}'
-        title: Verlichting in de vakantie
-    - service: notify.html5_home_assistant
-      data_template:
-        message: 'lichten {% if trigger.to_state.state == "on" %}aan{% else %}uit{%endif %}'
-        title: Verlichting in de vakantie
+    - delay: "00:00:02"
+    - service_template: >-
+        {% if state('binary_sensor.low_lux_input_woonkamer'), 'on' %}
+          light.turn_on
+        {% else %}
+          light.turn_off
+        {% endif %}
+      entity_id:
+        - light.tv_1
+        - light.tv_2
+
 ##############
 ###   HAL ####
 ##############
@@ -626,6 +518,9 @@
       event_type: timer.finished
       event_data:
         entity_id: timer.timer_hal
+    - platform: state
+      entity_id: binary_sensor.high_lux_input_hal
+      to: "on"
   action:
     service: light.turn_off
     data:
@@ -644,6 +539,9 @@
     - condition: state
       entity_id: group.all_persons
       state: "home"
+    - condition: state
+      entity_id: binary_sensor.high_lux_input_hal
+      state: "off"
     - condition: state
       entity_id: input_boolean.vakantiestand
       state: "off"
@@ -664,17 +562,68 @@
     - platform: state
       entity_id: input_boolean.wakeup_hal_enabled
       to: "off"
+    - platform: state
+      entity_id: binary_sensor.high_lux_input_hal
+      to: "on"
   condition:
     - condition: state
       entity_id: script.sunrise_hal
       state: "on"
   action:
+    - service: script.turn_off
+      entity_id: script.sunrise_hal
     - service: light.turn_off
       entity_id: light.hal
 
 ############################
 ###### Ouderslaapkamer #####
 ############################
+
+- alias: pir_ouderslaapkamer_licht_aan
+  condition:
+    - condition: state
+      entity_id: binary_sensor.low_lux_input_slaapkamer
+      state: "on"
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: group.all_persons
+          state: "home"
+        - condition: state
+          entity_id: person.erik
+          state: "home"
+        - condition: state
+          entity_id: person.nathalie
+          state: "home"
+        - condition: state
+          entity_id: input_boolean.notify_home
+          state: "on"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_ouderslaapkamer
+      to: "on"
+  action:
+    - service: script.turn_on
+      data_template:
+        entity_id:
+          "{% if is_state('input_boolean.nachtstand', 'on') %}\n  script.ouderslaapkamer_nachtlicht_aan\n\
+          {% else %}\n  script.ouderslaapkamer_daglicht_aan\n{% endif %}"
+- alias: licht uit in ouderslaapkamer
+  trigger:
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.timer_ouderslaapkamer
+    - platform: state
+      entity_id: binary_sensor.high_lux_input_slaapkamer
+      to: "on"
+  action:
+    service: light.turn_off
+    data:
+      entity_id:
+        - light.ouderslaapkamer
+      transition: 20
+
 - alias: "Wake me up with ouder light transition for weekdays"
   trigger:
     platform: time
@@ -687,6 +636,9 @@
       value_template: "{{ is_state('group.all_persons', 'home') or is_state('input_boolean.notify_home', 'on') }}"
     - condition: state
       entity_id: input_boolean.vakantiestand
+      state: "off"
+    - condition: state
+      entity_id: binary_sensor.high_lux_input_slaapkamer
       state: "off"
     - condition: or
       conditions:
@@ -705,13 +657,21 @@
     - platform: state
       entity_id: input_boolean.wakeup_ouders_enabled
       to: "off"
+    - platform: state
+      entity_id: binary_sensor.high_lux_input_slaapkamer
+      to: "on"
   condition:
     - condition: state
       entity_id: script.sunrise_ouders
       state: "on"
   action:
+    - service: script.turn_off
+      entity_id: script.sunrise_ouders
     - service: light.turn_off
-      entity_id: light.ouderslaapkamer
+      data:
+        entity_id:
+          - light.ouderslaapkamer
+        transition: 20
 
 - alias: "lamp ouders uit avond"
   trigger:
@@ -743,6 +703,9 @@
     - condition: state
       entity_id: input_boolean.vakantiestand
       state: "off"
+    - condition: state
+      entity_id: binary_sensor.high_lux_input_slaapkamer
+      state: "off"
     - condition: or
       conditions:
         - condition: state
@@ -760,26 +723,39 @@
     - platform: state
       entity_id: input_boolean.wakeup_evie_enabled
       to: "off"
+    - platform: state
+      entity_id: binary_sensor.high_lux_input_slaapkamer
+      to: "on"
   condition:
     - condition: state
       entity_id: script.sunrise_evie
       state: "on"
   action:
+    - service: script.turn_off
+      entity_id: script.sunrise_evie
     - service: light.turn_off
-      entity_id: light.kamer_evie
+      data:
+        entity_id:
+          - light.kamer_evie
+        transition: 20
 
 - alias: "Lamp evie aan avond"
   trigger:
-    - platform: time
-      at: "18:45:00"
+    - platform: time_pattern
+      minutes: "/5"
   condition:
     - condition: state
       entity_id: light.kamer_evie
       state: "off"
     - condition: state
-      entity_id:
-        - binary_sensor.low_lux_input_hal
+      entity_id: binary_sensor.low_lux_input_slaapkamer
       state: "on"
+    - condition: time
+      after: "18:45:00"
+      before: "20:00:00"
+    - condition: template
+      value_template: >-
+        {{ states('sensor.slaapkamer_evie_remote') == '4_click_up' and as_timestamp(state_attr('sensor.slaapkamer_evie_remote', 'last_updated')) > as_timestamp(now().fromisoformat(states('sensor.date') + ' ' + '18:45:00')) }}
     - condition: or
       conditions:
         - condition: state
@@ -821,6 +797,53 @@
         entity_id: light.kamer_evie
         transition: 1800
 
+- alias: pir_evie_licht_aan
+  condition:
+    - condition: state
+      entity_id: binary_sensor.low_lux_input_slaapkamer
+      state: "on"
+    - condition: state
+      entity_id: light.kamer_evie
+      state: "off"
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: group.all_persons
+          state: "home"
+        - condition: state
+          entity_id: person.erik
+          state: "home"
+        - condition: state
+          entity_id: person.nathalie
+          state: "home"
+        - condition: state
+          entity_id: input_boolean.notify_home
+          state: "on"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_evie
+      to: "on"
+  action:
+    - service: script.turn_on
+      data_template:
+        entity_id:
+          "{% if is_state('input_boolean.nachtstand', 'on') %}\n  script.evie_nachtlicht_aan\n\
+          {% else %}\n  script.evie_daglicht_aan\n{% endif %}"
+- alias: licht uit in slaapkamer Evie
+  trigger:
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.timer_evie
+    - platform: state
+      entity_id: binary_sensor.high_lux_input_slaapkamer
+      to: "on"
+  action:
+    service: light.turn_off
+    data:
+      entity_id:
+        - light.kamer_evie
+      transition: 20
 ############################
 ######### Jules ############
 ############################
@@ -834,6 +857,9 @@
       state: "on"
     - condition: template
       value_template: "{{ is_state('group.all_persons', 'home') or is_state('input_boolean.notify_home', 'on') }}"
+    - condition: state
+      entity_id: binary_sensor.low_lux_input_slaapkamer
+      state: "on"
     - condition: state
       entity_id: input_boolean.vakantiestand
       state: "off"
@@ -854,25 +880,39 @@
     - platform: state
       entity_id: input_boolean.wakeup_jules_enabled
       to: "off"
+    - platform: state
+      entity_id: binary_sensor.high_lux_input_slaapkamer
+      to: "on"
   condition:
     - condition: state
       entity_id: script.sunrise_jules
       state: "on"
   action:
+    - service: script.turn_off
+      entity_id: script.sunrise_jules
     - service: light.turn_off
+      data:
+        entity_id:
+          - light.kamer_jules
+        transition: 20
 
 - alias: "Lamp jules aan avond"
   trigger:
-    - platform: time
-      at: "18:45:00"
+    - platform: time_pattern
+      minutes: "/5"
   condition:
     - condition: state
       entity_id: light.kamer_jules
       state: "off"
     - condition: state
-      entity_id:
-        - binary_sensor.low_lux_input_hal
+      entity_id: binary_sensor.low_lux_input_slaapkamer
       state: "on"
+    - condition: time
+      after: "18:45:00"
+      before: "20:00:00"
+    - condition: template
+      value_template: >-
+        {{ states('sensor.slaapkamer_jules_remote') == '4_click_up' and as_timestamp(state_attr('sensor.slaapkamer_jules_remote', 'last_updated')) > as_timestamp(now().fromisoformat(states('sensor.date') + ' ' + '18:45:00')) }}
     - condition: or
       conditions:
         - condition: state
@@ -923,8 +963,64 @@
             - service: light.turn_on
               data:
                 entity_id: light.kamer_jules
-                brightness: 30
+                brightness: 20
                 transition: 1800
+
+- alias: pir_jules_licht_aan
+  condition:
+    - condition: state
+      entity_id: binary_sensor.low_lux_input_slaapkamer
+      state: "on"
+    - condition: state
+      entity_id: light.kamer_jules
+      state: "off"
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: group.all_persons
+          state: "home"
+        - condition: state
+          entity_id: person.erik
+          state: "home"
+        - condition: state
+          entity_id: person.nathalie
+          state: "home"
+        - condition: state
+          entity_id: input_boolean.notify_home
+          state: "on"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_jules
+      to: "on"
+  action:
+    - service: script.turn_on
+      data_template:
+        entity_id:
+          "{% if is_state('input_boolean.nachtstand', 'on') %}\n  script.jules_nachtlicht_aan\n\
+          {% else %}\n  script.jules_daglicht_aan\n{% endif %}"
+- alias: licht uit in slaapkamer Jules
+  trigger:
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.timer_jules
+    - platform: state
+      entity_id: binary_sensor.high_lux_input_slaapkamer
+      to: "on"
+  action:
+    service: light.turn_off
+    data:
+      entity_id:
+        - light.kamer_jules
+      transition: 20
+#################################################
+########### Werkkamer achter ####################
+#################################################
+
+#################################################
+################# Speelkamer ####################
+#################################################
+
 #################################################
 ######### Verlichting Buiten ####################
 #################################################
@@ -938,7 +1034,7 @@
       entity_id: input_boolean.vakantiestand
       state: "off"
     - condition: state
-      entity_id: binary_sensor.low_lux_input
+      entity_id: binary_sensor.low_lux_input_buiten
       state: "on"
     - condition: or
       conditions:
@@ -960,7 +1056,7 @@
       entity_id: input_boolean.nachtstand
       to: "on"
     - platform: state
-      entity_id: binary_sensor.low_lux_input
+      entity_id: binary_sensor.low_lux_input_buiten
       to: "off"
   action:
     - service: light.turn_off
@@ -969,7 +1065,10 @@
   condition:
     - condition: state
       entity_id: sun.sun
-      state: "below_horizon"
+      state: below_horizon
+    - condition: state
+      entity_id: binary_sensor.low_lux_input_buiten
+      state: "on"
   trigger:
     - platform: state
       entity_id: binary_sensor.motion_sensor_buiten_motion
@@ -1084,6 +1183,9 @@
     - platform: sun
       event: sunrise
       offset: "00:30:00"
+    - platform: state
+      entity_id: binary_sensor.high_lux_input_buiten
+      to: "on"
   action:
     - service: light.turn_off
       data:
@@ -1119,10 +1221,15 @@
           - light.garagelamp_2
           - light.led_paneel_garage
 - alias: pir_garage_on
-  condition:
-    - condition: state
-      entity_id: binary_sensor.low_lux_input_buiten
-      state: "on"
+  condition: 
+    - condition: or
+      conditions:
+        - condition: numeric_state
+          entity_id: sensor.pir_illuminance_garage
+          below: 30
+        - condition: state
+          entity_id: binary_sensor.low_lux_input_buiten
+          state: "on"
   trigger:
     - platform: state
       entity_id: binary_sensor.pir_motion_sensor_garage

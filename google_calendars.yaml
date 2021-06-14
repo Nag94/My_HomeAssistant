@@ -146,3 +146,9 @@
     ignore_availability: true
     name: Weather
     track: true
+- cal_id: jrl4fjbvvvnf906c75thsme4c1k638fq@import.calendar.google.com
+  entities:
+  - device_id: ek_2020
+    ignore_availability: true
+    name: EK 2020
+    track: false

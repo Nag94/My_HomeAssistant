@@ -1,4 +1,14 @@
 #- platform: huesensor
+- platform: google_travel_time
+  name: distance_erik
+  api_key: !secret google_api_key
+  origin: person.erik
+  destination: zone.home
+- platform: google_travel_time
+  name: distance_nathalie
+  api_key: !secret google_api_key
+  origin: person.nathalie
+  destination: zone.home
 
 - platform: p2000
   name: Veldhoven e.o.
@@ -8,51 +18,45 @@
   scan_interval: 20
   latitude: 51.426948
   longitude: 5.423349
-#  nolocation: true
-
-- platform: picnic
-  username: !secret picnic_user
-  password: !secret picnic_pw
-  country_code: "NL"
+  nolocation: true
+  contains: Veldhoven
 
 - platform: template
   sensors:
-    picnic_delivery_available_times:
-      friendly_name: "Picnic mogelijkheden"
-      value_template: >-
-        {% for timeslot in state_attr('sensor.picnic_delivery_time_slots', 'time_slots') -%}
-          {% if timeslot.is_available == true -%}    
-            {{
-              as_timestamp(timeslot.window_start) | timestamp_custom('%a %b %d, %H:%M') 
-              + ' - ' 
-              + as_timestamp(timeslot.window_end) | timestamp_custom('%H:%M') 
-            }}     
-          {% endif -%}
-          {% endfor %}
+    # picnic_delivery_available_times:
+    #   friendly_name: "Picnic mogelijkheden"
+    #   value_template: >-
+    #     {% for timeslot in state_attr('sensor.picnic_delivery_time_slots', 'time_slots') -%}
+    #       {% if timeslot.is_available == true -%}    
+    #         {{
+    #           as_timestamp(timeslot.window_start) | timestamp_custom('%a %b %d, %H:%M') 
+    #           + ' - ' 
+    #           + as_timestamp(timeslot.window_end) | timestamp_custom('%H:%M') 
+    #         }}     
+    #       {% endif -%}
+    #       {% endfor %}
     picnic_next_delivery_formatted:
       friendly_name: "Picnic Volgende levering"
-      value_template: "{{ 
-        as_timestamp(state_attr('sensor.picnic_delivery', 'delivery').window_start) 
-        | timestamp_custom('%a %b %d, %H:%M') 
-        + ' - ' 
-        + as_timestamp(state_attr('sensor.picnic_delivery', 'delivery').window_end) 
-        | timestamp_custom('%H:%M') 
-      }}"
+      value_template: >-
+        {% if states('sensor.picnic_selected_slot_start') != 'unavailable' %}
+          "{{ 
+          as_timestamp(states('sensor.picnic_selected_slot_start'))
+          | timestamp_custom('%a %b %d, %H:%M') 
+          + ' - ' 
+          + as_timestamp(states('sensor.picnic_selected_slot_end')) 
+          | timestamp_custom('%H:%M') 
+          }}"
+        {% else %}
+          Geen datum opgegeven
+        {% endif %}
       icon_template: mdi:truck-delivery
-    picnic_first_available_timeslot_formatted:
-      friendly_name: "Picnic Eerstvolgende Beschikbare Tijd"
-      value_template: "{% set ns = namespace(found=false) %}
-        {% for timeslot in state_attr('sensor.picnic_delivery_time_slots', 'time_slots') -%}
-        {% if timeslot.is_available == true and ns.found == false -%}    
-          {{
-            as_timestamp(timeslot.window_start) | timestamp_custom('%a %b %d, %H:%M') 
-            + ' - ' 
-            + as_timestamp(timeslot.window_end) | timestamp_custom('%H:%M') 
-          }}  
-          {% set ns.found = true %}
-        {% endif -%}
-        {% endfor %}"
-      icon_template: mdi:calendar-clock
+
+- platform: template
+  sensors:
+      rolluik_status:
+        friendly_name: "Rolluik status"
+        value_template: "{% if is_state('cover.neo_coolcam_roller_shutter_curtain_switch', 'open') %}Ingerold{% else %}Uitgerold{% endif %}"
+        icon_template: "{% if is_state('cover.neo_coolcam_roller_shutter_curtain_switch', 'open') %}mdi:blinds-open{% else %}mdi:blinds{% endif %}"
 
 - platform: dsmr
   port: /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AD3Z7YJM-if00-port0
@@ -68,59 +72,59 @@
     - precipitation_forecast_total
     - next_rain_forecast
 
-  # Example configuration.yaml entry
-- platform: buienradar
-  name: "Eindhoven"
-  # Force 'Meetstation Eindhoven' to be used:
-  latitude: 51.45
-  longitude: 5.42
-  monitored_conditions:
-    - stationname
-    - conditioncode
-    - condition
-    - conditiondetailed
-    - conditionexact
-    - symbol
-    - humidity
-    - temperature
-    - groundtemperature
-    - windspeed
-    - windforce
-    - winddirection
-    - windazimuth
-    - pressure
-    - visibility
-    - windgust
-    - precipitation
-    - irradiance
-    - precipitation_forecast_average
-    - precipitation_forecast_total
-    # conditions for forecasted data:
-    - symbol_1d
-    - symbol_2d
-    - symbol_3d
-    - symbol_4d
-    - symbol_5d
-    - temperature_1d
-    - temperature_2d
-    - temperature_3d
-    - temperature_4d
-    - temperature_5d
-    - rainchance_1d
-    - rainchance_2d
-    - rainchance_3d
-    - rainchance_4d
-    - rainchance_5d
-    - sunchance_1d
-    - sunchance_2d
-    - sunchance_3d
-    - sunchance_4d
-    - sunchance_5d
-    - rain_1d
-    - rain_2d
-    - rain_3d
-    - rain_4d
-    - rain_5d
+#   # Example configuration.yaml entry
+# - platform: buienradar
+#   name: "Eindhoven"
+#   # Force 'Meetstation Eindhoven' to be used:
+#   latitude: 51.45
+#   longitude: 5.42
+#   monitored_conditions:
+#     - stationname
+#     - conditioncode
+#     - condition
+#     - conditiondetailed
+#     - conditionexact
+#     - symbol
+#     - humidity
+#     - temperature
+#     - groundtemperature
+#     - windspeed
+#     - windforce
+#     - winddirection
+#     - windazimuth
+#     - pressure
+#     - visibility
+#     - windgust
+#     - precipitation
+#     - irradiance
+#     - precipitation_forecast_average
+#     - precipitation_forecast_total
+#     # conditions for forecasted data:
+#     - symbol_1d
+#     - symbol_2d
+#     - symbol_3d
+#     - symbol_4d
+#     - symbol_5d
+#     - temperature_1d
+#     - temperature_2d
+#     - temperature_3d
+#     - temperature_4d
+#     - temperature_5d
+#     - rainchance_1d
+#     - rainchance_2d
+#     - rainchance_3d
+#     - rainchance_4d
+#     - rainchance_5d
+#     - sunchance_1d
+#     - sunchance_2d
+#     - sunchance_3d
+#     - sunchance_4d
+#     - sunchance_5d
+#     - rain_1d
+#     - rain_2d
+#     - rain_3d
+#     - rain_4d
+#     - rain_5d
 
 - platform: darksky
   api_key: !secret darksky_api
@@ -258,14 +262,19 @@
   folder: "www/video"
 
 - platform: files
-  folder: "www/video"
+  folder: "www/video/woonkamer"
   name: woonkamer
   filter: woonkamer_*
 
 - platform: files
-  folder: "www/video"
+  folder: "www/video/oprit"
   name: oprit
   filter: oprit_*
+
+- platform: files
+  folder: "www/video/deurbel"
+  name: deurbel
+  filter: deurbel_*
 
 - platform: files
   folder: "www/video"
@@ -817,3 +826,157 @@
         {% set d = states('input_number.vaste_leveringskosten_stroom') | float %}
         {% set e = states('input_number.vermindering_energiebelasting_stroom') | float %}
         {{ ((((a * b) + c) + d) + e) | round(2) }}
+
+#################################
+########## Watermeter ############
+##################################
+
+- platform: template
+  sensors:
+    water_meterstand:
+      friendly_name: Watermeter stand
+      unit_of_measurement: m3
+      value_template: |
+        {% set water = ((states('sensor.water_meter_usage')|float + 391908)/1000) %}
+        {% if water <= 999999 %}
+          {{ ((states('sensor.water_meter_usage')|float + 391908)/1000)|round(3) }}
+        {% else %}
+          {{ (states('sensor.water_meter_usage')|float/1000)|round(3) }}
+        {% endif %}
+
+- platform: statistics
+  name: watermeter_statistic
+  entity_id: sensor.water_meter_usage
+  max_age:
+    minutes: 5
+
+##################################
+####### Pollen ###################
+##################################
+#sensor 
+#===============================================================
+# Ambee Pollen vertaald door huizebruin.nl en Roel R
+# versie v01.07 14-05-2021 (alles uitgebreid in je dashboard) door huizebruin en Roel R
+# versie v01.08 14-05-2021 (less is more display + nog een paar wijzigingen ) door huizebruin en Roel R
+# Bron van deze file https://github.com/huizebruin/Home-Assistant-Config/
+# https://api-dashboard.getambee.com/#/signup account aanmaken voor een 100 api calls per dag..
+# Al het goed is is de zone voor home al ingesteld in je home assistant.
+# vervang API-KEY door uw waarden  
+# in je Secrets.yaml de volgende regels plaatsen: 
+# (zonder hekje ervoor)     ambee-api: XXXXXXXXX
+# Bron : https://gist.github.com/michilehr/7ce7431f97e82523336a120b50d0ebe2
+
+- platform: rest
+  name: pollen_data
+  scan_interval: 3600
+  resource_template: https://api.ambeedata.com/latest/pollen/by-lat-lng?lat={{ state_attr("zone.home", "latitude") }}&lng={{ state_attr("zone.home", "longitude") }}
+  value_template: >-
+    {{ value_json.message}}
+  headers:
+    content-type: application/json
+    x-api-key: !secret ambee-api
+  json_attributes_path: data[0]
+  json_attributes:
+    - Count
+    - Risk
+    - Species
+    - updatedAt
+
+- platform: template
+  sensors:
+    pollen_bomen:
+      friendly_name: Bomen
+      icon_template: mdi:tree
+      value_template: >-
+        {% set state = state_attr("sensor.pollen_data", "Risk").tree_pollen %}
+        {% if state == "Low" %} Weinig
+        {% elif state == "Moderate"%} Matig
+        {% elif state == "High"%} Hoog
+        {% elif state == "Very High"%} Zeer hoog
+        {% else %}Onbekend{% endif %}
+      attribute_templates:
+        Totaal: >-
+          {{ state_attr("sensor.pollen_data", "Count").tree_pollen }} /m³
+        Els: >-
+          {{ state_attr("sensor.pollen_data", "Species").Tree.Alder }} /m³
+        Berk: >-
+          {{ state_attr("sensor.pollen_data", "Species").Tree.Birch }} /m³
+        Coniferen: >-
+          {{ state_attr("sensor.pollen_data", "Species").Tree.Cypress }} /m³
+        Iep: >-
+          {{ state_attr("sensor.pollen_data", "Species").Tree.Elm }} /m³
+        Hazelaar: >-
+          {{ state_attr("sensor.pollen_data", "Species").Tree.Hazel }} /m³
+        Eik: >-
+          {{ state_attr("sensor.pollen_data", "Species").Tree.Oak }} /m³
+        Den: >-
+          {{ state_attr("sensor.pollen_data", "Species").Tree.Pine }} /m³
+        Plataan: >-
+          {{ state_attr("sensor.pollen_data", "Species").Tree.Plane }} /m³
+        Populier: >-
+          {{ state_attr("sensor.pollen_data", "Species").Tree["Poplar / Cottonwood"] }} /m³
+
+    pollen_grassen:
+      friendly_name: Grassen
+      icon_template: mdi:grass
+      value_template: >-
+        {% set state = state_attr("sensor.pollen_data", "Risk").grass_pollen %}
+        {% if state == "Low" %} Weinig
+        {% elif state == "Moderate"%} Matig
+        {% elif state == "High"%} Hoog
+        {% elif state == "Very High"%} Zeer hoog
+        {% else %}Onbekend{% endif %}
+      attribute_templates:
+        Totaal: >-
+          {{ state_attr("sensor.pollen_data", "Count").grass_pollen }} /m³
+        Gramineae: >-
+          {{ state_attr("sensor.pollen_data", "Species").Grass["Grass / Poaceae"] }} /m³
+
+    pollen_onkruiden:
+      friendly_name: Onkruiden
+      icon_template: mdi:grass
+      value_template: >-
+        {% set state = state_attr("sensor.pollen_data", "Risk").weed_pollen %}
+        {% if state == "Low" %} Weinig
+        {% elif state == "Moderate"%} Matig
+        {% elif state == "High"%} Hoog
+        {% elif state == "Very High"%} Zeer hoog
+        {% else %}Onbekend{% endif %}
+      attribute_templates:
+        Totaal: >-
+          {{ state_attr("sensor.pollen_data", "Count").weed_pollen }} /m³
+        Amaranten/Ganzenvoet: >-
+          {{ state_attr("sensor.pollen_data", "Species").Weed.Chenopod }} /m³
+        Bijvoet: >-
+          {{ state_attr("sensor.pollen_data", "Species").Weed.Mugwort }} /m³
+        Brandnetel: >-
+          {{ state_attr("sensor.pollen_data", "Species").Weed.Nettle }} /m³
+        Ambrosia: >-
+          {{ state_attr("sensor.pollen_data", "Species").Weed.Ragweed }} /m³
+
+    pollen_tree_count:
+      icon_template: mdi:tree-outline
+      friendly_name: "Bomen"
+      unit_of_measurement: " /m³"
+      value_template: '{{ state_attr("sensor.pollen_data", "Count").tree_pollen }}'
+
+    pollen_weed_count:
+      icon_template: mdi:grass
+      friendly_name: "Onkruid"
+      unit_of_measurement: " /m³"
+      value_template: '{{ state_attr("sensor.pollen_data", "Count").weed_pollen }}'
+      
+    pollen_grass_count:
+      icon_template: mdi:grass
+      friendly_name: "Gras"
+      unit_of_measurement: " /m³"
+      value_template: '{{ state_attr("sensor.pollen_data", "Count").grass_pollen }}'
+  
+    pollen_last_updated:
+      icon_template: "mdi:clock"
+      friendly_name: "Laatste update"
+      device_class: timestamp
+      value_template: >-
+        {% set date = state_attr('sensor.pollen_data', 'updatedAt')[0:10] %}
+        {% set datet = state_attr('sensor.pollen_data', 'updatedAt')[11:19] %}
+        {{ date + " " + datet }}

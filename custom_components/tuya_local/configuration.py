@@ -6,11 +6,14 @@ from .const import (
     CONF_CLIMATE,
     CONF_DEVICE_ID,
     CONF_DISPLAY_LIGHT,
+    CONF_FAN,
+    CONF_HUMIDIFIER,
     CONF_LOCAL_KEY,
     CONF_SWITCH,
     CONF_TYPE,
     CONF_TYPE_AUTO,
     CONF_TYPE_DEHUMIDIFIER,
+    CONF_TYPE_EANONS_HUMIDIFIER,
     CONF_TYPE_EUROM_600_HEATER,
     CONF_TYPE_FAN,
     CONF_TYPE_GECO_HEATER,
@@ -18,9 +21,11 @@ from .const import (
     CONF_TYPE_GPPH_HEATER,
     CONF_TYPE_GSH_HEATER,
     CONF_TYPE_GARDENPAC_HEATPUMP,
+    CONF_TYPE_INKBIRD_THERMOSTAT,
     CONF_TYPE_KOGAN_HEATER,
     CONF_TYPE_KOGAN_SWITCH,
     CONF_TYPE_PURLINE_M100_HEATER,
+    CONF_TYPE_REMORA_HEATPUMP,
 )
 
 INDIVIDUAL_CONFIG_SCHEMA_TEMPLATE = [
@@ -34,6 +39,7 @@ INDIVIDUAL_CONFIG_SCHEMA_TEMPLATE = [
             [
                 CONF_TYPE_AUTO,
                 CONF_TYPE_DEHUMIDIFIER,
+                CONF_TYPE_EANONS_HUMIDIFIER,
                 CONF_TYPE_EUROM_600_HEATER,
                 CONF_TYPE_FAN,
                 CONF_TYPE_GECO_HEATER,
@@ -41,9 +47,11 @@ INDIVIDUAL_CONFIG_SCHEMA_TEMPLATE = [
                 CONF_TYPE_GPPH_HEATER,
                 CONF_TYPE_GSH_HEATER,
                 CONF_TYPE_GARDENPAC_HEATPUMP,
+                CONF_TYPE_INKBIRD_THERMOSTAT,
                 CONF_TYPE_KOGAN_HEATER,
                 CONF_TYPE_KOGAN_SWITCH,
                 CONF_TYPE_PURLINE_M100_HEATER,
+                CONF_TYPE_REMORA_HEATPUMP,
             ]
         ),
         "required": False,
@@ -54,7 +62,7 @@ INDIVIDUAL_CONFIG_SCHEMA_TEMPLATE = [
         "key": CONF_CLIMATE,
         "type": bool,
         "required": False,
-        "default": True,
+        "default": False,
         "option": True,
     },
     {
@@ -73,6 +81,20 @@ INDIVIDUAL_CONFIG_SCHEMA_TEMPLATE = [
     },
     {
         "key": CONF_SWITCH,
+        "type": bool,
+        "required": False,
+        "default": False,
+        "option": True,
+    },
+    {
+        "key": CONF_HUMIDIFIER,
+        "type": bool,
+        "required": False,
+        "default": False,
+        "option": True,
+    },
+    {
+        "key": CONF_FAN,
         "type": bool,
         "required": False,
         "default": False,

@@ -1,0 +1,31 @@
+- alias: testknop actie
+  id: 1234test4321
+  trigger:
+  - platform: state
+    entity_id: input_boolean.test
+    to: 'on'
+  action:
+  - service: script.turn_on
+    entity_id: script.mediaplayer_say
+    data:
+      variables:
+        player2: media_player.werkkamer_mini
+        google_say: als je dit hoort werkt het
+- id: '1621262870860'
+  alias: Mute mediaplayer voor telefoon erik.
+  description: ''
+  use_blueprint:
+    path: JackPoint/mute_media_player_on_call.yaml
+    input:
+      phone_state: sensor.in2023_telefoon_status
+      person: person.erik
+      media_player: media_player.eetkamer_speakers
+- id: '1621262944044'
+  alias: Mute mediaplayer telefoon nath.
+  description: ''
+  use_blueprint:
+    path: JackPoint/mute_media_player_on_call.yaml
+    input:
+      phone_state: sensor.sm_g973f_phone_state
+      person: person.nathalie
+      media_player: media_player.eetkamer_speakers

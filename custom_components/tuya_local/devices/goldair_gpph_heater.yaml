@@ -1,0 +1,119 @@
+name: Goldair GPPH Heater
+legacy_type: heater
+primary_entity:
+  entity: climate
+  legacy_class: ".heater.climate.GoldairHeater"
+  dps:
+    - id: 1
+      type: boolean
+      mapping:
+        - dps_val: false
+          value: "off"
+          icon: "mdi:radiator-disabled"
+          icon_priority: 1
+        - dps_val: true
+          value: "heat"
+          icon: "mdi:radiator"
+          icon_priority: 3
+      name: hvac_mode
+    - id: 2
+      type: integer
+      range:
+        min: 5
+        max: 35
+      mapping:
+        - constraint: preset_mode
+          conditions:
+            - dps_val: "ECO"
+              value-redirect: eco_temperature
+            - dps_val: "AF"
+              invalid: true
+              value: 5
+      name: temperature
+    - id: 3
+      type: integer
+      readonly: true
+      name: current_temperature
+    - id: 4
+      type: string
+      mapping:
+        - dps_val: "C"
+          value: "comfort"
+        - dps_val: "ECO"
+          value: "eco"
+        - dps_val: "AF"
+          value: "away"
+      name: preset_mode
+    - id: 12
+      type: bitfield
+      mapping:
+        - dps_val: 0
+          value: OK
+      readonly: true
+      name: error
+    - id: 101
+      type: string
+      mapping:
+        - dps_val: "stop"
+          value: "Stop"
+          icon: "mdi:radiator-disabled"
+          icon_priority: 2
+        - dps_val: "1"
+          value: "1"
+        - dps_val: "2"
+          value: "2"
+        - dps_val: "3"
+          value: "3"
+        - dps_val: "4"
+          value: "4"
+        - dps_val: "5"
+          value: "5"
+      name: power_level
+    - id: 102
+      type: integer
+      name: timer
+    - id: 103
+      type: boolean
+      name: timer_mode
+    - id: 105
+      type: string
+      mapping:
+        - dps_val: "stop"
+          value: "Stop"
+        - dps_val: "auto"
+          value: "Auto"
+        - dps_val: "user"
+          value-redirect: power_level
+      name: swing_mode
+    - id: 106
+      type: integer
+      range:
+        min: 5
+        max: 21
+      mapping:
+        - constraint: preset_mode
+          conditions:
+            - dps_val: "C"
+              invalid: true
+            - dps_val: "AF"
+              invalid: true
+      hidden: true
+      name: eco_temperature
+secondary_entities:
+  - entity: light
+    name: Panel Light
+    dps:
+      - id: 104
+        type: boolean
+        mapping:
+          - dps_val: false
+            icon: "mdi:led-on"
+          - dps_val: true
+            icon: "mdi:led-off"
+        name: switch
+  - entity: lock
+    name: Child Lock
+    dps:
+      - id: 6
+        type: boolean
+        name: lock

@@ -109,6 +109,28 @@
     - delay:
         minutes: 10
     - service: html5.dismiss
+
+- alias: Wasmachine middelen verbruik
+  trigger:
+    - platform: state
+      entity_id: sensor.wasmachine_current
+      from: "Draait"
+      to: "Klaar"
+      for:
+        seconds: 90
+  condition: []
+  action:
+    - service: grocy.consume_product_from_stock
+      data:
+        product_id: 4
+        amount: 25
+        transaction_type: CONSUME
+    - service: grocy.consume_product_from_stock
+      data:
+        product_id: 5
+        amount: 35
+        transaction_type: CONSUME
+
 ########################
 ### Vaatwasser ##########
 #########################
@@ -166,6 +188,26 @@
     - delay:
         minutes: 10
     - service: html5.dismiss
+
+- alias: Dishwasher consume tablet running
+  trigger:
+    - platform: state
+      entity_id: sensor.vaatwasser_program_progress
+      to: "100"
+    - platform: template
+      value_template: >-
+        {{ as_timestamp(states('sensor.vaatwasser_remaining_program_time')) == (as_timestamp(utcnow())) }}
+  condition:
+    - condition: template
+      value_template: >-
+        {{ states('switch.vaatwasser_program_machinecare') == "off"}}
+  action:
+    - service: grocy.consume_product_from_stock
+      data:
+        product_id: 3
+        amount: 1
+        transaction_type: CONSUME
+
 #####################
 ### Koffie!!! #######
 ####################
@@ -223,6 +265,10 @@
     to: "paused"
     for:
       minutes: 30
+  condition:
+    - condition: state
+      entity_id: light.woonkamer
+      state: "off"
   action:
     - service: media_player.turn_off
       entity_id: media_player.android_tv_woonkamer
@@ -240,7 +286,7 @@
         {% if is_state("input_select.afspeelmedium", "Woonkamer (Chromecast)") %} media_player.woonkamer_ultra
         {% elif is_state("input_select.afspeelmedium", "Woonkamer (Home Mini)") %} media_player.home_mini_woonkamer
         {% elif is_state("input_select.afspeelmedium", "Werkkamer") %} media_player.werkkamer_mini
-        {% elif is_state("input_select.afspeelmedium", "Ouderslaapkamer") %} media_player.ouderslaapkamer_mini  
+        {% elif is_state("input_select.afspeelmedium", "Yogakamer") %} media_player.yogakamer_mini  
         {% elif is_state("input_select.afspeelmedium", "Eetkamer") %} media_player.eetkamer
         {% elif is_state("input_select.afspeelmedium", "Keukenspeaker") %} media_player.keuken_speaker_2
         {% elif is_state("input_select.afspeelmedium", "Nest Hub Keuken") %} media_player.keuken_hub
@@ -248,11 +294,8 @@
       volume_level: "{{  states.input_number.volume_radio.state  }}"
 - alias: Weekendmuziek
   trigger:
-    - entity_id: binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4
+    - entity_id: binary_sensor.pir_motion_sensor_eetkamer
       platform: state
-      to: "on"
-    - platform: state
-      entity_id: binary_sensor.motion_schuifpui
       to: "on"
     - platform: state
       entity_id: input_boolean.ochtendmuziek
@@ -267,7 +310,7 @@
       state: "off"
     - condition: template
       value_template: >-
-        {% if trigger.entity_id == 'binary_sensor.nas_pd02z_battery_powered_pir_sensor_v2_sensor_4' or trigger.entity_id == 'binary_sensor.motion_schuifpui' %}
+        {% if trigger.entity_id == 'binary_sensor.pir_motion_sensor_eetkamer' %}
           {{ is_state('binary_sensor.workday_sensor', 'off') and is_state('input_boolean.ochtendmuziek', 'off') }}
         {% else %}
           {{ is_state('binary_sensor.workday_sensor', 'off') or is_state('binary_sensor.workday_sensor', 'on') }}
@@ -383,6 +426,9 @@
     - platform: state
       entity_id: binary_sensor.schuifpui
       to: "on"
+    - platform: state
+      entity_id: input_boolean.genie_pauze
+      to: "on"
   condition:
     - condition: state
       entity_id: switch.genie_woonkamer
@@ -390,10 +436,15 @@
   action:
     - service: switch.turn_off
       entity_id: switch.genie_woonkamer
+    - service: switch.turn_on
+      entity_id: input_boolean.genie_pauze
 - alias: Genie aan als schuifpui dicht gaat
   trigger:
     - platform: state
       entity_id: binary_sensor.schuifpui
+      to: "off"
+    - platform: state
+      entity_id: input_boolean.genie_pauze
       to: "off"
   condition:
     condition: or
@@ -407,6 +458,8 @@
   action:
     - service: switch.turn_on
       entity_id: switch.genie_woonkamer
+    - service: switch.turn_off
+      entity_id: input_boolean.genie_pauze
 - alias: genie aan
   trigger:
     - platform: time
@@ -414,10 +467,28 @@
     - platform: time
       at: "06:30:00"
   condition:
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: group.all_persons
+          state: "home"
+        - condition: state
+          entity_id: input_boolean.notify_home
+          state: "on"
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: "off"
     - condition: state
       entity_id: binary_sensor.schuifpui
       state: "off"
+    - condition: state
+      entity_id: input_boolean.genie_pauze
+      state: "off"
   action:
+    - service: rest_command.genie_med
+    - delay: 00:00:05
+    - service: rest_command.genie_room_med
+    - delay: 00:00:10
     - service: switch.turn_on
       entity_id: switch.genie_woonkamer
 - alias: genie uit
@@ -430,7 +501,44 @@
   action:
     - service: switch.turn_off
       entity_id: switch.genie_woonkamer
-
+- alias: genie periodiek aan
+  trigger:
+    - platform: time_pattern
+      minutes: "/10"
+  condition:
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: group.all_persons
+          state: "home"
+        - condition: state
+          entity_id: input_boolean.notify_home
+          state: "on"
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: "off"
+    - condition: state
+      entity_id: input_boolean.nachtstand
+      state: "off"
+    - condition: state
+      entity_id: binary_sensor.schuifpui
+      state: "off"
+    - condition: time
+      after: "07:00:00"
+      before: "20:00:00"
+    - condition: state
+      entity_id: input_boolean.genie_pauze
+      state: "off"
+  action:
+    - service: rest_command.genie_low
+    - delay: 00:00:05
+    - service: rest_command.genie_room_low
+    - delay: 00:00:10
+    - service: switch.turn_on
+      entity_id: switch.genie_woonkamer
+    - delay: 00:05:00
+    - service: switch.turn_off
+      entity_id: switch.genie_woonkamer
 - alias: Genie Set strength slider
   id: "genie-slider-sterkte"
   trigger:
@@ -492,6 +600,75 @@
           sequence:
             - service: rest_command.genie_high
 
+- alias: Genie Set room slider
+  id: "genie-slider-kamer"
+  trigger:
+    platform: state
+    entity_id: sensor.genie_kamergrootte
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: sensor.genie_kamergrootte
+              state: "1"
+          sequence:
+            - service: input_number.set_value
+              data_template:
+                entity_id: input_number.genie_room
+                value: "1.0"
+        - conditions:
+            - condition: state
+              entity_id: sensor.genie_kamergrootte
+              state: "2"
+          sequence:
+            - service: input_number.set_value
+              data_template:
+                entity_id: input_number.genie_room
+                value: "2.0"
+        - conditions:
+            - condition: state
+              entity_id: sensor.genie_kamergrootte
+              state: "3"
+          sequence:
+            - service: input_number.set_value
+              data_template:
+                entity_id: input_number.genie_room
+                value: "3.0"
+
+- alias: Genie room slider low
+  id: "genie-slider-kamer-verzet"
+  trigger:
+    - platform: state
+      entity_id: input_number.genie_room
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_number.genie_room
+              state: "1.0"
+          sequence:
+            - service: rest_command.genie_room_low
+        - conditions:
+            - condition: state
+              entity_id: input_number.genie_room
+              state: "2.0"
+          sequence:
+            - service: rest_command.genie_room_med
+        - conditions:
+            - condition: state
+              entity_id: input_number.genie_room
+              state: "3.0"
+          sequence:
+            - service: rest_command.genie_room_high
+
+- alias: Genie pauzeknop herstellen in de ochtend
+  trigger:
+    - platform: state
+      entity_id: input_boolean.nachtstand
+      to: "off"
+  action:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.genie_pauze
 #####################################
 ############## afval ################
 #####################################
@@ -529,9 +706,24 @@
   trigger:
     - platform: template
       value_template: >-
-        {{ 1800 > (as_timestamp(state_attr('sensor.picnic_delivery', 'delivery').window_start) - as_timestamp(states('sensor.date') + " " + states('sensor.time'))) > 0}}
+        {% if states('sensor.picnic_last_order_slot_start') != "unavailable" %}
+          {{ 1800 > (as_timestamp(states('sensor.picnic_last_order_eta_start')) - as_timestamp(states('sensor.date') + " " + states('sensor.time'))) > 0}}
+        {% endif %}
   condition: []
   action:
+    - data:
+        entity_id: >-
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
+        volume_level: 0.4
+      service: media_player.volume_set
     - service: tts.google_home_say
       data:
         entity_id: >-
@@ -546,10 +738,14 @@
           {{- ms.items-}}
         message: >-
           <speak>
-            Picnic komt eraan!<break time="300ms"/> Over ongeveer een uurtje staan ze voor de deur.
+            Picnic komt eraan!<break time="300ms"/> Tussen {{ as_timestamp(states("sensor.picnic_last_order_eta_start")) | timestamp_custom("%H:%M") }} en {{ as_timestamp(states("sensor.picnic_last_order_eta_end")) | timestamp_custom("%H:%M") }} staan ze voor de deur.
           </speak>
         #        language: 'nl'
         cache: false
+    - service: notify.all_mobile
+      data_template:
+        message: 'Picnic komt eraan. Ze zijn er tussen {{ as_timestamp(states("sensor.picnic_last_order_eta_start")) | timestamp_custom("%H:%M") }} en {{ as_timestamp(states("sensor.picnic_last_order_eta_end")) | timestamp_custom("%H:%M") }}'
+        title: Picnic
     - service: notify.html5
       data:
         message: De Picnic komt eraan!
@@ -564,9 +760,24 @@
   trigger:
     - platform: template
       value_template: >-
-        {{ 3600 > (as_timestamp(state_attr('sensor.picnic_delivery', 'delivery').cut_off_time) - as_timestamp(states('sensor.date') + " " + states('sensor.time'))) > 0}}
+        {% if states('sensor.picnic_last_order_slot_start') != "unavailable" %}
+          {{ 3600 > (as_timestamp(states('sensor.picnic_last_order_slot_start')) - as_timestamp(states('sensor.date') + " " + states('sensor.time'))) > 0}}
+        {% endif %}
   condition: []
   action:
+    - data:
+        entity_id: >-
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
+        volume_level: 0.4
+      service: media_player.volume_set
     - service: tts.google_home_say
       data:
         entity_id: >-
@@ -585,6 +796,10 @@
           </speak>
         #        language: 'nl'
         cache: false
+    - service: notify.all_mobile
+      data_template:
+        message: 'Bestel nog snel je laatste Picnic boodschappen! Na {{ as_timestamp(states("sensor.picnic_selected_slot_end")) | timestamp_custom("%H:%M") }} kan het niet meer'
+        title: Picnic
     - service: notify.html5
       data:
         message: Nog een uur om producten aan je Picnic winkelmand toe te voegen!
@@ -593,6 +808,113 @@
         minutes: 5
     - service: html5.dismiss
   mode: single
+
+######################################
+######## Boodschappen ################
+######################################
+- alias: Producten niet meer op voorraad
+  description: "Producten raken op"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.grocy_missing_products
+      to: "on"
+  condition: []
+  action:
+    - data:
+        entity_id: >-
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
+        volume_level: 0.4
+      service: media_player.volume_set
+    - service: tts.google_home_say
+      data:
+        entity_id: >-
+          {% set ms = namespace(items=[]) %}
+          {%- for state in states.input_boolean -%}
+            {%- if ( state.state_with_unit =="on") and (state_attr(state.entity_id, 'icon') == 'mdi:cast-audio'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-chrome'
+              or state_attr(state.entity_id, 'icon') == 'mdi:google-home') -%}
+              {%- set ms.items = ms.items + ['media_player.' + state.entity_id.split('.')[1]] -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{- ms.items-}}
+        message: >-
+          <speak>
+            Denk aan je voorraden!<break time="300ms"/>Zet dit op je lijstje:<break time="500ms"/>
+            {% for product in state_attr('binary_sensor.grocy_missing_products', 'missing') %}
+            {{ product.name }},{% endfor %}
+          </speak>
+        #        language: 'nl'
+        cache: false
+    - service: notify.all_mobile
+      data_template:
+        message: |
+          'Denk aan je voorraden!<break time="300ms"/>Zet dit op je lijstje:<break time="500ms"/>{% for product in state_attr('binary_sensor.grocy_missing_products', 'missing') %}{{ product.name }},{% endfor %}'
+        title: Bestellen maar...
+    - service: notify.html5
+      data:
+        message: |
+          'Denk aan je voorraden!<break time="300ms"/>Zet dit op je lijstje:<break time="500ms"/>
+            {% for product in state_attr('binary_sensor.grocy_missing_products', 'missing') %}
+            {{ product.name }},{% endfor %}'
+        title: Bestellen maar...
+    - delay:
+        minutes: 5
+    - service: html5.dismiss
+  mode: single
+
+######################################
+######## Water alarm #################
+######################################
+
+## Water: 1 liter verbruikt per groen licht aan
+## licht langzaam pulseren (1x per 2 minuten of zo) dan lek
+# light.green
+
+# water flow
+- id: "waterverbruikalsnietthuis"
+  alias: Waterverbruik terwijl er niemand thuis is
+  trigger:
+    platform: template
+    value_template: >-
+      {% if state_attr('watermeter_statistic', 'count')|int > 0 %}
+        True
+      {% else %}
+        False
+      {% endif %}
+  condition:
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id: group.all_persons
+          state: "home"
+        - condition: state
+          entity_id: input_boolean.notify_home
+          state: "on"
+    - condition: state
+      entity_id: input_boolean.vakantiestand
+      state: "off"
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: sensor.wasmachine_current
+          state: "klaar"
+        - condition: state
+          entity_id: sensor.droger_current
+          state: "klaar"
+  action:
+    service: notify.mobile_app_phone_erik
+    data:
+      title: "Waterlek???"
+      message: "Er stroomt nog water terwijl er niemand thuis is!"
+
 ########################################
 ############## Test ####################
 ######################################

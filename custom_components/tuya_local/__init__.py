@@ -11,9 +11,7 @@ import logging
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_NAME
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.discovery import async_load_platform
 
 from .configuration import individual_config_schema
 from .const import (
@@ -21,16 +19,14 @@ from .const import (
     CONF_CLIMATE,
     CONF_DEVICE_ID,
     CONF_DISPLAY_LIGHT,
-    CONF_LOCAL_KEY,
+    CONF_FAN,
+    CONF_HUMIDIFIER,
     CONF_SWITCH,
     DOMAIN,
 )
-from .device import TuyaLocalDevice
-from .config_flow import ConfigFlowHandler
+from .device import setup_device, delete_device
 
 _LOGGER = logging.getLogger(__name__)
-
-VERSION = "0.1.2"
 
 CONFIG_SCHEMA = vol.Schema(
     {DOMAIN: vol.All(cv.ensure_list, [vol.Schema(individual_config_schema())])},
@@ -54,21 +50,29 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     config = {**entry.data, **entry.options, "name": entry.title}
     setup_device(hass, config)
 
-    if config[CONF_CLIMATE] is True:
+    if config.get(CONF_CLIMATE, False) is True:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, "climate")
         )
-    if config[CONF_DISPLAY_LIGHT] is True:
+    if config.get(CONF_DISPLAY_LIGHT, False) is True:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, "light")
         )
-    if config[CONF_CHILD_LOCK] is True:
+    if config.get(CONF_CHILD_LOCK, False) is True:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, "lock")
         )
-    if config[CONF_SWITCH] is True:
+    if config.get(CONF_SWITCH, False) is True:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(entry, "switch")
+        )
+    if config.get(CONF_HUMIDIFIER, False) is True:
+        hass.async_create_task(
+            hass.config_entries.async_forward_entry_setup(entry, "humidifier")
+        )
+    if config.get(CONF_FAN, False) is True:
+        hass.async_create_task(
+            hass.config_entries.async_forward_entry_setup(entry, "fan")
         )
     entry.add_update_listener(async_update_entry)
 
@@ -91,6 +95,10 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         await hass.config_entries.async_forward_entry_unload(entry, "lock")
     if CONF_SWITCH in data:
         await hass.config_entries.async_forward_entry_unload(entry, "switch")
+    if CONF_HUMIDIFIER in data:
+        await hass.config_entries.async_forward_entry_unload(entry, "humidifier")
+    if CONF_FAN in data:
+        await hass.config_entries.async_forward_entry_unload(entry, "fan")
 
     delete_device(hass, config)
     del hass.data[DOMAIN][config[CONF_DEVICE_ID]]
@@ -105,23 +113,3 @@ async def async_update_entry(hass: HomeAssistant, entry: ConfigEntry):
     _LOGGER.debug(f"Updating entry for device: {entry.data[CONF_DEVICE_ID]}")
     await async_unload_entry(hass, entry)
     await async_setup_entry(hass, entry)
-
-
-def setup_device(hass: HomeAssistant, config: dict):
-    _LOGGER.debug(f"Creating device: {config[CONF_DEVICE_ID]}")
-    hass.data[DOMAIN] = hass.data.get(DOMAIN, {})
-    device = TuyaLocalDevice(
-        config[CONF_NAME],
-        config[CONF_DEVICE_ID],
-        config[CONF_HOST],
-        config[CONF_LOCAL_KEY],
-        hass,
-    )
-    hass.data[DOMAIN][config[CONF_DEVICE_ID]] = {"device": device}
-
-    return device
-
-
-def delete_device(hass: HomeAssistant, config: dict):
-    _LOGGER.debug(f"Deleting device: {config[CONF_DEVICE_ID]}")
-    del hass.data[DOMAIN][config[CONF_DEVICE_ID]]["device"]
